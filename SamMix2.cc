@@ -1,4 +1,4 @@
-#include "/home/sam/work/SamMix2.h"
+#include "/home/sam/work/SamMix/SamMix2.h" // CHANGE THIS
 #include <iostream>
 #include <string>
 #include "TH1D.h"
@@ -6,8 +6,6 @@
 #include "TCanvas.h"
 
 /* CURRENT ISSUES TO SOLVE:
- * Pi0/acqu data for carbon/butanol in correct locations (~/work/acqu_data or ~/work/Pi0_data)
- *      Labels on all data (Acqu_CBTaggTAPS_ or Pi0_CBTaggTAPS_)
  * InitialCarbon first carbon file
  *      TH1s C3500_0, C3500_1,   C_MissMass_0,   C_MissMass_1; with:
  *           Theta_0, Theta_1, MM_pi0_n_2g_h0, MM_pi0_n_2g_h1
@@ -60,7 +58,7 @@ Int_t mix2()
 
     std::cout << " " << endl;
     std::cout << "Total Number of Carbon Background Entries Found: " << PolPar.GetCarbEntries() << endl;
-
+/*
     // BUTANOL
     std::cout << " " << endl;
     std::cout << "Number of files for Butanol data: ";
@@ -95,7 +93,7 @@ Int_t mix2()
             std::cout << "Success!" << endl;
             }
         }
-    }
+    } */
 }
 
 ppi0 :: ppi0() {} // what does this really do?
@@ -104,10 +102,17 @@ ppi0 :: ~ppi0() {}
 void ppi0 :: InitialCarbon()
 {
     TString carbnumber = Form("%d", carbonstart);
-    FirstCarbonLocation = "/home/sam/work/Pi0_data/Carbon/" + "Pi0_CBTaggTAPS_" + carbnumber + ".root";
+    FirstCarbonLocation = "~/work/a2GoAT/postreconApril/" + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
     TFile FirstFile (FirstCarbonLocation); // call on the first root file as Car_3500
+    if (!FirstFile) {
+        std::cout << "No first file found." << endl;
+        return;
+    }
+    else {
+        std::cout << "First file found!" << endl;
+    }
 
-// TH1s C3500_0, C3500_1 need to exist in Car_3500
+// TH1s C3500_0, C3500_1 need to exist in FirstFile THIS IS AN ISSUE
 // Theta_1 and Theta_0 need to exist in C3500_1, C3500_0
     FirstFile.GetObject("Theta_1", C3500_1); // get Theta_1 from TH1 C3500_1
     FirstFile.GetObject("Theta_0", C3500_0); // get Theta_0 from TH1 C3500_0
@@ -116,25 +121,25 @@ void ppi0 :: InitialCarbon()
 
 // TH1s C_MissMass_1, C_MissMass_0 NEED TO EXIST IN Car_3500
 // MM_pi0_n_2g_h1 and MM_pi0_n_2g_h0 need to exist in C_MissMass_1, C_MissMass_0
-    FirstFile.GetObject("MM_pi0_n_2g_h1", C_MissMass_1);
-    FirstFile.GetObject("MM_pi0_n_2g_h0", C_MissMass_0);
-    C_MissMass_1->SetDirectory(0);
-    C_MissMass_0->SetDirectory(0);
+//    FirstFile.GetObject("MM_pi0_n_2g_h1", C_MissMass_1);
+//    FirstFile.GetObject("MM_pi0_n_2g_h0", C_MissMass_0);
+//    C_MissMass_1->SetDirectory(0);
+//    C_MissMass_0->SetDirectory(0);
 }
 
 // LOOPING CARBON
 void ppi0 :: CarbonLoop(Int_t j)
 {
 // Carbon data from acqu and Pi0 must exist in the following locations:
-    TString AcqCarb_source = "/home/sam/work/acqu_data/Carbon";
-    TString Pi0Carb_source = "/home/sam/work/Pi0_data/Carbon";
+    TString AcqCarb_source = "~/work/a2GoAT/Apr2014/";
+    TString Pi0Carb_source = "~/work/a2GoAT/postreconApril/";
 
     Int_t n_carb_run = carbonstart + j;
     TString carb_ext = Form("%d", n_carb_run);
 
-// acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "Pi0_CBTaggTAPS_"
+// acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0samApril_CBTaggTAPS_"
     acqu_Carbon = AcqCarb_source + "Acqu_CBTaggTAPS_" + carb_ext + ".root";
-    Pi0_Carbon = Pi0Carb_source + "Pi0_CBTaggTAPS_" + carb_ext + ".root";
+    Pi0_Carbon = Pi0Carb_source + "pi0-samApril_CBTaggTAPS_" + carb_ext + ".root";
 
     std::cout << "Checking for Carbon files... " << endl;
     ifstream Afile(acqu_Carbon);
@@ -176,12 +181,12 @@ void ppi0 :: Asymmetry(Int_t index)
     TString but_ext = Form("%d", n_but_run);
 
 // Butanol data must exist for acqu and Pi0 as specified:
-    TString AcqBut_source = "/home/sam/work/acqu_data/Butanol/";
-    TString Pi0But_source = "/home/sam/work/Pi0_data/Butanol/";
-    TString histogram_source = "/home/sam/work/histograms/";
+    TString AcqBut_source = "~/work/a2GoAT/May2014/";
+    TString Pi0But_source = "~/work/a2GoAT/postreconMay/";
+    TString histogram_source = "~/work/a2GoAT/histograms/";
 
 // Pi0 data must have "Pi0_CBTaggTAPS", while acqu data must have "Acqu_CBTaggTAPS_"
-    Pi0_Butanol = Pi0But_source + "Pi0_CBTaggTAPS_" + but_ext + ".root";
+    Pi0_Butanol = Pi0But_source + "pi0-samMay_CBTaggTAPS_" + but_ext + ".root";
     acqu_Butanol = AcqBut_source + "Acqu_CBTaggTAPS_" + but_ext + ".root";
 
     std::cout << "Checking for Butanol files... " << endl;
@@ -213,16 +218,16 @@ void ppi0 :: Asymmetry(Int_t index)
 // Theta_1, Theta_0, MM_pi0_n_2g_h1, MM_pi0_n_2g_h0 must exist as specified
     Pi0But.GetObject("Theta_1", BThet_1);
     Pi0But.GetObject("Theta_0", BThet_0);
-    Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
-    Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
+//    Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
+//    Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
 
     TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
-    B_MissMass_1->Add(C_MissMass_1, (-1)*Scale());
-    B_MissMass_0->Add(C_MissMass_0, (-1)*Scale());
+//    B_MissMass_1->Add(C_MissMass_1, (-1)*Scale());
+//    B_MissMass_0->Add(C_MissMass_0, (-1)*Scale());
     BThet_1->Add(C3500_1, (-1)*Scale());
     BThet_0->Add(C3500_0, (-1)*Scale());
-    B_MissMass_1->Write();
-    B_MissMass_0->Write();
+//    B_MissMass_1->Write();
+//    B_MissMass_0->Write();
     BThet_1->Write();
     BThet_0->Write();
 
@@ -230,11 +235,11 @@ void ppi0 :: Asymmetry(Int_t index)
     yield_1 = BThet_1 -> GetBinContent(n_bin);
     if (yield_0 < 0) {
         std::cout << "Yield for helicity 0 was negative for file " << Pi0_Butanol << endl;
-        yield_0 = yield_0*(-1);
+        // yield_0 = yield_0*(-1);
     }
     if (yield_1 < 0) {
         std::cout << "Yield for helicity 1 was negative for file " << Pi0_Butanol << endl;
-        yield_1 = yield_1*(-1);
+        // yield_1 = yield_1*(-1);
     }
     yield_0_e = BThet_0 -> GetBinError(n_bin);
     yield_1_e = BThet_1 -> GetBinError(n_bin);
