@@ -28,8 +28,8 @@ Int_t mix2()
     Int_t n_bin; // which theta bin
     Int_t n_file; // number of files for Butanol
     Int_t max_carb; // number of files for Carbon
-    Int_t carbonstart;
-    Int_t butanolstart;
+    Int_t carbonstart; // 3407 normally
+    Int_t butanolstart; // 3680 normally
 
     ppi0 PolPar; // initialize PolPar, of class ppi0
     std::cout << "Initializing Carbon data... " << endl;
@@ -104,7 +104,7 @@ ppi0 :: ~ppi0() {}
 void ppi0 :: InitialCarbon()
 {
     TString carbnumber = Form("%d", carbonstart);
-    TString FirstCarbonLocation = "~/work/a2GoAT/postreconApril/" + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
+    TString FirstCarbonLocation = "/local/raid0/work/aberneth/a2GoAT/postreconApril/" + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
     TFile FirstFile (FirstCarbonLocation); // call on the first root file as Car_3500
     if (!FirstFile) {
         std::cout << "No first file found." << endl;
