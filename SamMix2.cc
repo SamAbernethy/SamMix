@@ -139,7 +139,7 @@ void ppi0 :: CarbonLoop(Int_t j)
     Int_t carbonstart = 3407;
     std::cout << "Carbon start number is " << carbonstart << endl;
     Int_t n_carb_run = carbonstart + j;
-    std::cout << "Number used for this run is << n_carb_run" << endl;
+    std::cout << "Number used for this run is " << n_carb_run << endl;
     TString carb_ext = Form("%d", n_carb_run);
 
 // acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0samApril_CBTaggTAPS_"
