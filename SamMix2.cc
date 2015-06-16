@@ -49,7 +49,7 @@ Int_t mix2()
         std::cout << "Carbon run number not specified. Try again." << endl;
         return 1;
     } else {
-        std::cout << "Carbon run number successfully specified." << endl;
+        std::cout << "Carbon run number successfully specified, as " << carbonstart << endl;
         PolPar.InitialCarbon();
     }
 
