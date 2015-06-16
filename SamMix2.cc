@@ -133,10 +133,12 @@ void ppi0 :: InitialCarbon()
 void ppi0 :: CarbonLoop(Int_t j)
 {
 // Carbon data from acqu and Pi0 must exist in the following locations:
-    TString AcqCarb_source = "~/work/a2GoAT/Apr2014/";
-    TString Pi0Carb_source = "~/work/a2GoAT/postreconApril/";
+    TString AcqCarb_source = "/local/raid0/work/aberneth/a2GoAT/Apr2014/";
+    TString Pi0Carb_source = "/local/raid0/work/aberneth/a2GoAT/postreconApril/";
 
+    std::cout << "Carbon start number is " << carbonstart << endl;
     Int_t n_carb_run = carbonstart + j;
+    std::cout << "Number used for this run is << n_carb_run" << endl;
     TString carb_ext = Form("%d", n_carb_run);
 
 // acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0samApril_CBTaggTAPS_"
