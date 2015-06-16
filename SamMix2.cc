@@ -28,6 +28,8 @@ Int_t mix2()
     Int_t n_bin; // which theta bin
     Int_t n_file; // number of files for Butanol
     Int_t max_carb; // number of files for Carbon
+    Int_t carbonstart;
+    Int_t butanolstart;
 
     ppi0 PolPar; // initialize PolPar, of class ppi0
     std::cout << "Initializing Carbon data... " << endl;
