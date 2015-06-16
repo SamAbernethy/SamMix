@@ -136,6 +136,7 @@ void ppi0 :: CarbonLoop(Int_t j)
     TString AcqCarb_source = "/local/raid0/work/aberneth/a2GoAT/Apr2014/";
     TString Pi0Carb_source = "/local/raid0/work/aberneth/a2GoAT/postreconApril/";
 
+    Int_t carbonstart = 3407;
     std::cout << "Carbon start number is " << carbonstart << endl;
     Int_t n_carb_run = carbonstart + j;
     std::cout << "Number used for this run is << n_carb_run" << endl;
