@@ -1,4 +1,4 @@
-#include "~/work/a2GoAT/SamMix/SamMix2.h" // CHANGE THIS
+#include "SamMix2.h" // CHANGE THIS
 #include <iostream>
 #include <string>
 #include "TH1D.h"
