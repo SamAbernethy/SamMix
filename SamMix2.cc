@@ -37,15 +37,15 @@ Int_t mix2()
     }
 
     // INITIALIZING CARBON
-    std::cout << "Carbon run number to start with: ";
-    std::cin >> carbonstart;
-    if (!carbonstart) {
-        std::cout << "Carbon run number not specified. Try again." << endl;
-        return 1;
-    } else {
-        std::cout << "Carbon run number successfully specified, as " << carbonstart << endl;
+    // std::cout << "Carbon run number to start with: ";
+    // std::cin >> carbonstart;
+    // if (!carbonstart) {
+    //    std::cout << "Carbon run number not specified. Try again." << endl;
+    //    return 1;
+    //} else {
+    //    std::cout << "Carbon run number successfully specified, as " << carbonstart << endl;
         PolPar.InitialCarbon();
-    }
+    // }
 
     // CARBON LOOP
     for (Int_t Carb_index = 1; Carb_index <= max_carb; Carb_index++) {
@@ -64,13 +64,13 @@ Int_t mix2()
         return 1;
     } else {
         std::cout << "Number of files for Butanol data successfully specified." << endl;
-        std::cout << " " << endl;
-        std::cout << "Butanol run number to start with: ";
-        std::cin >> butanolstart;
-        if (!butanolstart) {
-            std::cout << "Butanol run number not specified. Try again." << endl;
-            return 1;
-        } else {
+    //    std::cout << " " << endl;
+    //    std::cout << "Butanol run number to start with: ";
+    //    std::cin >> butanolstart;
+    //    if (!butanolstart) {
+    //        std::cout << "Butanol run number not specified. Try again." << endl;
+    //        return 1;
+    //    } else {
             std::cout << " " << endl;
             std::cout << "Starting Butanol file input loop... " << endl;
             for (Int_t i = 1; i <= n_file; i++) {
@@ -79,7 +79,7 @@ Int_t mix2()
             fout.close();
             PolPar.Graph();
             std::cout << "Success! You win." << endl;
-        }
+    //    }
     }
 }
 
@@ -210,7 +210,7 @@ void ppi0 :: Asymmetry(Int_t index)
     ButaEvnt = Acqu_but->GetEntries();
 
     if(ButaEvnt < 4.0e+6) {
-        std::cout << "Butanol event count is too low. Check file " << n_but_run << endl;
+        std::cout << "Butanol event count is too low for file " << n_but_run << endl;
         return; // this number was chosen by Dylan
     }
 
@@ -233,6 +233,9 @@ void ppi0 :: Asymmetry(Int_t index)
 
     yield_0 = BThet_0 -> GetBinContent(n_bin);
     yield_1 = BThet_1 -> GetBinContent(n_bin);
+    yield_0_e = BThet_0 -> GetBinError(n_bin);
+    yield_1_e = BThet_1 -> GetBinError(n_bin);
+
     if (yield_0 < 0) {
         std::cout << "Yield for helicity 0 was negative for file " << n_but_run << endl;
         // yield_0 = yield_0*(-1);
@@ -241,8 +244,6 @@ void ppi0 :: Asymmetry(Int_t index)
         std::cout << "Yield for helicity 1 was negative for file " << n_but_run << endl;
         // yield_1 = yield_1*(-1);
     }
-    yield_0_e = BThet_0 -> GetBinError(n_bin);
-    yield_1_e = BThet_1 -> GetBinError(n_bin);
 
     asym = (yield_0 - yield_1) / (yield_0 + yield_1);
     err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
@@ -260,7 +261,7 @@ void ppi0 :: Asymmetry(Int_t index)
 // GRAPHING
 void ppi0 :: Graph()
 {
-    gROOT->SetStyle("Plain");
+    // gROOT->SetStyle("Plain");
     TCanvas *c1 = new TCanvas();
     c1->SetGrid();
     TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
