@@ -120,7 +120,6 @@ void ppi0 :: InitialCarbon()
     FirstFile.GetObject("Theta_0", C3500_0); // get Theta_0 from TH1 C3500_0
     C3500_1->SetDirectory(0); // detaches this so that you can open and close root files without destroying it
     C3500_0->SetDirectory(0);
-    std::cout << "The number should be 1985: " << FirstFile -> GetEntries() << endl;
 
 // TH1s C_MissMass_1, C_MissMass_0 NEED TO EXIST IN Car_3500
 // MM_pi0_n_2g_h1 and MM_pi0_n_2g_h0 need to exist in C_MissMass_1, C_MissMass_0
@@ -174,7 +173,7 @@ void ppi0 :: CarbonLoop(Int_t j)
     C3500_0->Add(Carb_0,1);
 
 // AcqTree must exist within AcqCarb, with treeRawEvent within it
-    AcqCarb.GetObject("treeRawEvent", AcqTree);
+    AcqCarb.GetObject("trigger", AcqTree);
     std::cout << "For the run from " << acqu_Carbon << ", the number of Acqu Entries is: " << AcqTree -> GetEntries() << endl;
     std::cout << "Carbon bin content: " << C3500_1 -> GetBinContent(n_bin) << endl;
     CarbEvnt += AcqTree -> GetEntries();
