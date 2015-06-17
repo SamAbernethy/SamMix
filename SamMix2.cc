@@ -144,16 +144,16 @@ void ppi0 :: CarbonLoop(Int_t j)
     TString Pi0Carb_source = "/local/raid0/work/aberneth/a2GoAT/postreconApril/";
 
     Int_t carbonstart = 3407;
-    std::cout << "Carbon start number is " << carbonstart << endl;
+    // std::cout << "Carbon start number is " << carbonstart << endl;
     Int_t n_carb_run = carbonstart + j;
-    std::cout << "Number used for this run is " << n_carb_run << endl;
+    // std::cout << "Number used for this run is " << n_carb_run << endl;
     TString carb_ext = Form("%d", n_carb_run);
 
 // acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0samApril_CBTaggTAPS_"
     acqu_Carbon = AcqCarb_source + "Acqu_CBTaggTAPS_" + carb_ext + ".root";
     Pi0_Carbon = Pi0Carb_source + "pi0-samApril_CBTaggTAPS_" + carb_ext + ".root";
 
-    std::cout << "Checking for Carbon files... " << endl;
+    std::cout << "Checking for Carbon file " << n_carb_run << "..." << endl;
     ifstream Afile(acqu_Carbon);
     if (!Afile) {
         std::cout << "Acqu Carbon files not found for file " << acqu_Carbon << endl;
@@ -206,7 +206,7 @@ void ppi0 :: Asymmetry(Int_t index)
     Pi0_Butanol = Pi0But_source + "pi0-samMay_CBTaggTAPS_" + but_ext + ".root";
     acqu_Butanol = AcqBut_source + "Acqu_CBTaggTAPS_" + but_ext + ".root";
 
-    std::cout << "Checking for Butanol files... " << endl;
+    std::cout << "Checking for Butanol file " << n_but_run << "..." << endl;
     ifstream Bfile(Pi0_Butanol);
     if (!Bfile) {
         std::cout << "Pi0 Butanol files not found for file " << Pi0_Butanol << endl;
@@ -264,11 +264,12 @@ void ppi0 :: Asymmetry(Int_t index)
     asym = (yield_0 - yield_1) / (yield_0 + yield_1);
     err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
 
-    std::cout << "The run was: " << Pi0_Butanol << endl;
+    std::cout << "The run number was: " << n_but_run << endl;
     std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
     std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
     std::cout << "Therefore, the scale used was: " << Scale() << endl;
     std::cout << "The data written to data.txt is: " << n_but_run << " " << asym << " " << err << endl;
+    std::cout << "*****************************************************************" << endl;
     fout << n_but_run << " " << asym << " " << err << endl;
     hist.Close();
 }
