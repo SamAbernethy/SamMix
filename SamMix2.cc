@@ -50,11 +50,8 @@ Int_t mix2()
 
     // CARBON LOOP
     for (Int_t Carb_index = 1; Carb_index <= n_carb_files; Carb_index++) {
-        PolPar.SetCarbonStart(carbonstart);
         PolPar.CarbonLoop(Carb_index);
     }
-
-    std::cout << " " << endl;
     std::cout << "Total Number of Carbon Background Entries Found: " << PolPar.GetCarbEntries() << endl;
 
     // BUTANOL
@@ -76,7 +73,7 @@ Int_t mix2()
             std::cout << " " << endl;
             PolPar.SetButanolStart(butanolstart);
             std::cout << "Starting Butanol file input loop... " << endl;
-            for (Int_t i = 1; i <= n_but_files; i++) {
+            for (Int_t i = 0; i < n_but_files; i++) {
                 PolPar.Asymmetry(i);
             }
             fout.close();
@@ -94,12 +91,11 @@ ppi0 :: ~ppi0() {}
 
 void ppi0 :: InitialCarbon()
 {
-    std::cout << "The number in the void is " << carbonstart << endl;
     TString carbnumber = Form("%d", carbonstart);
-    std::cout << "Carbnumber as a string is " << carbnumber << endl;
-    FirstCarbonLocation = "/local/raid0/work/aberneth/a2GoAT/postreconApril/pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
-    ifstream Efile(FirstCarbonLocation);
-    if (!Efile) {
+    TString FirstSource = "/local/raid0/work/aberneth/a2GoAT/postreconApril/";
+    FirstCarbonLocation = FirstSource + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
+    ifstream Afile(FirstCarbonLocation);
+    if (!Afile) {
         std::cout << "No file there" << endl;
         return;
     }
@@ -139,8 +135,8 @@ void ppi0 :: CarbonLoop(Int_t j)
     Pi0_Carbon = Pi0Carb_source + "pi0-samApril_CBTaggTAPS_" + carb_ext + ".root";
 
     std::cout << "Checking for Carbon file " << n_carb_run << "..." << endl;
-    ifstream Afile(acqu_Carbon);
-    if (!Afile) {
+    ifstream Bfile(acqu_Carbon);
+    if (!Bfile) {
         std::cout << "Acqu Carbon files not found for file " << n_carb_run << endl;
         return;
     }
@@ -191,13 +187,13 @@ void ppi0 :: Asymmetry(Int_t index)
     acqu_Butanol = AcqBut_source + "Acqu_CBTaggTAPS_" + but_ext + ".root";
 
     std::cout << "Checking for Butanol file " << n_but_run << "..." << endl;
-    ifstream Bfile(Pi0_Butanol);
-    if (!Bfile) {
+    ifstream Dfile(Pi0_Butanol);
+    if (!Dfile) {
         std::cout << "Pi0 Butanol files not found for file " << n_but_run << endl;
         return;
     }
-    ifstream Dfile(acqu_Butanol);
-    if (!Dfile) {
+    ifstream Efile(acqu_Butanol);
+    if (!Efile) {
         std::cout << "Acqu Butanol files not found for file " << n_but_run << endl;
         return;
     }
@@ -249,10 +245,12 @@ void ppi0 :: Asymmetry(Int_t index)
     asym = (yield_0 - yield_1) / (yield_0 + yield_1);
     err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
 
-   // std::cout << "The run number was: " << n_but_run << endl;
-   // std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
-   // std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
-   // std::cout << "Therefore, the scale used was: " << Scale() << endl;
+   /* Optional output for each run:
+    std::cout << "The run number was: " << n_but_run << endl;
+    std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
+    std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
+    std::cout << "Therefore, the scale used was: " << Scale() << endl; */
+
     std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
     std::cout << "*****************************************************************" << endl;
     fout << n_but_run << " " << asym << " " << err << endl;
@@ -262,7 +260,6 @@ void ppi0 :: Asymmetry(Int_t index)
 // GRAPHING
 void ppi0 :: Graph()
 {
-    // gROOT->SetStyle("Plain");
     TCanvas *c1 = new TCanvas();
     c1->SetGrid();
     TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
