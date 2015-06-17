@@ -108,9 +108,9 @@ ppi0 :: ~ppi0() {}
 
 void ppi0 :: InitialCarbon()
 {
-   // TString carbnumber = Form("%d", carbonstart);
-   // FirstCarbonLocation = "/local/raid0/work/aberneth/a2GoAT/postreconApril/" + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
-    TFile FirstFile ("/local/raid0/work/aberneth/a2GoAT/postreconApril/pi0-samApril_CBTaggTAPS_3407.root"); // call on the first root file as Car_3500
+    TString carbnumber = Form("%d", carbonstart);
+    FirstCarbonLocation = "/local/raid0/work/aberneth/a2GoAT/postreconApril/" + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
+    TFile FirstFile ("FirstCarbonLocation"); // call on the first root file as Car_3500
     if (!FirstFile) {
         std::cout << "No first file found." << endl;
         return;
@@ -183,7 +183,8 @@ void ppi0 :: CarbonLoop(Int_t j)
 // AcqTree must exist within AcqCarb, with treeRawEvent within it
     AcqCarb.GetObject("trigger", AcqTree);
     std::cout << "For the run from " << acqu_Carbon << ", the number of Acqu Entries is: " << AcqTree -> GetEntries() << endl;
-    std::cout << "Carbon bin content: " << C3500_1 -> GetBinContent(n_bin) << endl;
+    std::cout << "Carbon bin content for helicity 1: " << C3500_1 -> GetBinContent(n_bin) << endl;
+    std::cout << "Carbon bin content for helicity 0: " << C3500_0 -> GetBinContent(n_bin) << endl;
     CarbEvnt += AcqTree -> GetEntries();
 }
 
