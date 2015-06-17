@@ -5,22 +5,6 @@
 #include "TFile.h"
 #include "TCanvas.h"
 
-/* CURRENT ISSUES TO SOLVE:
- * InitialCarbon first carbon file
- *      TH1s C3500_0, C3500_1,   C_MissMass_0,   C_MissMass_1; with:
- *           Theta_0, Theta_1, MM_pi0_n_2g_h0, MM_pi0_n_2g_h1
- * CarbonLoop all carbon files
- *      TH1s  Carb_0,  Carb_1; with:
- *           Theta_0, Theta_1
- *      TTree      AcqTree; with:
- *            treeRawEvent
- * Asymmetry all butanol files
- *      TH1s BThet_0, BThet_1,   B_MissMass_0,   B_MissMass_1; with:
- *           Theta_0, Theta_1, MM_pi0_n_2g_h0, MM_pi0_n_2g_h1
- *      TTree     Acqu_but; with:
- *            treeRawEvent
- * */
-
 ofstream fout("data.txt"); // output for asymmetry data
 
 Int_t mix2()
@@ -144,24 +128,23 @@ void ppi0 :: CarbonLoop(Int_t j)
     TString Pi0Carb_source = "/local/raid0/work/aberneth/a2GoAT/postreconApril/";
 
     Int_t carbonstart = 3407;
-    // std::cout << "Carbon start number is " << carbonstart << endl;
     Int_t n_carb_run = carbonstart + j;
     // std::cout << "Number used for this run is " << n_carb_run << endl;
     TString carb_ext = Form("%d", n_carb_run);
 
-// acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0samApril_CBTaggTAPS_"
+// acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0-samApril_CBTaggTAPS_"
     acqu_Carbon = AcqCarb_source + "Acqu_CBTaggTAPS_" + carb_ext + ".root";
     Pi0_Carbon = Pi0Carb_source + "pi0-samApril_CBTaggTAPS_" + carb_ext + ".root";
 
     std::cout << "Checking for Carbon file " << n_carb_run << "..." << endl;
     ifstream Afile(acqu_Carbon);
     if (!Afile) {
-        std::cout << "Acqu Carbon files not found for file " << acqu_Carbon << endl;
+        std::cout << "Acqu Carbon files not found for file " << n_carb_run << endl;
         return;
     }
     ifstream Cfile(Pi0_Carbon);
     if (!Cfile) {
-        std::cout << "Pi0 Carbon files not found for file " << Pi0_Carbon << endl;
+        std::cout << "Pi0 Carbon files not found for file " << n_carb_run << endl;
         return;
     }
     std::cout << "Found!" << endl;
@@ -209,12 +192,12 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "Checking for Butanol file " << n_but_run << "..." << endl;
     ifstream Bfile(Pi0_Butanol);
     if (!Bfile) {
-        std::cout << "Pi0 Butanol files not found for file " << Pi0_Butanol << endl;
+        std::cout << "Pi0 Butanol files not found for file " << n_but_run << endl;
         return;
     }
     ifstream Dfile(acqu_Butanol);
     if (!Dfile) {
-        std::cout << "Acqu Butanol files not found for file " << acqu_Butanol << endl;
+        std::cout << "Acqu Butanol files not found for file " << n_but_run << endl;
         return;
     }
     std::cout << "Found!" << endl;
@@ -227,7 +210,7 @@ void ppi0 :: Asymmetry(Int_t index)
     ButaEvnt = Acqu_but->GetEntries();
 
     if(ButaEvnt < 4.0e+6) {
-        std::cout << "Butanol event count is too low. Check file " << acqu_Butanol << endl;
+        std::cout << "Butanol event count is too low. Check file " << n_but_run << endl;
         return; // this number was chosen by Dylan
     }
 
@@ -251,12 +234,12 @@ void ppi0 :: Asymmetry(Int_t index)
     yield_0 = BThet_0 -> GetBinContent(n_bin);
     yield_1 = BThet_1 -> GetBinContent(n_bin);
     if (yield_0 < 0) {
-        std::cout << "Yield for helicity 0 was negative for file " << Pi0_Butanol << endl;
-        yield_0 = yield_0*(-1);
+        std::cout << "Yield for helicity 0 was negative for file " << n_but_run << endl;
+        // yield_0 = yield_0*(-1);
     }
     if (yield_1 < 0) {
-        std::cout << "Yield for helicity 1 was negative for file " << Pi0_Butanol << endl;
-        yield_1 = yield_1*(-1);
+        std::cout << "Yield for helicity 1 was negative for file " << n_but_run << endl;
+        // yield_1 = yield_1*(-1);
     }
     yield_0_e = BThet_0 -> GetBinError(n_bin);
     yield_1_e = BThet_1 -> GetBinError(n_bin);
@@ -264,10 +247,10 @@ void ppi0 :: Asymmetry(Int_t index)
     asym = (yield_0 - yield_1) / (yield_0 + yield_1);
     err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
 
-    std::cout << "The run number was: " << n_but_run << endl;
-    std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
-    std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
-    std::cout << "Therefore, the scale used was: " << Scale() << endl;
+   // std::cout << "The run number was: " << n_but_run << endl;
+   // std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
+   // std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
+   // std::cout << "Therefore, the scale used was: " << Scale() << endl;
     std::cout << "The data written to data.txt is: " << n_but_run << " " << asym << " " << err << endl;
     std::cout << "*****************************************************************" << endl;
     fout << n_but_run << " " << asym << " " << err << endl;
