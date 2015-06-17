@@ -42,6 +42,16 @@ Int_t mix2()
         std::cout << "Number of files successfully specified." << endl;
     }
 
+    std::cout << "Which theta bin to use: ";
+    std::cin >> n_bin;
+    if ((!n_bin) || (n_bin == 0) || (n_bin == 1)) {
+        std::cout << "Theta bin incorrectly specified. Try again." << endl;
+        return 1;
+    } else {
+        std::cout << "Theta bin successfully specified." << endl;
+        PolPar.Setn_bin(n_bin); // simply sets n_bin in PolPar equal to this specified n_bin
+    }
+
     // INITIALIZING CARBON
     std::cout << "Carbon run number to start with: ";
     std::cin >> carbonstart;
@@ -71,14 +81,6 @@ Int_t mix2()
     } else {
         std::cout << "Number of files for Butanol data successfully specified." << endl;
         std::cout << " " << endl;
-        std::cout << "Which theta bin to use: ";
-        std::cin >> n_bin;
-        if ((!n_bin) || (n_bin == 0) || (n_bin == 1)) {
-            std::cout << "Theta bin incorrectly specified. Try again." << endl;
-            return 1;
-        } else {
-            std::cout << "Theta bin successfully specified." << endl;
-            PolPar.Setn_bin(n_bin); // simply sets n_bin in PolPar equal to this specified n_bin
             std::cout << "Butanol run number to start with: ";
             std::cin >> butanolstart;
             if (!butanolstart) {
@@ -100,6 +102,9 @@ Int_t mix2()
 
 ppi0 :: ppi0() {} // what does this really do?
 ppi0 :: ~ppi0() {}
+
+// *******************************************************************************************************
+// *******************************************************************************************************
 
 void ppi0 :: InitialCarbon()
 {
@@ -128,6 +133,9 @@ void ppi0 :: InitialCarbon()
 //    C_MissMass_1->SetDirectory(0);
 //    C_MissMass_0->SetDirectory(0);
 }
+
+// ******************************************************************************************************
+// ******************************************************************************************************
 
 // LOOPING CARBON
 void ppi0 :: CarbonLoop(Int_t j)
@@ -178,6 +186,9 @@ void ppi0 :: CarbonLoop(Int_t j)
     std::cout << "Carbon bin content: " << C3500_1 -> GetBinContent(n_bin) << endl;
     CarbEvnt += AcqTree -> GetEntries();
 }
+
+// ************************************************************************************************************
+// ************************************************************************************************************
 
 // ASYMMETRY WITH BUTANOL DATA
 void ppi0 :: Asymmetry(Int_t index)
