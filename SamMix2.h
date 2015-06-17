@@ -22,8 +22,8 @@ private:
     TTree* Acqu_but; // within acqu_Butanol, used to find ButEvnt
 
     Int_t n_bin; // theta bin chosen
-    Int_t n_file; // number of butanol files
-    Int_t max_carb; // number of carbon files
+    Int_t n_but_files; // number of butanol files
+    Int_t n_carb_files; // number of carbon files
 
     Double_t ButaEvnt; // number of butanol events
     Double_t CarbEvnt; // number of carbon events

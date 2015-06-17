@@ -10,16 +10,16 @@ ofstream fout("data.txt"); // output for asymmetry data
 Int_t mix2()
 {
     Int_t n_bin; // which theta bin
-    Int_t n_file; // number of files for Butanol
-    Int_t max_carb; // number of files for Carbon
+    Int_t n_but_files; // number of files for Butanol
+    Int_t n_carb_files; // number of files for Carbon
     Int_t carbonstart; // 3407 normally
     Int_t butanolstart; // 3680 normally
 
     ppi0 PolPar; // initialize PolPar, of class ppi0
     std::cout << "Initializing Carbon data... " << endl;
     std::cout << "Number of Files for Carbon data: ";
-    std::cin >> max_carb;
-    if ((!max_carb) || (max_carb == 0)) {
+    std::cin >> n_carb_files;
+    if ((!n_carb_files) || (n_carb_files == 0)) {
         std::cout << "Number of files incorrectly specified. Try again." << endl;
         return 1;
     } else {
@@ -48,7 +48,7 @@ Int_t mix2()
     // }
 
     // CARBON LOOP
-    for (Int_t Carb_index = 1; Carb_index <= max_carb; Carb_index++) {
+    for (Int_t Carb_index = 1; Carb_index <= n_carb_files; Carb_index++) {
         PolPar.CarbonLoop(Carb_index);
     }
 
@@ -58,8 +58,8 @@ Int_t mix2()
     // BUTANOL
     std::cout << "*************************************************************** " << endl;
     std::cout << "Number of files for Butanol data: ";
-    std::cin >> n_file;
-    if ((!n_file) || (n_file == 0)) {
+    std::cin >> n_but_files;
+    if ((!n_but_files) || (n_but_files == 0)) {
         std::cout << "Number of files for Butanol data incorrectly specified. Try again." << endl;
         return 1;
     } else {
@@ -73,7 +73,7 @@ Int_t mix2()
     //    } else {
             std::cout << " " << endl;
             std::cout << "Starting Butanol file input loop... " << endl;
-            for (Int_t i = 1; i <= n_file; i++) {
+            for (Int_t i = 1; i <= n_but_files; i++) {
                 PolPar.Asymmetry(i);
             }
             fout.close();
@@ -164,7 +164,7 @@ void ppi0 :: CarbonLoop(Int_t j)
 
 // AcqTree must exist within AcqCarb, with treeRawEvent within it
     AcqCarb.GetObject("trigger", AcqTree);
-    std::cout << "For the run from " << acqu_Carbon << ", the number of Acqu Entries is: " << AcqTree -> GetEntries() << endl;
+    std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << AcqTree -> GetEntries() << endl;
     std::cout << "Carbon bin content for helicity 1: " << C3500_1 -> GetBinContent(n_bin) << endl;
     std::cout << "Carbon bin content for helicity 0: " << C3500_0 -> GetBinContent(n_bin) << endl;
     CarbEvnt += AcqTree -> GetEntries();
@@ -211,7 +211,7 @@ void ppi0 :: Asymmetry(Int_t index)
 
     if(ButaEvnt < 4.0e+6) {
         std::cout << "Butanol event count is too low for file " << n_but_run << endl;
-        return; // this number was chosen by Dylan
+        return;
     }
 
 // TH1s BThet_1, BThet_0, B_MissMass_1, B_MissMass_0 must exist within Pi0But
@@ -252,7 +252,7 @@ void ppi0 :: Asymmetry(Int_t index)
    // std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
    // std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
    // std::cout << "Therefore, the scale used was: " << Scale() << endl;
-    std::cout << "The data written to data.txt is: " << n_but_run << " " << asym << " " << err << endl;
+    std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
     std::cout << "*****************************************************************" << endl;
     fout << n_but_run << " " << asym << " " << err << endl;
     hist.Close();
