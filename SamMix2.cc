@@ -1,4 +1,4 @@
-#include "SamMix2.h" // CHANGE THIS
+#include "SamMix2.h"
 #include <iostream>
 #include <string>
 #include "TH1D.h"
@@ -9,7 +9,7 @@ ofstream fout("data.txt"); // output for asymmetry data
 
 Int_t mix2()
 {
-    Int_t n_bin; // which theta bin
+    Int_t theta_bin; // which theta bin
     Int_t n_but_files; // number of files for Butanol
     Int_t n_carb_files; // number of files for Carbon
     Int_t carbonstart; // 3407 normally
@@ -27,28 +27,30 @@ Int_t mix2()
     }
 
     std::cout << "Which theta bin to use: ";
-    std::cin >> n_bin;
-    if ((!n_bin) || (n_bin == 0) || (n_bin == 1)) {
+    std::cin >> theta_bin;
+    if ((!theta_bin) || (theta_bin == 0) || (theta_bin == 1)) {
         std::cout << "Theta bin incorrectly specified. Try again." << endl;
         return 1;
     } else {
         std::cout << "Theta bin successfully specified." << endl;
-        PolPar.Setn_bin(n_bin); // simply sets n_bin in PolPar equal to this specified n_bin
+        PolPar.SetTheta_bin(theta_bin); // simply sets theta_bin in PolPar equal to this specified theta_bin
     }
 
     // INITIALIZING CARBON
-    // std::cout << "Carbon run number to start with: ";
-    // std::cin >> carbonstart;
-    // if (!carbonstart) {
-    //    std::cout << "Carbon run number not specified. Try again." << endl;
-    //    return 1;
-    //} else {
-    //    std::cout << "Carbon run number successfully specified, as " << carbonstart << endl;
+    std::cout << "Carbon run number to start with: ";
+    std::cin >> carbonstart;
+    if (!carbonstart) {
+        std::cout << "Carbon run number not specified. Try again." << endl;
+        return 1;
+    } else {
+        std::cout << "Carbon run number successfully specified, as " << carbonstart << endl;
+        PolPar.SetCarbonStart(carbonstart);
         PolPar.InitialCarbon();
-    // }
+    }
 
     // CARBON LOOP
     for (Int_t Carb_index = 1; Carb_index <= n_carb_files; Carb_index++) {
+        PolPar.SetCarbonStart(carbonstart);
         PolPar.CarbonLoop(Carb_index);
     }
 
@@ -64,14 +66,15 @@ Int_t mix2()
         return 1;
     } else {
         std::cout << "Number of files for Butanol data successfully specified." << endl;
-    //    std::cout << " " << endl;
-    //    std::cout << "Butanol run number to start with: ";
-    //    std::cin >> butanolstart;
-    //    if (!butanolstart) {
-    //        std::cout << "Butanol run number not specified. Try again." << endl;
-    //        return 1;
-    //    } else {
+        std::cout << " " << endl;
+        std::cout << "Butanol run number to start with: ";
+        std::cin >> butanolstart;
+        if (!butanolstart) {
+            std::cout << "Butanol run number not specified. Try again." << endl;
+            return 1;
+        } else {
             std::cout << " " << endl;
+            PolPar.SetButanolStart(butanolstart);
             std::cout << "Starting Butanol file input loop... " << endl;
             for (Int_t i = 1; i <= n_but_files; i++) {
                 PolPar.Asymmetry(i);
@@ -79,7 +82,7 @@ Int_t mix2()
             fout.close();
             PolPar.Graph();
             std::cout << "Success! You win." << endl;
-    //    }
+        }
     }
 }
 
@@ -91,9 +94,9 @@ ppi0 :: ~ppi0() {}
 
 void ppi0 :: InitialCarbon()
 {
-    // TString carbnumber = Form("%d", carbonstart);
-    // FirstCarbonLocation = "/local/raid0/work/aberneth/a2GoAT/postreconApril/" + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
-    TFile FirstFile ("/local/raid0/work/aberneth/a2GoAT/postreconApril/pi0-samApril_CBTaggTAPS_3407.root"); // call on the first root file as Car_3500
+    TString carbnumber = Form("%d", carbonstart);
+    FirstCarbonLocation = "/local/raid0/work/aberneth/a2GoAT/postreconApril/" + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
+    TFile FirstFile (FirstCarbonLocation); // call on the first root file as Car_3500
     if (!FirstFile) {
         std::cout << "No first file found." << endl;
         return;
@@ -127,9 +130,7 @@ void ppi0 :: CarbonLoop(Int_t j)
     TString AcqCarb_source = "/local/raid0/work/aberneth/a2GoAT/Apr2014/";
     TString Pi0Carb_source = "/local/raid0/work/aberneth/a2GoAT/postreconApril/";
 
-    Int_t carbonstart = 3407;
     Int_t n_carb_run = carbonstart + j;
-    // std::cout << "Number used for this run is " << n_carb_run << endl;
     TString carb_ext = Form("%d", n_carb_run);
 
 // acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0-samApril_CBTaggTAPS_"
@@ -165,8 +166,8 @@ void ppi0 :: CarbonLoop(Int_t j)
 // AcqTree must exist within AcqCarb, with treeRawEvent within it
     AcqCarb.GetObject("trigger", AcqTree);
     std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << AcqTree -> GetEntries() << endl;
-    std::cout << "Carbon bin content for helicity 1: " << C3500_1 -> GetBinContent(n_bin) << endl;
-    std::cout << "Carbon bin content for helicity 0: " << C3500_0 -> GetBinContent(n_bin) << endl;
+    std::cout << "Carbon bin content for helicity 1: " << C3500_1 -> GetBinContent(theta_bin) << endl;
+    std::cout << "Carbon bin content for helicity 0: " << C3500_0 -> GetBinContent(theta_bin) << endl;
     CarbEvnt += AcqTree -> GetEntries();
 }
 
@@ -176,7 +177,6 @@ void ppi0 :: CarbonLoop(Int_t j)
 // ASYMMETRY WITH BUTANOL DATA
 void ppi0 :: Asymmetry(Int_t index)
 {
-    Int_t butanolstart = 3680;
     Int_t n_but_run = butanolstart + index;
     TString but_ext = Form("%d", n_but_run);
 
@@ -231,10 +231,10 @@ void ppi0 :: Asymmetry(Int_t index)
     BThet_1->Write();
     BThet_0->Write();
 
-    yield_0 = BThet_0 -> GetBinContent(n_bin);
-    yield_1 = BThet_1 -> GetBinContent(n_bin);
-    yield_0_e = BThet_0 -> GetBinError(n_bin);
-    yield_1_e = BThet_1 -> GetBinError(n_bin);
+    yield_0 = BThet_0 -> GetBinContent(theta_bin);
+    yield_1 = BThet_1 -> GetBinContent(theta_bin);
+    yield_0_e = BThet_0 -> GetBinError(theta_bin);
+    yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
     if (yield_0 < 0) {
         std::cout << "Yield for helicity 0 was negative for file " << n_but_run << endl;

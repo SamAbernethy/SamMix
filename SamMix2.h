@@ -21,9 +21,11 @@ private:
     TTree* AcqTree; // within acqu_Carbon, used to find CarbEvnt
     TTree* Acqu_but; // within acqu_Butanol, used to find ButEvnt
 
-    Int_t n_bin; // theta bin chosen
+    Int_t theta_bin; // theta bin chosen
     Int_t n_but_files; // number of butanol files
     Int_t n_carb_files; // number of carbon files
+    Int_t carbonstart; // run number to start at for carbon
+    Int_t butanolstart; // run number to start at for butanol
 
     Double_t ButaEvnt; // number of butanol events
     Double_t CarbEvnt; // number of carbon events
@@ -44,9 +46,9 @@ private:
 public:
     ppi0(); // class constructor
     ~ppi0(); // class destructor
-    Int_t carbonstart; // run number to start at for carbon
-    Int_t butanolstart; // run number to start at for butanol
-    void Setn_bin(Int_t i) { n_bin = i; } // simple void to assign n_bin to n_bin, archaic from Dylan
+    void SetCarbonStart(Int_t i) { carbonstart = i; }
+    void SetButanolStart(Int_t i) { butanolstart = i; }
+    void SetTheta_bin(Int_t i) { theta_bin = i; } // simple void to assign theta_bin to theta_bin, archaic from Dylan
     void CarbonLoop(Int_t j); // void to loop through carbon data
     void Asymmetry(Int_t index); // void to calculate asymmetry from butanol data
     void Graph(); // graph it and write into root file
