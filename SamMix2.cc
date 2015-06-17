@@ -94,9 +94,10 @@ ppi0 :: ~ppi0() {}
 
 void ppi0 :: InitialCarbon()
 {
+    std::cout << "The number in the void is " << carbonstart << endl;
     TString carbnumber = Form("%d", carbonstart);
     FirstCarbonLocation = "/local/raid0/work/aberneth/a2GoAT/postreconApril/" + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
-    TFile FirstFile (FirstCarbonLocation); // call on the first root file as Car_3500
+    TFile FirstFile (FirstCarbonLocation); // call on the first root file as FirstFile
     if (!FirstFile) {
         std::cout << "No first file found." << endl;
         return;
