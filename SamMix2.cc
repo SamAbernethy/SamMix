@@ -108,9 +108,9 @@ ppi0 :: ~ppi0() {}
 
 void ppi0 :: InitialCarbon()
 {
-    TString carbnumber = Form("%d", carbonstart);
-    FirstCarbonLocation = "/local/raid0/work/aberneth/a2GoAT/postreconApril/" + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
-    TFile FirstFile ("FirstCarbonLocation"); // call on the first root file as Car_3500
+    // TString carbnumber = Form("%d", carbonstart);
+    // FirstCarbonLocation = "/local/raid0/work/aberneth/a2GoAT/postreconApril/" + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
+    TFile FirstFile ("/local/raid0/work/aberneth/a2GoAT/postreconApril/pi0-samApril_CBTaggTAPS_3407.root"); // call on the first root file as Car_3500
     if (!FirstFile) {
         std::cout << "No first file found." << endl;
         return;
