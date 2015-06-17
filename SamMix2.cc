@@ -280,12 +280,12 @@ void ppi0 :: Graph()
     TCanvas *c1 = new TCanvas();
     c1->SetGrid();
     TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
-    data.SetTitle("Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma} (Or (N0-N1)/(N0+N1))");
+    data.SetTitle("Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
     data.SetMarkerStyle(kCircle);
     data.SetFillColor(0);
     data.SetLineColor(56);
     data.DrawClone();
     c1->Print("MyGraph.png", "png");
-    TFile f("data.root", "recreate"); // f is currently unused
+    TFile f("data.root", "recreate");
     data.Write();
 }
