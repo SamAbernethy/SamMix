@@ -70,9 +70,9 @@ Int_t mix2()
 
     std::cout << " " << endl;
     std::cout << "Total Number of Carbon Background Entries Found: " << PolPar.GetCarbEntries() << endl;
-/*
+
     // BUTANOL
-    std::cout << " " << endl;
+    std::cout << "*************************************************************** " << endl;
     std::cout << "Number of files for Butanol data: ";
     std::cin >> n_file;
     if ((!n_file) || (n_file == 0)) {
@@ -94,10 +94,10 @@ Int_t mix2()
             }
             fout.close();
             PolPar.Graph();
-            std::cout << "Success!" << endl;
+            std::cout << "Success! You win." << endl;
             }
         }
-    } */
+    }
 }
 
 ppi0 :: ppi0() {} // what does this really do?
@@ -224,7 +224,7 @@ void ppi0 :: Asymmetry(Int_t index)
     TFile AcqBut(acqu_Butanol);
 
 // TTree Acqu_but must exist in AcqBut, with treeRawEvent within it
-    AcqBut.GetObject("treeRawEvent", Acqu_but);
+    AcqBut.GetObject("trigger", Acqu_but);
     ButaEvnt = Acqu_but->GetEntries();
 
     if(ButaEvnt < 4.0e+6) {
