@@ -54,7 +54,7 @@ Int_t mix2()
     }
 
     // CARBON LOOP
-    for (Int_t Carb_index = 0; Carb_index < max_carb; Carb_index++) {
+    for (Int_t Carb_index = 1; Carb_index <= max_carb; Carb_index++) {
         PolPar.CarbonLoop(Carb_index);
     }
 
@@ -120,6 +120,7 @@ void ppi0 :: InitialCarbon()
     FirstFile.GetObject("Theta_0", C3500_0); // get Theta_0 from TH1 C3500_0
     C3500_1->SetDirectory(0); // detaches this so that you can open and close root files without destroying it
     C3500_0->SetDirectory(0);
+    std::cout << "The number should be 1985: " << FirstFile -> GetEntries() << endl;
 
 // TH1s C_MissMass_1, C_MissMass_0 NEED TO EXIST IN Car_3500
 // MM_pi0_n_2g_h1 and MM_pi0_n_2g_h0 need to exist in C_MissMass_1, C_MissMass_0
@@ -182,13 +183,14 @@ void ppi0 :: CarbonLoop(Int_t j)
 // ASYMMETRY WITH BUTANOL DATA
 void ppi0 :: Asymmetry(Int_t index)
 {
+    Int_t butanolstart = 3680;
     Int_t n_but_run = butanolstart + index;
     TString but_ext = Form("%d", n_but_run);
 
 // Butanol data must exist for acqu and Pi0 as specified:
-    TString AcqBut_source = "~/work/a2GoAT/May2014/";
-    TString Pi0But_source = "~/work/a2GoAT/postreconMay/";
-    TString histogram_source = "~/work/a2GoAT/histograms/";
+    TString AcqBut_source = "/local/raid0/work/aberneth/a2GoAT/May2014/";
+    TString Pi0But_source = "/local/raid0/work/aberneth/a2GoAT/postreconMay/";
+    TString histogram_source = "/local/raid0/work/aberneth/a2GoAT/histograms/";
 
 // Pi0 data must have "Pi0_CBTaggTAPS", while acqu data must have "Acqu_CBTaggTAPS_"
     Pi0_Butanol = Pi0But_source + "pi0-samMay_CBTaggTAPS_" + but_ext + ".root";
@@ -268,7 +270,7 @@ void ppi0 :: Graph()
     TCanvas *c1 = new TCanvas();
     c1->SetGrid();
     TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
-    data.SetTitle("Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
+    data.SetTitle("Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma} (Or (N0-N1)/(N0+N1))");
     data.SetMarkerStyle(kCircle);
     data.SetFillColor(0);
     data.SetLineColor(56);
