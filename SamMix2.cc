@@ -96,15 +96,15 @@ void ppi0 :: InitialCarbon()
 {
     std::cout << "The number in the void is " << carbonstart << endl;
     TString carbnumber = Form("%d", carbonstart);
-    FirstCarbonLocation = "/local/raid0/work/aberneth/a2GoAT/postreconApril/" + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
-    TFile FirstFile (FirstCarbonLocation); // call on the first root file as FirstFile
-    if (!FirstFile) {
-        std::cout << "No first file found." << endl;
+    std::cout << "Carbnumber as a string is " << carbnumber << endl;
+    FirstCarbonLocation = "/local/raid0/work/aberneth/a2GoAT/postreconApril/pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
+    ifstream Efile(FirstCarbonLocation);
+    if (!Efile) {
+        std::cout << "No file there" << endl;
         return;
     }
-    else {
-        std::cout << "First file found!" << endl;
-    }
+    TFile FirstFile (FirstCarbonLocation); // call on the first root file as FirstFile
+    std::cout << "First file found!" << endl;
 
 // TH1s C3500_0, C3500_1 need to exist in FirstFile THIS IS AN ISSUE
 // Theta_1 and Theta_0 need to exist in C3500_1, C3500_0
