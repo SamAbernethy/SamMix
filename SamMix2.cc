@@ -81,12 +81,12 @@ Int_t mix2()
     } else {
         std::cout << "Number of files for Butanol data successfully specified." << endl;
         std::cout << " " << endl;
-            std::cout << "Butanol run number to start with: ";
-            std::cin >> butanolstart;
-            if (!butanolstart) {
-                std::cout << "Butanol run number not specified. Try again." << endl;
-                return 1;
-            } else {
+        std::cout << "Butanol run number to start with: ";
+        std::cin >> butanolstart;
+        if (!butanolstart) {
+            std::cout << "Butanol run number not specified. Try again." << endl;
+            return 1;
+        } else {
             std::cout << " " << endl;
             std::cout << "Starting Butanol file input loop... " << endl;
             for (Int_t i = 1; i <= n_file; i++) {
@@ -95,7 +95,6 @@ Int_t mix2()
             fout.close();
             PolPar.Graph();
             std::cout << "Success! You win." << endl;
-            }
         }
     }
 }
