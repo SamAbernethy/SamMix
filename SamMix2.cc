@@ -68,7 +68,10 @@ Int_t mix2()
             std::cout << "Butanol run number not specified. Try again." << endl;
             return 1;
         } else {
-            std::cout << " " << endl;
+            Int_t run_bin;
+            std::cout << "How many runs do you want to combine? " << endl;
+            std::cin >> run_bin;
+            PolPar.SetRunBin(run_bin);
             PolPar.SetButanolStart(butanolstart);
             std::cout << "Starting Butanol file input loop... " << endl;
             for (Int_t i = 0; i < n_but_files; i++) {
@@ -274,14 +277,11 @@ void ppi0 :: Graph()
     TFile f("data.root", "recreate");
     data.Write();
 }
-
+/*
 void ppi0 :: RebinData()
 {
     ifstream unbinneddata("data.txt");
     char data[20];
-    Int_t run_bin;
-    std::cout << "How many runs do you want to combine? " << endl;
-    std::cin >> run_bin;
     if (!unbinneddata) {
         std::cout << "No data.txt file found." << endl;
     }
@@ -293,4 +293,4 @@ void ppi0 :: RebinData()
         std::cout << data << endl;
     }
     unbinneddata.close();
-}
+} */
