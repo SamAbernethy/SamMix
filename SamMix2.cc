@@ -207,8 +207,8 @@ void ppi0 :: Asymmetry(Int_t index)
 
     Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
     Pi0But.GetObject("Theta_0", BThet_0);
-    BThet_1->Add(C3500_1, (-0.01)*Scale());
-    BThet_0->Add(C3500_0, (-0.01)*Scale());
+    BThet_1->Add(C3500_1, (-1)*Scale());
+    BThet_0->Add(C3500_0, (-1)*Scale());
     BThet_1->Write();
     BThet_0->Write();
     TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
