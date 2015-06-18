@@ -155,7 +155,7 @@ void ppi0 :: CarbonLoop(Int_t j)
     C3500_1->Add(Carb_1,1); // add Carb_1 to the Carbon stack
     C3500_0->Add(Carb_0,1);
 
-    AcqCarb.GetObject("trigger", AcqTree); // trigger (OR A BETTER TREE) must be in AcqCarb
+    AcqCarb.GetObject("vertex", AcqTree); // trigger (OR A BETTER TREE) must be in AcqCarb
     std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << AcqTree -> GetEntries() << endl;
     std::cout << "Carbon bin content for helicity 1: " << C3500_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Carbon bin content for helicity 0: " << C3500_0 -> GetBinContent(theta_bin) << endl;
@@ -196,7 +196,7 @@ void ppi0 :: Asymmetry(Int_t index)
     TFile Pi0But(Pi0_Butanol);
     TFile AcqBut(acqu_Butanol);
 
-    AcqBut.GetObject("trigger", Acqu_but); // trigger (OR A BETTER TREE) must be in AcqBut
+    AcqBut.GetObject("vertex", Acqu_but); // trigger (OR A BETTER TREE) must be in AcqBut
     ButaEvnt = Acqu_but -> GetEntries();
 
     if(ButaEvnt < 4.0e+6) {
