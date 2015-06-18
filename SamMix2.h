@@ -58,7 +58,6 @@ public:
     void InitialCarbon(); // void to initialize one root file as stack base
     Double_t GetCarbEntries() { return CarbEvnt; } // self-explanatory
     Double_t Scale() { return ButaEvnt/CarbEvnt; } // Why this scaling from Dylan?
-    void WriteToTH1();
     void RebinData();
 };
 
