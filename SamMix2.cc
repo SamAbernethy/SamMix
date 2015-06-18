@@ -55,7 +55,7 @@ Int_t mix2()
     std::cout << "Total Number of Carbon Background Entries Found: " << PolPar.GetCarbEntries() << endl;
 
     // BUTANOL
-    std::cout << "*************************************************************** " << endl;
+    std::cout << "************************************************ " << endl;
     std::cout << "Number of files for Butanol data: ";
     std::cin >> n_but_files;
     if ((!n_but_files) || (n_but_files == 0)) {
@@ -214,18 +214,18 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
     std::cout << "Scale was: " << Scale() << endl;
-    BThet_1->Add(C3500_1, (-0.001)*Scale());
-    BThet_0->Add(C3500_0, (-0.001)*Scale());
-    BThet_1->Write();
-    BThet_0->Write();
+    BThet_1 -> Add(C3500_1, (-0.001)*Scale());
+    BThet_0 -> Add(C3500_0, (-0.001)*Scale());
+    BThet_1 -> Write();
+    BThet_0 -> Write();
     std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "yield_0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
 
     // MM_pi0_n_2g_h1 must exist in Pi0But
-/*  B_MissMass_1->Add(C_MissMass_1, (-1)*Scale());
-    B_MissMass_0->Add(C_MissMass_0, (-1)*Scale());
-    B_MissMass_1->Write();
-    B_MissMass_0->Write(); */
+/*  B_MissMass_1 -> Add(C_MissMass_1, (-1)*Scale());
+    B_MissMass_0 -> Add(C_MissMass_0, (-1)*Scale());
+    B_MissMass_1 -> Write();
+    B_MissMass_0 -> Write(); */
 
     yield_0 = BThet_0 -> GetBinContent(theta_bin);
     yield_1 = BThet_1 -> GetBinContent(theta_bin);
@@ -251,10 +251,13 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "Therefore, the scale used was: " << Scale() << endl; */
 
     std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
-    std::cout << "*****************************************************************" << endl;
+    std::cout << "********************************************" << endl;
     fout << n_but_run << " " << asym << " " << err << endl;
     hist.Close();
 }
+
+// *************************************************************************************
+// *************************************************************************************
 
 // GRAPHING
 void ppi0 :: Graph()
