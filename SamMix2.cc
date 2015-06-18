@@ -278,7 +278,7 @@ void ppi0 :: Graph()
 void ppi0 :: RebinData()
 {
     ifstream unbinneddata("data.txt");
-    String_t data[20];
+    char data[20];
     Int_t run_bin;
     std::cout << "How many runs do you want to combine? " << endl;
     std::cin >> run_bin;
