@@ -222,19 +222,22 @@ void ppi0 :: Asymmetry(Int_t index)
     B_MissMass_1->Write();
     B_MissMass_0->Write(); */
 
+    std::cout << "Butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
+    std::cout << "Butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
+
     yield_0 = BThet_0 -> GetBinContent(theta_bin);
     yield_1 = BThet_1 -> GetBinContent(theta_bin);
     yield_0_e = BThet_0 -> GetBinError(theta_bin);
     yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-    if (yield_0 < 0) {
-        // std::cout << "Yield for helicity 0 was negative for file " << n_but_run << endl;
+    /* if (yield_0 < 0) {
+        std::cout << "Yield for helicity 0 was negative for file " << n_but_run << endl;
         // yield_0 = yield_0*(-1);
     }
     if (yield_1 < 0) {
-        // std::cout << "Yield for helicity 1 was negative for file " << n_but_run << endl;
+         std::cout << "Yield for helicity 1 was negative for file " << n_but_run << endl;
         // yield_1 = yield_1*(-1);
-    }
+    } */
 
     asym = (yield_0 - yield_1) / (yield_0 + yield_1);
     err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
