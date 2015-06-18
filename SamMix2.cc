@@ -63,7 +63,6 @@ Int_t mix2()
         return 1;
     } else {
         std::cout << "Number of files for Butanol data successfully specified." << endl;
-        std::cout << " " << endl;
         std::cout << "Butanol run number to start with: ";
         std::cin >> butanolstart;
         if (!butanolstart) {
@@ -271,3 +270,13 @@ void ppi0 :: Graph()
     TFile f("data.root", "recreate");
     data.Write();
 }
+
+/* void ppi0 :: RebinRunNumbers()
+{
+    Int_t run_bin;
+    std::cout << "How many runs do you want to bin?" << endl;
+    std::cin >> run_bin;
+    for ( Int_t numberofruns = 0; numberofruns < run_bin; numberofruns++ ) {
+
+    }
+} */

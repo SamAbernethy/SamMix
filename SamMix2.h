@@ -43,12 +43,15 @@ private:
     Double_t asym; // asymmetry from yields
     Double_t err; // error on asymmetry
 
+    Int_t run_bin;
+
 public:
     ppi0(); // class constructor
     ~ppi0(); // class destructor
     void SetCarbonStart(Int_t i) { carbonstart = i; }
     void SetButanolStart(Int_t i) { butanolstart = i; }
     void SetTheta_bin(Int_t i) { theta_bin = i; } // simple void to assign theta_bin to theta_bin, archaic from Dylan
+    void SetRunBin(Int_t i) { run_bin = i; }
     void CarbonLoop(Int_t j); // void to loop through carbon data
     void Asymmetry(Int_t index); // void to calculate asymmetry from butanol data
     void Graph(); // graph it and write into root file
