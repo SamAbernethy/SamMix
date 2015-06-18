@@ -76,7 +76,7 @@ Int_t mix2()
             }
             fout.close();
             PolPar.Graph();
-            // PolPar.RebinData();
+            PolPar.RebinData();
             std::cout << "Success! You win." << endl;
         }
     }
@@ -274,11 +274,11 @@ void ppi0 :: Graph()
     TFile f("data.root", "recreate");
     data.Write();
 }
-/*
+
 void ppi0 :: RebinData()
 {
     ifstream unbinneddata("data.txt");
-    Double_t data[500];
+    String_t data[20];
     Int_t run_bin;
     std::cout << "How many runs do you want to combine? " << endl;
     std::cin >> run_bin;
@@ -293,4 +293,4 @@ void ppi0 :: RebinData()
         std::cout << data << endl;
     }
     unbinneddata.close();
-} */
+}
