@@ -125,10 +125,7 @@ void ppi0 :: CarbonLoop(Int_t j)
 
     Int_t n_carb_run = carbonstart + j;
     TString carb_ext = Form("%d", n_carb_run);
-    if ((n_carb_run == 3492) || (n_carb_run == 3494)) {
-        std::cout << "Useless one." << endl;
-        return;
-    }
+    if ((n_carb_run == 3492) || (n_carb_run == 3494)) { return; }
 
     // acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0-samApril_CBTaggTAPS_"
     acqu_Carbon = AcqCarb_source + "Acqu_CBTaggTAPS_" + carb_ext + ".root";
@@ -174,6 +171,7 @@ void ppi0 :: Asymmetry(Int_t index)
 {
     Int_t n_but_run = butanolstart + index;
     TString but_ext = Form("%d", n_but_run);
+    if (n_but_run == 3699) { return; }
 
     // Butanol data must exist for acqu and Pi0 as specified:
     TString AcqBut_source = "/local/raid0/work/aberneth/a2GoAT/May2014/";
