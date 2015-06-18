@@ -207,16 +207,17 @@ void ppi0 :: Asymmetry(Int_t index)
 
     Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
     Pi0But.GetObject("Theta_0", BThet_0);
+    // Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
+    // Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
+    TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
     BThet_1->Add(C3500_1, (-1)*Scale());
     BThet_0->Add(C3500_0, (-1)*Scale());
     BThet_1->Write();
     BThet_0->Write();
-    TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
+
 
     // MM_pi0_n_2g_h1 must exist in Pi0But
-/*  Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
-    Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
-    B_MissMass_1->Add(C_MissMass_1, (-1)*Scale());
+/*  B_MissMass_1->Add(C_MissMass_1, (-1)*Scale());
     B_MissMass_0->Add(C_MissMass_0, (-1)*Scale());
     B_MissMass_1->Write();
     B_MissMass_0->Write(); */
