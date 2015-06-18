@@ -197,7 +197,7 @@ void ppi0 :: Asymmetry(Int_t index)
     TFile AcqBut(acqu_Butanol);
 
     AcqBut.GetObject("trigger", Acqu_but); // trigger (OR A BETTER TREE) must be in AcqBut
-    ButaEvnt = Acqu_but->GetEntries();
+    ButaEvnt = Acqu_but -> GetEntries();
 
     if(ButaEvnt < 4.0e+6) {
         std::cout << "Butanol event count is too low for file " << n_but_run << endl;
@@ -216,15 +216,14 @@ void ppi0 :: Asymmetry(Int_t index)
     BThet_0->Add(C3500_0, (-0.01)*Scale());
     BThet_1->Write();
     BThet_0->Write();
+    std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
+    std::cout << "yield_0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
 
     // MM_pi0_n_2g_h1 must exist in Pi0But
 /*  B_MissMass_1->Add(C_MissMass_1, (-1)*Scale());
     B_MissMass_0->Add(C_MissMass_0, (-1)*Scale());
     B_MissMass_1->Write();
     B_MissMass_0->Write(); */
-
-    std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
-    std::cout << "yield_0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
 
     yield_0 = BThet_0 -> GetBinContent(theta_bin);
     yield_1 = BThet_1 -> GetBinContent(theta_bin);
@@ -261,6 +260,7 @@ void ppi0 :: Graph()
     TCanvas *c1 = new TCanvas();
     c1->SetGrid();
     TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
+    data -> Rebin(5);
     data.SetTitle("Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
     data.SetMarkerStyle(kCircle);
     data.SetFillColor(0);
@@ -270,13 +270,3 @@ void ppi0 :: Graph()
     TFile f("data.root", "recreate");
     data.Write();
 }
-
-/* void ppi0 :: RebinRunNumbers()
-{
-    Int_t run_bin;
-    std::cout << "How many runs do you want to bin?" << endl;
-    std::cin >> run_bin;
-    for ( Int_t numberofruns = 0; numberofruns < run_bin; numberofruns++ ) {
-
-    }
-} */
