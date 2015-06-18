@@ -125,6 +125,10 @@ void ppi0 :: CarbonLoop(Int_t j)
 
     Int_t n_carb_run = carbonstart + j;
     TString carb_ext = Form("%d", n_carb_run);
+    if ((n_carb_run == 3492) || (n_carb_run == 3494)) {
+        std::cout << "Useless one." << endl;
+        return;
+    }
 
     // acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0-samApril_CBTaggTAPS_"
     acqu_Carbon = AcqCarb_source + "Acqu_CBTaggTAPS_" + carb_ext + ".root";
