@@ -210,11 +210,13 @@ void ppi0 :: Asymmetry(Int_t index)
     // Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
     // Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
     TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
+    std::cout << "Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
+    std::cout << "Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
+    std::cout << "Scale was: " << Scale() << endl;
     BThet_1->Add(C3500_1, (-1)*Scale());
     BThet_0->Add(C3500_0, (-1)*Scale());
     BThet_1->Write();
     BThet_0->Write();
-
 
     // MM_pi0_n_2g_h1 must exist in Pi0But
 /*  B_MissMass_1->Add(C_MissMass_1, (-1)*Scale());
@@ -222,8 +224,8 @@ void ppi0 :: Asymmetry(Int_t index)
     B_MissMass_1->Write();
     B_MissMass_0->Write(); */
 
-    std::cout << "Butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
-    std::cout << "Butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
+    std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
+    std::cout << "yield_0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
 
     yield_0 = BThet_0 -> GetBinContent(theta_bin);
     yield_1 = BThet_1 -> GetBinContent(theta_bin);
