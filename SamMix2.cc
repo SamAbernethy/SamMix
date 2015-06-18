@@ -49,13 +49,12 @@ Int_t mix2()
     }
 
     // CARBON LOOP
-    for (Int_t Carb_index = 1; Carb_index <= n_carb_files; Carb_index++) {
-        PolPar.CarbonLoop(Carb_index);
+    for (Int_t j = 1; j <= n_carb_files; j++) {
+        PolPar.CarbonLoop(j);
     }
     std::cout << "Total Number of Carbon Background Entries Found: " << PolPar.GetCarbEntries() << endl;
 
     // BUTANOL
-    std::cout << "************************************************ " << endl;
     std::cout << "Number of files for Butanol data: ";
     std::cin >> n_but_files;
     if ((!n_but_files) || (n_but_files == 0)) {
@@ -77,6 +76,7 @@ Int_t mix2()
             }
             fout.close();
             PolPar.Graph();
+            PolPar.RebinData();
             std::cout << "Success! You win." << endl;
         }
     }
@@ -125,7 +125,7 @@ void ppi0 :: CarbonLoop(Int_t j)
 
     Int_t n_carb_run = carbonstart + j;
     TString carb_ext = Form("%d", n_carb_run);
-    if ((n_carb_run == 3492) || (n_carb_run == 3494)) { return; }
+    if ((n_carb_run == 3492) || (n_carb_run == 3494)) { return; } // these don't work and I can't remove from Phil's data
 
     // acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0-samApril_CBTaggTAPS_"
     acqu_Carbon = AcqCarb_source + "Acqu_CBTaggTAPS_" + carb_ext + ".root";
@@ -171,7 +171,7 @@ void ppi0 :: Asymmetry(Int_t index)
 {
     Int_t n_but_run = butanolstart + index;
     TString but_ext = Form("%d", n_but_run);
-    if (n_but_run == 3699) { return; }
+    if (n_but_run == 3699) { return; } // this doesn't work and I can't remove from Phil's data
 
     // Butanol data must exist for acqu and Pi0 as specified:
     TString AcqBut_source = "/local/raid0/work/aberneth/a2GoAT/May2014/";
@@ -275,9 +275,22 @@ void ppi0 :: Graph()
     data.Write();
 }
 
-/* Making a better scale
- *
- * void ppi0
- *
- *
- * */
+void ppi0 :: RebinData()
+{
+    ifstream unbinneddata("data.txt");
+    Double_t a[500];
+    if (!unbinneddata) {
+        std::cout << "No data.txt file found." << endl;
+    }
+    else {
+        std::cout << "data.txt file found." << endl;
+    }
+    while(!unbinneddata.eof()) {
+        Int_t run_bin;
+        std::cout << "How many runs do you want to combine? " << endl;
+        std::cin >> run_bin;
+        unbinneddata >> a;
+        std::cout << a << endl;
+    }
+    unbinneddata.close();
+}
