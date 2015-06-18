@@ -79,7 +79,7 @@ Int_t mix2()
             }
             fout.close();
             PolPar.Graph();
-            PolPar.RebinData();
+            // PolPar.RebinData();
             std::cout << "Success! You win." << endl;
         }
     }
@@ -110,7 +110,7 @@ void ppi0 :: InitialCarbon()
     C3500_0->SetDirectory(0);
 
     // MM_pi0_n_2g_h1 and MM_pi0_n_2g_h0 need to exist in FirstFile
-/*  FirstFile.GetObject("MM_pi0_n_2g_h1", C_MissMass_1);
+    /*  FirstFile.GetObject("MM_pi0_n_2g_h1", C_MissMass_1);
     FirstFile.GetObject("MM_pi0_n_2g_h0", C_MissMass_0);
     C_MissMass_1->SetDirectory(0);
     C_MissMass_0->SetDirectory(0); */
@@ -225,7 +225,7 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "yield_0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
 
     // MM_pi0_n_2g_h1 must exist in Pi0But
-/*  B_MissMass_1 -> Add(C_MissMass_1, (-1)*Scale());
+    /*  B_MissMass_1 -> Add(C_MissMass_1, (-1)*Scale());
     B_MissMass_0 -> Add(C_MissMass_0, (-1)*Scale());
     B_MissMass_1 -> Write();
     B_MissMass_0 -> Write(); */
@@ -247,7 +247,7 @@ void ppi0 :: Asymmetry(Int_t index)
     asym = (yield_1 - yield_0) / (yield_0 + yield_1);
     err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
 
-   /* Optional output for each run:
+    /* Optional output for each run:
     std::cout << "The run number was: " << n_but_run << endl;
     std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
     std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
