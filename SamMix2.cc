@@ -68,10 +68,10 @@ Int_t mix2()
             std::cout << "Butanol run number not specified. Try again." << endl;
             return 1;
         } else {
-            Int_t run_bin;
-            std::cout << "How many runs do you want to combine? " << endl;
-            std::cin >> run_bin;
-            PolPar.SetRunBin(run_bin);
+            // Int_t run_bin;
+            // std::cout << "How many runs do you want to combine? " << endl;
+            // std::cin >> run_bin;
+            // PolPar.SetRunBin(run_bin);
             PolPar.SetButanolStart(butanolstart);
             std::cout << "Starting Butanol file input loop... " << endl;
             for (Int_t i = 0; i < n_but_files; i++) {
@@ -166,8 +166,8 @@ void ppi0 :: CarbonLoop(Int_t j)
     CarbEvnt += AcqTree -> GetEntries();
 }
 
-// ************************************************************************************************************
-// ************************************************************************************************************
+// *******************************************************************************************************
+// *******************************************************************************************************
 
 // ASYMMETRY WITH BUTANOL DATA
 void ppi0 :: Asymmetry(Int_t index)
