@@ -5,7 +5,7 @@
 #include "TFile.h"
 #include "TCanvas.h"
 
-ofstream fout("data.dat"); // output for asymmetry data
+ofstream fout("data.txt"); // output for asymmetry data
 
 Int_t mix2()
 {
@@ -267,7 +267,7 @@ void ppi0 :: Graph()
 {
     TCanvas *c1 = new TCanvas();
     c1->SetGrid();
-    TGraphErrors data("data.dat", "%lg %lg %lg"); // graph the run number, asymmetry, and error
+    TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
     data.SetTitle("Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
     data.SetMarkerStyle(kCircle);
     data.SetFillColor(0);
@@ -280,13 +280,13 @@ void ppi0 :: Graph()
 /*
 void ppi0 :: RebinData()
 {
-    ifstream unbinneddata("data.dat");
+    ifstream unbinneddata("data.txt");
     char data[20];
     if (!unbinneddata) {
-        std::cout << "No data.dat file found." << endl;
+        std::cout << "No data.txt file found." << endl;
     }
     else {
-        std::cout << "data.dat file found." << endl;
+        std::cout << "data.txt file found." << endl;
     }
     while(!unbinneddata.eof()) {
         unbinneddata >> data;
