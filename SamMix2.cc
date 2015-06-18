@@ -278,7 +278,10 @@ void ppi0 :: Graph()
 void ppi0 :: RebinData()
 {
     ifstream unbinneddata("data.txt");
-    Double_t a[500];
+    Double_t data[500];
+    Int_t run_bin;
+    std::cout << "How many runs do you want to combine? " << endl;
+    std::cin >> run_bin;
     if (!unbinneddata) {
         std::cout << "No data.txt file found." << endl;
     }
@@ -286,11 +289,8 @@ void ppi0 :: RebinData()
         std::cout << "data.txt file found." << endl;
     }
     while(!unbinneddata.eof()) {
-        Int_t run_bin;
-        std::cout << "How many runs do you want to combine? " << endl;
-        std::cin >> run_bin;
-        unbinneddata >> a;
-        std::cout << a << endl;
+        unbinneddata >> data;
+        std::cout << data << endl;
     }
     unbinneddata.close();
 }
