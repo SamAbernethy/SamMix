@@ -241,7 +241,7 @@ void ppi0 :: Asymmetry(Int_t index)
         // yield_1 = yield_1*(-1);
     } */
 
-    asym = (yield_0 - yield_1) / (yield_0 + yield_1);
+    asym = (yield_1 - yield_0) / (yield_0 + yield_1);
     err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
 
    /* Optional output for each run:
