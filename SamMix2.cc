@@ -5,6 +5,7 @@
 #include "TH1D.h"
 #include "TFile.h"
 #include "TCanvas.h"
+#include <math.h>
 
 ofstream fout("data.txt"); // output for asymmetry data
 ofstream fout2("PostRebinnedData.txt"); // output for rebinned data
@@ -16,6 +17,7 @@ Int_t mix2()
     Int_t n_carb_files; // number of files for Carbon
     Int_t carbonstart; // 3407 normally
     Int_t butanolstart; // 3680 normally
+    Int_t rebinnumber; // number of bins clumped together
 
     ppi0 PolPar; // initialize PolPar, of class ppi0
     std::cout << "Initializing Carbon data... " << endl;
@@ -70,10 +72,6 @@ Int_t mix2()
             std::cout << "Butanol run number not specified. Try again." << endl;
             return 1;
         } else {
-            // Int_t run_bin;
-            // std::cout << "How many runs do you want to combine? " << endl;
-            // std::cin >> run_bin;
-            // PolPar.SetRunBin(run_bin);
             PolPar.SetButanolStart(butanolstart);
             std::cout << "Starting Butanol file input loop... " << endl;
             for (Int_t i = 0; i < n_but_files; i++) {
@@ -81,6 +79,9 @@ Int_t mix2()
             }
             fout.close();
             PolPar.GraphIndividual();
+            std::cout << "How many runs should be binned together?" << endl;
+            std::cin >> rebinnumber;
+            PolPar.SetRebinning(rebinnumber);
             PolPar.RebinData();
             PolPar.GraphRebinned();
             std::cout << "Success! You win." << endl;
@@ -285,8 +286,9 @@ void ppi0 :: GraphIndividual()
 // ********************************************************************
 
 // REBINNING
-void ppi0 :: RebinData()
+void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE DIFFERENT ASYMMETRY MEASUREMENTS DUE TO THEIR DIFFERENT SIZES OF # OF DATA POINTS
 {
+    Int_t rebinnumber;
     ifstream input;
     input.open("data.txt");
     if (!input) {
@@ -295,9 +297,9 @@ void ppi0 :: RebinData()
     }
     else {
         Int_t num = 1;
-        Double_t runnumber[165];
-        Double_t asymmetry[165];
-        Double_t error[165];
+        Double_t runnumber[500];
+        Double_t asymmetry[500];
+        Double_t error[500];
         while (!input.eof()) {
             input >> runnumber[num];
             input >> asymmetry[num];
@@ -305,23 +307,35 @@ void ppi0 :: RebinData()
             num++;
         }
     }
-    std::cout << "Test the first data point:" << endl;
+    std::cout << "Number of data points is: " << num << endl;
+    std::cout << "Number of runs to bin together is: " << rebinnumber << endl;
+    Int_t newdatapoints = floor(num/rebinnumber);
+    std::cout << "Therefore, number of rebinned points is: " << newdatapoints << endl;
+    std::cout << "Check the first data point:" << endl;
     std::cout << runnumber[1] << endl;
     std::cout << asymmetry[1] << endl;
     std::cout << error[1] << endl;
 
-    Double_t averagerunnumber[16];
-    Double_t averageasymmetry[16];
-    Double_t propogatederror[16];
+    Double_t averagerunnumber[newdatapoints];
+    Double_t averageasymmetry[newdatapoints];
+    Double_t propogatederror[newdatapoints];
 
-    for (Int_t k = 1; k <= 16; k++) {
-        averagerunnumber[k] = 0.1 * (runnumber[k*10-9] + runnumber[k*10-8] + runnumber[k*10-7] + runnumber[k*10-6] + runnumber[k*10-5] + runnumber[k*10-4] + runnumber[k*10-3] + runnumber[k*10-2] + runnumber[k*10-1] + runnumber[k*10] );
-        averageasymmetry[k] = 0.1 * (asymmetry[k*10-9] + asymmetry[k*10-8] + asymmetry[k*10-7] + asymmetry[k*10-6] + asymmetry[k*10-5] + asymmetry[k*10-4] + asymmetry[k*10-3] + asymmetry[k*10-2] + asymmetry[k*10-1] + asymmetry[k*10] );
-        propogatederror[k] =  0.1 * (sqrt((error[k*10-9] * error[k*10-9]) + (error[k*10-8] * error[k*10-8]) + (error[k*10-7] * error[k*10-7]) + (error[k*10-6] * error[k*10-6]) + (error[k*10-5] * error[k*10-5]) + (error[k*10-4] * error[k*10-4]) + (error[k*10-3] * error[k*10-3]) + (error[k*10-2] * error[k*10-2]) + (error[k*10-1] * error[k*10-1]) + (error[k*10] * error[k*10])));
+    for (Int_t k = 1; k <= newdatapoints; k++) {
+        Double_t sumofruns = 0;
+        Double_t sumofasyms = 0;
+        Double_t sumoferrorsquares = 0;
+        for (Int_t u = 1; u <= rebinnumber; u++) {
+            sumofruns += sumofruns + runnumber[u];
+            sumofasyms += sumofasyms + asymmetry[u];
+            sumoferrorsquares += sumoferrorsquares + error[u]*error[u];
+        }
+        averagerunnumber[k] = sumofruns / rebinnumber;
+        averageasymmetry[k] = sumofasyms / rebinnumber;
+        propogatederror[k] = sqrt(sumoferrorsquares) / rebinnumber;
         fout2 << averagerunnumber[k] << " " << averageasymmetry[k] << " " << propogatederror[k] << endl;
     }
     fout2.close();
-    std::cout << "It worked!?" << endl;
+    std::cout << "It worked! Hallelujah." << endl;
 }
 
 void ppi0 :: GraphRebinned()

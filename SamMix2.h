@@ -26,6 +26,7 @@ private:
     Int_t n_carb_files; // number of carbon files
     Int_t carbonstart; // run number to start at for carbon
     Int_t butanolstart; // run number to start at for butanol
+    Int_t rebinnumber; // number of runs to bin together
 
     Double_t ButaEvnt; // number of butanol events
     Double_t CarbEvnt; // number of carbon events
@@ -43,14 +44,11 @@ private:
     Double_t asym; // asymmetry from yields
     Double_t err; // error on asymmetry
 
-    Int_t run_bin; // number of runs to bin together
-
 public:
     ppi0(); // class constructor
     ~ppi0(); // class destructor
     void SetCarbonStart(Int_t i) { carbonstart = i; } // change this when I know more about pointers/private/public/etc
     void SetButanolStart(Int_t i) { butanolstart = i; }
-    void SetRunBin(Int_t i) { run_bin = i; }
     void SetTheta_bin(Int_t i) { theta_bin = i; } // simple void to assign theta_bin to theta_bin, archaic from Dylan
     void CarbonLoop(Int_t j); // void to loop through carbon data
     void Asymmetry(Int_t index); // void to calculate asymmetry from butanol data
@@ -60,6 +58,7 @@ public:
     Double_t Scale() { return ButaEvnt/CarbEvnt; } // Why this scaling from Dylan?
     void RebinData();
     void GraphRebinned();
+    void SetRebinning(Int_t i) { rebinnumber = i; }
 };
 
 #endif // SAMMIX2_H
