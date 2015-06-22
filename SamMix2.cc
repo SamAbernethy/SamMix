@@ -333,7 +333,7 @@ void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE 
         averagerunnumber[k] = sumofruns / rebinnumber;
         averageasymmetry[k] = sumofasyms / rebinnumber;
         propogatederror[k] = sqrt(sumoferrorsquares) / rebinnumber;
-        fout2 << averagerunnumber[k] << " " << averageasymmetry[k] << " " << propogatederror[k] << endl;
+        fout2 << sumofruns / rebinnumber << " " << sumofasyms / rebinnumber << " " << sqrt(sumoferrorsquares) / rebinnumber << endl;
     }
     std::cout << averagerunnumber[1] << " " << averageasymmetry[1] << " " << propogatederror[1] << endl;
     std::cout << "It worked! Hallelujah." << endl;
