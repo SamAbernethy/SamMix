@@ -307,7 +307,7 @@ void ppi0 :: RebinData()
             input >> runnumber[num];
             input >> helicity1[num];
             input >> helicity0[num];
-            n++;
+            num++;
         }
     }
     std::cout << "Number of data points is: " << num << endl;
