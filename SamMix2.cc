@@ -83,6 +83,7 @@ Int_t mix2()
             std::cin >> rebinnumber;
             PolPar.SetRebinning(rebinnumber);
             PolPar.RebinData();
+            fout2.close();
             PolPar.GraphRebinned();
             std::cout << "Success! You win." << endl;
         }
@@ -333,7 +334,6 @@ void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE 
         const propogatederror[k] = sqrt(sumoferrorsquares) / rebinnumber;
         fout2 << averagerunnumber[k] << " " << averageasymmetry[k] << " " << propogatederror[k] << endl;
     }
-    fout2.close();
     std::cout << "It worked! Hallelujah." << endl;
 }
 
