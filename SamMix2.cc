@@ -318,9 +318,9 @@ void ppi0 :: RebinData()
         averagerunnumber[k] = 0.1 * (runnumber[k*10-9] + runnumber[k*10-8] + runnumber[k*10-7] + runnumber[k*10-6] + runnumber[k*10-5] + runnumber[k*10-4] + runnumber[k*10-3] + runnumber[k*10-2] + runnumber[k*10-1] + runnumber[k*10] );
         averageasymmetry[k] = 0.1 * (asymmetry[k*10-9] + asymmetry[k*10-8] + asymmetry[k*10-7] + asymmetry[k*10-6] + asymmetry[k*10-5] + asymmetry[k*10-4] + asymmetry[k*10-3] + asymmetry[k*10-2] + asymmetry[k*10-1] + asymmetry[k*10] );
         propogatederror[k] =  0.1 * (sqrt((error[k*10-9] * error[k*10-9]) + (error[k*10-8] * error[k*10-8]) + (error[k*10-7] * error[k*10-7]) + (error[k*10-6] * error[k*10-6]) + (error[k*10-5] * error[k*10-5]) + (error[k*10-4] * error[k*10-4]) + (error[k*10-3] * error[k*10-3]) + (error[k*10-2] * error[k*10-2]) + (error[k*10-1] * error[k*10-1]) + (error[k*10] * error[k*10])));
-        fout << averagerunnumber[k] << " " << averageasymmetry[k] << " " << propogatederror[k] << endl;
+        fout2 << averagerunnumber[k] << " " << averageasymmetry[k] << " " << propogatederror[k] << endl;
     }
-    fout.close();
+    fout2.close();
     std::cout << "It worked!?" << endl;
 }
 
