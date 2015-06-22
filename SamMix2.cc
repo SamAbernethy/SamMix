@@ -309,7 +309,8 @@ void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE 
     }
     std::cout << "Number of data points is: " << num << endl;
     std::cout << "Number of runs to bin together is: " << rebinnumber << endl;
-    static const int newdatapoints = floor(num/rebinnumber);
+    Int_t newdatapoint = floor(num/rebinnumber);
+    const int newdatapoints = newdatapoint;
     std::cout << "Therefore, number of rebinned points is: " << newdatapoints << endl;
     std::cout << "Check the first data point:" << endl;
     std::cout << runnumber[1] << endl;
@@ -334,6 +335,7 @@ void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE 
         const propogatederror[k] = sqrt(sumoferrorsquares) / rebinnumber;
         fout2 << averagerunnumber[k] << " " << averageasymmetry[k] << " " << propogatederror[k] << endl;
     }
+    std::cout << averagerunnumber[1] << " " << averageasymmetry[1] << " " << propogatederror[1] << endl;
     std::cout << "It worked! Hallelujah." << endl;
 }
 
