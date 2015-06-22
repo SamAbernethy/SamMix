@@ -308,7 +308,7 @@ void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE 
     }
     std::cout << "Number of data points is: " << num << endl;
     std::cout << "Number of runs to bin together is: " << rebinnumber << endl;
-    const Int_t newdatapoints = floor(num/rebinnumber);
+    static const int newdatapoints = floor(num/rebinnumber);
     std::cout << "Therefore, number of rebinned points is: " << newdatapoints << endl;
     std::cout << "Check the first data point:" << endl;
     std::cout << runnumber[1] << endl;
