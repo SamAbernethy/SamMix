@@ -288,7 +288,6 @@ void ppi0 :: GraphIndividual()
 // REBINNING
 void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE DIFFERENT ASYMMETRY MEASUREMENTS DUE TO THEIR DIFFERENT SIZES OF # OF DATA POINTS
 {
-    Int_t rebinnumber;
     ifstream input;
     input.open("data.txt");
     if (!input) {
