@@ -1,11 +1,13 @@
 #include "SamMix2.h"
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "TH1D.h"
 #include "TFile.h"
 #include "TCanvas.h"
 
 ofstream fout("data.txt"); // output for asymmetry data
+ofstream fout2("PostRebinnedData.txt"); // output for rebinned data
 
 Int_t mix2()
 {
@@ -78,8 +80,9 @@ Int_t mix2()
                 PolPar.Asymmetry(i);
             }
             fout.close();
-            PolPar.Graph();
-            // PolPar.RebinData();
+            PolPar.GraphIndividual();
+            PolPar.RebinData();
+            PolPar.GraphRebinned();
             std::cout << "Success! You win." << endl;
         }
     }
@@ -263,35 +266,75 @@ void ppi0 :: Asymmetry(Int_t index)
 // *************************************************************************************
 
 // GRAPHING
-void ppi0 :: Graph()
+void ppi0 :: GraphIndividual()
 {
     TCanvas *c1 = new TCanvas();
     c1->SetGrid();
     TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
-    data.SetTitle("Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
+    data.SetTitle("Individual Run Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
     data.SetMarkerStyle(kCircle);
     data.SetFillColor(0);
     data.SetLineColor(56);
     data.DrawClone();
     c1->Print("MyGraph.png", "png");
     TFile f("data.root", "RECREATE");
-    TH1F h("h","h",10,0,10);
     f.Write();
 }
-/*
+
+// ********************************************************************
+// ********************************************************************
+
+// REBINNING
 void ppi0 :: RebinData()
 {
-    ifstream unbinneddata("data.txt");
-    char data[20];
-    if (!unbinneddata) {
-        std::cout << "No data.txt file found." << endl;
+    ifstream input;
+    input.open("data.txt");
+    if (!input) {
+        std::cout << "No input found!" << endl;
+        return;
     }
     else {
-        std::cout << "data.txt file found." << endl;
+        Int_t num = 1;
+        Double_t runnumber[165];
+        Double_t asymmetry[165];
+        Double_t error[165];
+        while (!input.eof()) {
+            input >> runnumber[num];
+            input >> asymmetry[num];
+            input >> error[num];
+            num++;
+        }
     }
-    while(!unbinneddata.eof()) {
-        unbinneddata >> data;
-        std::cout << data << endl;
+    std::cout << "Test the first data point:" << endl;
+    std::cout << runnumber[1] << endl;
+    std::cout << asymmetry[1] << endl;
+    std::cout << error[1] << endl;
+
+    Double_t averagerunnumber[16];
+    Double_t averageasymmetry[16];
+    Double_t propogatederror[16];
+
+    for (Int_t k = 1; k <= 16; k++) {
+        averagerunnumber[k] = 0.1 * (runnumber[k*10-9] + runnumber[k*10-8] + runnumber[k*10-7] + runnumber[k*10-6] + runnumber[k*10-5] + runnumber[k*10-4] + runnumber[k*10-3] + runnumber[k*10-2] + runnumber[k*10-1] + runnumber[k*10] );
+        averageasymmetry[k] = 0.1 * (asymmetry[k*10-9] + asymmetry[k*10-8] + asymmetry[k*10-7] + asymmetry[k*10-6] + asymmetry[k*10-5] + asymmetry[k*10-4] + asymmetry[k*10-3] + asymmetry[k*10-2] + asymmetry[k*10-1] + asymmetry[k*10] );
+        propogatederror[k] =  0.1 * (sqrt((error[k*10-9] * error[k*10-9]) + (error[k*10-8] * error[k*10-8]) + (error[k*10-7] * error[k*10-7]) + (error[k*10-6] * error[k*10-6]) + (error[k*10-5] * error[k*10-5]) + (error[k*10-4] * error[k*10-4]) + (error[k*10-3] * error[k*10-3]) + (error[k*10-2] * error[k*10-2]) + (error[k*10-1] * error[k*10-1]) + (error[k*10] * error[k*10])));
+        fout << averagerunnumber[k] << " " << averageasymmetry[k] << " " << propogatederror[k] << endl;
     }
-    unbinneddata.close();
-} */
+    fout.close();
+    std::cout << "It worked!?" << endl;
+}
+
+void ppi0 :: GraphRebinned()
+{
+    TCanvas *c2 = new TCanvas;
+    c2->SetGrid();
+    TGraphErrors rebinned("PostRebinnedData.txt", "%lg %lg %lg");
+    rebinned.SetTitle("Rebinned Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
+    rebinned.SetMarkerStyle(kCircle);
+    rebinned.SetFillColor(0);
+    rebinned.SetLineColor(56);
+    rebinned.DrawClone();
+    c2->Print("MyRebinnedGraph.png", "png");
+    TFile f2("rebinneddata.root", "RECREATE");
+    f2.Write();
+}

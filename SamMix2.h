@@ -54,11 +54,12 @@ public:
     void SetTheta_bin(Int_t i) { theta_bin = i; } // simple void to assign theta_bin to theta_bin, archaic from Dylan
     void CarbonLoop(Int_t j); // void to loop through carbon data
     void Asymmetry(Int_t index); // void to calculate asymmetry from butanol data
-    void Graph(); // graph it and write into root file
+    void GraphIndividual(); // graph it and write into root file
     void InitialCarbon(); // void to initialize one root file as stack base
     Double_t GetCarbEntries() { return CarbEvnt; } // self-explanatory
     Double_t Scale() { return ButaEvnt/CarbEvnt; } // Why this scaling from Dylan?
     void RebinData();
+    void GraphRebinned();
 };
 
 #endif // SAMMIX2_H
