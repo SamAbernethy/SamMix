@@ -274,8 +274,9 @@ void ppi0 :: Graph()
     data.SetLineColor(56);
     data.DrawClone();
     c1->Print("MyGraph.png", "png");
-    TFile f("data.root", "recreate");
-    data.Write();
+    TFile f("data.root", "RECREATE");
+    TH1F h("h","h",10,0,10);
+    f.Write();
 }
 /*
 void ppi0 :: RebinData()
