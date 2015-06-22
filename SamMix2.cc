@@ -322,17 +322,17 @@ void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE 
     Double_t propogatederror[newdatapoints];
 
     for (Int_t k = 1; k <= newdatapoints; k++) {
-        const Double_t sumofruns = 0;
-        const Double_t sumofasyms = 0;
-        const Double_t sumoferrorsquares = 0;
+        Double_t sumofruns = 0;
+        Double_t sumofasyms = 0;
+        Double_t sumoferrorsquares = 0;
         for (Int_t u = 1; u <= rebinnumber; u++) {
             sumofruns = sumofruns + runnumber[u];
             sumofasyms = sumofasyms + asymmetry[u];
             sumoferrorsquares = sumoferrorsquares + error[u]*error[u];
         }
-        const averagerunnumber[k] = sumofruns / rebinnumber;
-        const averageasymmetry[k] = sumofasyms / rebinnumber;
-        const propogatederror[k] = sqrt(sumoferrorsquares) / rebinnumber;
+        averagerunnumber[k] = sumofruns / rebinnumber;
+        averageasymmetry[k] = sumofasyms / rebinnumber;
+        propogatederror[k] = sqrt(sumoferrorsquares) / rebinnumber;
         fout2 << averagerunnumber[k] << " " << averageasymmetry[k] << " " << propogatederror[k] << endl;
     }
     std::cout << averagerunnumber[1] << " " << averageasymmetry[1] << " " << propogatederror[1] << endl;
