@@ -79,6 +79,7 @@ Int_t mix2()
                 PolPar.Asymmetry(i);
             }
             fout.close();
+            fout3.close();
             PolPar.GraphIndividual();
             std::cout << "How many runs should be binned together?" << endl;
             std::cin >> rebinnumber;
@@ -300,9 +301,9 @@ void ppi0 :: RebinData()
     }
     else {
         Int_t num = 1;
-        Double_t runnumber[500];
-        Double_t helicity1[500];
-        Double_t helicity0[500];
+        Double_t runnumber[1000];
+        Double_t helicity1[1000];
+        Double_t helicity0[1000];
         while (!input.eof()) {
             input >> runnumber[num];
             input >> helicity1[num];
@@ -321,11 +322,11 @@ void ppi0 :: RebinData()
     Double_t sumofruns[newdatapoints];
     Double_t sumofyield1[newdatapoints];
     Double_t sumofyield0[newdatapoints];
-    for (Int_t k = 1; k <= newdatapoints; k++) {
+    for ( Int_t k = 1; k <= newdatapoints; k++ ) {
         sumofruns[k] = 0;
         sumofyield1[k] = 0;
         sumofyield0[k] = 0;
-        for (Int_t u = 1; u <= rebinnumber; u++ ) {
+        for ( Int_t u = 1; u <= rebinnumber; u++ ) {
             sumofruns[k] = sumofruns[k] + runnumber[u + (k-1)*rebinnumber];
             sumofyield1[k] = sumofyield1[k] + helicity1[u + (k-1)*rebinnumber];
             sumofyield0[k] = sumofyield0[k] + helicity0[u + (k-1)*rebinnumber];
