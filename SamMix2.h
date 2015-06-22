@@ -48,7 +48,7 @@ private:
 public:
     ppi0(); // class constructor
     ~ppi0(); // class destructor
-    void SetCarbonStart(Int_t i) { carbonstart = i; }
+    void SetCarbonStart(Int_t i) { carbonstart = i; } // change this when I know more about pointers/private/public/etc
     void SetButanolStart(Int_t i) { butanolstart = i; }
     void SetRunBin(Int_t i) { run_bin = i; }
     void SetTheta_bin(Int_t i) { theta_bin = i; } // simple void to assign theta_bin to theta_bin, archaic from Dylan
