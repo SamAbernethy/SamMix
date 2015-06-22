@@ -326,9 +326,9 @@ void ppi0 :: RebinData()
         sumofyield1[k] = 0;
         sumofyield0[k] = 0;
         for (Int_t u = 1; u <= rebinnumber; u++ ) {
-            sumofruns[k] = sumofruns[k] + runnumber[u + (k-1)*10];
-            sumofyield1[k] = sumofyield1[k] + helicity1[u + (k-1)*10];
-            sumofyield0[k] = sumofyield0[k] + helicity0[u + (k-1)*10];
+            sumofruns[k] = sumofruns[k] + runnumber[u + (k-1)*rebinnumber];
+            sumofyield1[k] = sumofyield1[k] + helicity1[u + (k-1)*rebinnumber];
+            sumofyield0[k] = sumofyield0[k] + helicity0[u + (k-1)*rebinnumber];
         }
         averagerunnumber[k] = sumofruns[k] / rebinnumber;
         asymmetry[k] = (sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
