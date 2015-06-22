@@ -289,8 +289,56 @@ void ppi0 :: GraphIndividual()
 // ********************************************************************
 
 // REBINNING
-void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE DIFFERENT ASYMMETRY MEASUREMENTS DUE TO THEIR DIFFERENT SIZES OF # OF DATA POINTS
+void ppi0 :: RebinData()
 {
+    // USE THE NEW YIELD.TXT
+    ifstream input;
+    input.open("YieldData.txt");
+    if (!input) {
+        std::cout << "No input found!" << endl;
+        return;
+    }
+    else {
+        Int_t num = 1;
+        Double_t runnumber[500];
+        Double_t helicity1[500];
+        Double_t helicity0[500];
+        while (!input.eof()) {
+            input >> runnumber[num];
+            input >> helicity1[num];
+            input >> helicity0[num];
+            n++;
+        }
+    }
+    std::cout << "Number of data points is: " << num << endl;
+    std::cout << "Number of runs to bin together is: " << rebinnumber << endl;
+    Int_t newdatapoint = floor(num/rebinnumber);
+    const int newdatapoints = newdatapoint;
+    std::cout << "Therefore, number of rebinned points is: " << newdatapoints << endl;
+    Double_t averagerunnumber[newdatapoints];
+    Double_t asymmetry[newdatapoints];
+    Double_t propagatederror[newdatapoints];
+    Double_t sumofruns[newdatapoints];
+    Double_t sumofyield1[newdatapoints];
+    Double_t sumofyield0[newdatapoints];
+    for (Int_t k = 1; k <= newdatapoints; k++) {
+        sumofruns[k] = 0;
+        sumofyield1[k] = 0;
+        sumofyield0[k] = 0;
+        for (Int_t u = 1; u <= rebinnumber; u++ ) {
+            sumofruns[k] = sumofruns[k] + runnumber[u + (k-1)*10];
+            sumofyield1[k] = sumofyield1[k] + helicity1[u + (k-1)*10];
+            sumofyield0[k] = sumofyield0[k] + helicity0[u + (k-1)*10];
+        }
+        averagerunnumber[k] = sumofruns[k] / rebinnumber;
+        asymmetry[k] = (sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
+        propagatederror[k] = 0.02;
+        fout2 << averagerunnumber[k] << " " << asymmetry[k] << " " << propagatederror[k] << endl;
+    }
+    std::cout << "Hallelujah!!!" << endl;
+
+
+    // OLD ATTEMPT WITH ASYMMETRIES NOT YIELDS
     /*
     ifstream input;
     input.open("data.txt");
@@ -345,7 +393,6 @@ void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE 
 
 void ppi0 :: GraphRebinned()
 {
-    /*
     TCanvas *c2 = new TCanvas;
     c2->SetGrid();
     TGraphErrors rebinned("PostRebinnedData.txt", "%lg %lg %lg");
@@ -357,5 +404,4 @@ void ppi0 :: GraphRebinned()
     c2->Print("MyRebinnedGraph.png", "png");
     TFile f2("rebinneddata.root", "RECREATE");
     f2.Write();
-    */
 }
