@@ -308,7 +308,7 @@ void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE 
     }
     std::cout << "Number of data points is: " << num << endl;
     std::cout << "Number of runs to bin together is: " << rebinnumber << endl;
-    Int_t newdatapoints = floor(num/rebinnumber);
+    const Int_t newdatapoints = floor(num/rebinnumber);
     std::cout << "Therefore, number of rebinned points is: " << newdatapoints << endl;
     std::cout << "Check the first data point:" << endl;
     std::cout << runnumber[1] << endl;
@@ -320,17 +320,17 @@ void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE 
     Double_t propogatederror[newdatapoints];
 
     for (Int_t k = 1; k <= newdatapoints; k++) {
-        Double_t sumofruns = 0;
-        Double_t sumofasyms = 0;
-        Double_t sumoferrorsquares = 0;
+        const Double_t sumofruns = 0;
+        const Double_t sumofasyms = 0;
+        const Double_t sumoferrorsquares = 0;
         for (Int_t u = 1; u <= rebinnumber; u++) {
             sumofruns += sumofruns + runnumber[u];
             sumofasyms += sumofasyms + asymmetry[u];
             sumoferrorsquares += sumoferrorsquares + error[u]*error[u];
         }
-        averagerunnumber[k] = sumofruns / rebinnumber;
-        averageasymmetry[k] = sumofasyms / rebinnumber;
-        propogatederror[k] = sqrt(sumoferrorsquares) / rebinnumber;
+        const averagerunnumber[k] = sumofruns / rebinnumber;
+        const averageasymmetry[k] = sumofasyms / rebinnumber;
+        const propogatederror[k] = sqrt(sumoferrorsquares) / rebinnumber;
         fout2 << averagerunnumber[k] << " " << averageasymmetry[k] << " " << propogatederror[k] << endl;
     }
     fout2.close();
