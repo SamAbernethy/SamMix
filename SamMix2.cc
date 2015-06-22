@@ -326,9 +326,9 @@ void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE 
         const Double_t sumofasyms = 0;
         const Double_t sumoferrorsquares = 0;
         for (Int_t u = 1; u <= rebinnumber; u++) {
-            sumofruns += sumofruns + runnumber[u];
-            sumofasyms += sumofasyms + asymmetry[u];
-            sumoferrorsquares += sumoferrorsquares + error[u]*error[u];
+            sumofruns = sumofruns + runnumber[u];
+            sumofasyms = sumofasyms + asymmetry[u];
+            sumoferrorsquares = sumoferrorsquares + error[u]*error[u];
         }
         const averagerunnumber[k] = sumofruns / rebinnumber;
         const averageasymmetry[k] = sumofasyms / rebinnumber;
