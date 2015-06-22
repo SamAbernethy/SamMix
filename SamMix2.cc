@@ -9,6 +9,7 @@
 
 ofstream fout("data.txt"); // output for asymmetry data
 ofstream fout2("PostRebinnedData.txt"); // output for rebinned data
+ofstream fout3("YieldData.txt"); // output for yield data
 
 Int_t mix2()
 {
@@ -261,6 +262,7 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
     std::cout << "********************************************" << endl;
     fout << n_but_run << " " << asym << " " << err << endl;
+    fout3 << n_but_run << " " << yield_1 << " " << yield_0 << endl;
     hist.Close();
 }
 
@@ -289,6 +291,7 @@ void ppi0 :: GraphIndividual()
 // REBINNING
 void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE DIFFERENT ASYMMETRY MEASUREMENTS DUE TO THEIR DIFFERENT SIZES OF # OF DATA POINTS
 {
+    /*
     ifstream input;
     input.open("data.txt");
     if (!input) {
@@ -337,10 +340,12 @@ void ppi0 :: RebinData() // NOTE THAT THIS WILL NEED TO BE CHANGED TO WEIGH THE 
     }
     std::cout << averagerunnumber[1] << " " << averageasymmetry[1] << " " << propogatederror[1] << endl;
     std::cout << "It worked! Hallelujah." << endl;
+    */
 }
 
 void ppi0 :: GraphRebinned()
 {
+    /*
     TCanvas *c2 = new TCanvas;
     c2->SetGrid();
     TGraphErrors rebinned("PostRebinnedData.txt", "%lg %lg %lg");
@@ -352,4 +357,5 @@ void ppi0 :: GraphRebinned()
     c2->Print("MyRebinnedGraph.png", "png");
     TFile f2("rebinneddata.root", "RECREATE");
     f2.Write();
+    */
 }
