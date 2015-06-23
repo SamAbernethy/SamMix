@@ -301,9 +301,9 @@ void ppi0 :: RebinData()
     }
     else {
         Int_t num = 1;
-        Double_t runnumber[1000];
-        Double_t helicity1[1000];
-        Double_t helicity0[1000];
+        Double_t runnumber[500];
+        Double_t helicity1[500];
+        Double_t helicity0[500];
         while (!input.eof()) {
             input >> runnumber[num];
             input >> helicity1[num];
@@ -313,7 +313,7 @@ void ppi0 :: RebinData()
     }
     std::cout << "Number of data points is: " << num << endl;
     std::cout << "Number of runs to bin together is: " << rebinnumber << endl;
-    Int_t newdatapoint = floor(num/rebinnumber);
+    Int_t newdatapoint = ceil(num/rebinnumber);
     const int newdatapoints = newdatapoint;
     std::cout << "Therefore, number of rebinned points is: " << newdatapoints << endl;
     Double_t averagerunnumber[newdatapoints] = {0};
@@ -333,7 +333,7 @@ void ppi0 :: RebinData()
         propagatederror[k] = 0.01;
         fout2 << averagerunnumber[k] << " " << asymmetry[k] << " " << propagatederror[k] << endl;
     }
-    std::cout << "Hallelujah!!!" << endl;
+    std::cout << "Success! You win." << endl;
 }
 
 void ppi0 :: GraphRebinned()
