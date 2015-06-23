@@ -313,7 +313,8 @@ void ppi0 :: RebinData()
     }
     std::cout << "Number of data points is: " << num << endl;
     std::cout << "Number of runs to bin together is: " << rebinnumber << endl;
-    const int newdatapoints = floor(num/rebinnumber);
+    Int_t newdatapoint = floor(num/rebinnumber);
+    const int newdatapoints = newdatapoint;
     std::cout << "Therefore, number of rebinned points is: " << newdatapoints << endl;
     Double_t averagerunnumber[newdatapoints] = {0};
     Double_t asymmetry[newdatapoints] = {0};
