@@ -87,7 +87,7 @@ Int_t mix2()
             PolPar.RebinData();
             fout2.close();
             PolPar.GraphRebinned();
-            std::cout << "Success! You win." << endl;
+            std::cout << "Success! You win Individual." << endl;
         }
     }
 }
@@ -333,7 +333,7 @@ void ppi0 :: RebinData()
         propagatederror[k] = 0.01;
         fout2 << averagerunnumber[k] << " " << asymmetry[k] << " " << propagatederror[k] << endl;
     }
-    std::cout << "Success! You win." << endl;
+    std::cout << "Success! You win Rebinning." << endl;
 }
 
 void ppi0 :: GraphRebinned()
