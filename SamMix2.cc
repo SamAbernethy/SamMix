@@ -333,63 +333,10 @@ void ppi0 :: RebinData()
         }
         averagerunnumber[k] = sumofruns[k] / rebinnumber;
         asymmetry[k] = (sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
-        propagatederror[k] = 0.02;
+        propagatederror[k] = 0.01;
         fout2 << averagerunnumber[k] << " " << asymmetry[k] << " " << propagatederror[k] << endl;
     }
     std::cout << "Hallelujah!!!" << endl;
-
-
-    // OLD ATTEMPT WITH ASYMMETRIES NOT YIELDS
-    /*
-    ifstream input;
-    input.open("data.txt");
-    if (!input) {
-        std::cout << "No input found!" << endl;
-        return;
-    }
-    else {
-        Int_t num = 1;
-        Double_t runnumber[500];
-        Double_t asymmetry[500];
-        Double_t error[500];
-        while (!input.eof()) {
-            input >> runnumber[num];
-            input >> asymmetry[num];
-            input >> error[num];
-            num++;
-        }
-    }
-    std::cout << "Number of data points is: " << num << endl;
-    std::cout << "Number of runs to bin together is: " << rebinnumber << endl;
-    Int_t newdatapoint = floor(num/rebinnumber);
-    const int newdatapoints = newdatapoint;
-    std::cout << "Therefore, number of rebinned points is: " << newdatapoints << endl;
-    std::cout << "Check the first data point:" << endl;
-    std::cout << runnumber[1] << endl;
-    std::cout << asymmetry[1] << endl;
-    std::cout << error[1] << endl;
-
-    Double_t averagerunnumber[newdatapoints];
-    Double_t averageasymmetry[newdatapoints];
-    Double_t propogatederror[newdatapoints];
-
-    for (Int_t k = 1; k <= newdatapoints; k++) {
-        Double_t sumofruns = 0;
-        Double_t sumofasyms = 0;
-        Double_t sumoferrorsquares = 0;
-        for (Int_t u = 1; u <= rebinnumber; u++) {
-            sumofruns = sumofruns + runnumber[u];
-            sumofasyms = sumofasyms + asymmetry[u];
-            sumoferrorsquares = sumoferrorsquares + error[u]*error[u];
-        }
-        averagerunnumber[k] = sumofruns / rebinnumber;
-        averageasymmetry[k] = sumofasyms / rebinnumber;
-        propogatederror[k] = sqrt(sumoferrorsquares) / rebinnumber;
-        fout2 << sumofruns / rebinnumber << " " << sumofasyms / rebinnumber << " " << sqrt(sumoferrorsquares) / rebinnumber << endl;
-    }
-    std::cout << averagerunnumber[1] << " " << averageasymmetry[1] << " " << propogatederror[1] << endl;
-    std::cout << "It worked! Hallelujah." << endl;
-    */
 }
 
 void ppi0 :: GraphRebinned()
