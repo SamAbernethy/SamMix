@@ -326,11 +326,11 @@ void ppi0 :: RebinData()
     Double_t sumofyield0errorsquares[newdatapoints] = {0};
     for ( Int_t k = 1; k < newdatapoints; k++ ) {
         for ( Int_t u = 1; u <= rebinnumber; u++ ) {
-            sumofruns[k] = sumofruns[k] + runnumber[u + (k-1)*rebinnumber];
-            sumofyield1[k] = sumofyield1[k] + helicity1[u + (k-1)*rebinnumber];
-            sumofyield0[k] = sumofyield0[k] + helicity0[u + (k-1)*rebinnumber];
-            sumofyield1errorsquares[k] = sumofyield1errorsquares[k] + helicity1error[u + (k-1)*rebinnumber] * helicity1error[u + (k-1)*rebinnumber];
-            sumofyield0errorsquares[k] = sumofyield0errorsquares[k] + helicity0error[u + (k-1)*rebinnumber] * helicity0error[u + (k-1)*rebinnumber];
+            sumofruns[k] += runnumber[u + (k-1)*rebinnumber];
+            sumofyield1[k] += helicity1[u + (k-1)*rebinnumber];
+            sumofyield0[k] += helicity0[u + (k-1)*rebinnumber];
+            sumofyield1errorsquares[k] += helicity1error[u + (k-1)*rebinnumber] * helicity1error[u + (k-1)*rebinnumber];
+            sumofyield0errorsquares[k] += helicity0error[u + (k-1)*rebinnumber] * helicity0error[u + (k-1)*rebinnumber];
         }
         averagerunnumber[k] = sumofruns[k] / rebinnumber;
         asymmetry[k] = (sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
