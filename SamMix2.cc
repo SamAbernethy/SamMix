@@ -242,14 +242,14 @@ void ppi0 :: Asymmetry(Int_t index)
     yield_0_e = BThet_0 -> GetBinError(theta_bin);
     yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-    /* if (yield_0 < 0) {
-        std::cout << "Yield for helicity 0 was negative for file " << n_but_run << endl;
-        // yield_0 = yield_0*(-1);
+    if (yield_0 < 0) {
+        // std::cout << "Yield for helicity 0 was negative for file " << n_but_run << endl;
+        yield_0 = yield_0*(-1);
     }
     if (yield_1 < 0) {
-         std::cout << "Yield for helicity 1 was negative for file " << n_but_run << endl;
-        // yield_1 = yield_1*(-1);
-    } */
+        // std::cout << "Yield for helicity 1 was negative for file " << n_but_run << endl;
+        yield_1 = yield_1*(-1);
+    }
 
     asym = (yield_1 - yield_0) / (yield_0 + yield_1);
     err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
@@ -322,7 +322,7 @@ void ppi0 :: RebinData()
     Double_t sumofruns[newdatapoints] = {0};
     Double_t sumofyield1[newdatapoints] = {0};
     Double_t sumofyield0[newdatapoints] = {0};
-    for ( Int_t k = 1; k <= newdatapoints; k++ ) {
+    for ( Int_t k = 1; k < newdatapoints; k++ ) {
         for ( Int_t u = 1; u <= rebinnumber; u++ ) {
             sumofruns[k] = sumofruns[k] + runnumber[u + (k-1)*rebinnumber];
             sumofyield1[k] = sumofyield1[k] + helicity1[u + (k-1)*rebinnumber];
