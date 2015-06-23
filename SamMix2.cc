@@ -263,7 +263,7 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
     std::cout << "********************************************" << endl;
     fout << n_but_run << " " << asym << " " << err << endl;
-    fout3 << n_but_run << " " << yield_1 << " " << yield_0 << endl;
+    fout3 << n_but_run << " " << yield_1 << " " << yield_0 << " " << yield_1_e << " " << yield_0_e << endl;
     hist.Close();
 }
 
@@ -304,10 +304,10 @@ void ppi0 :: RebinData()
         Double_t runnumber[500];
         Double_t helicity1[500];
         Double_t helicity0[500];
+        Double_t helicity1error[500];
+        Double_t helicity0error[500];
         while (!input.eof()) {
-            input >> runnumber[num];
-            input >> helicity1[num];
-            input >> helicity0[num];
+            input >> runnumber[num] >> helicity1[num] >> helicity0[num] >> helicity1error[num] >> helicity0error[num];
             num++;
         }
     }
@@ -322,15 +322,19 @@ void ppi0 :: RebinData()
     Double_t sumofruns[newdatapoints] = {0};
     Double_t sumofyield1[newdatapoints] = {0};
     Double_t sumofyield0[newdatapoints] = {0};
+    Double_t sumofyield1errorsquares[newdatapoints] = {0};
+    Double_t sumofyield0errorsquares[newdatapoints] = {0};
     for ( Int_t k = 1; k < newdatapoints; k++ ) {
         for ( Int_t u = 1; u <= rebinnumber; u++ ) {
             sumofruns[k] = sumofruns[k] + runnumber[u + (k-1)*rebinnumber];
             sumofyield1[k] = sumofyield1[k] + helicity1[u + (k-1)*rebinnumber];
             sumofyield0[k] = sumofyield0[k] + helicity0[u + (k-1)*rebinnumber];
+            sumofyield1errorsquares[k] = sumofyield1errorsquares[k] + helicity1error[u + (k-1)*rebinnumber] * helicity1error[u + (k-1)*rebinnumber];
+            sumofyield0errorsquares[k] = sumofyield0errorsquares[k] + helicity0error[u + (k-1)*rebinnumber] * helicity0error[u + (k-1)*rebinnumber];
         }
         averagerunnumber[k] = sumofruns[k] / rebinnumber;
         asymmetry[k] = (sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
-        propagatederror[k] = 0.01;
+        propagatederror[k] = (2./(pow(sumofyield0[k] + sumofyield1[k], 2.)))*sqrt(pow(sumofyield0[k], 2.)*pow(sumofyield1errorsquares[k], 1.) + pow(sumofyield1[k], 2.)*pow(sumofyield0errorsquares[k], 1.)) ;
         fout2 << averagerunnumber[k] << " " << asymmetry[k] << " " << propagatederror[k] << endl;
     }
     std::cout << "Success! You win Rebinning." << endl;
