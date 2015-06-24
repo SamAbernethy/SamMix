@@ -226,10 +226,10 @@ void ppi0 :: Asymmetry(Int_t index)
     ButaEvnt0 = BThet_0 -> GetEntries();
     ButaEvnt = ButaEvnt1 + ButaEvnt0;
 
-    if (ButaEvnt < 2000) {
-        std::cout << "Butanol event count is too low for file " << n_but_run << endl;
-        return;
-    }
+    // if (ButaEvnt < 2000) {
+       // std::cout << "Butanol event count is too low for file " << n_but_run << endl;
+       // return;
+    //}
     // Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
     // Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
     TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
