@@ -7,6 +7,7 @@
 #include "TCanvas.h"
 #include <math.h>
 
+// polarization flips after 3994
 ofstream fout("data.txt"); // output for asymmetry data
 ofstream fout2("PostRebinnedData.txt"); // output for rebinned data
 ofstream fout3("YieldData.txt"); // output for yield data
@@ -166,11 +167,14 @@ void ppi0 :: CarbonLoop(Int_t j)
     C3500_1->Add(Carb_1,1); // add Carb_1 to the Carbon stack
     C3500_0->Add(Carb_0,1);
 
-    AcqCarb.GetObject("trigger", AcqTree); // trigger (OR A BETTER TREE) must be in AcqCarb
-    std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << AcqTree -> GetEntries() << endl;
+    // AcqCarb.GetObject("trigger", AcqTree); // trigger (OR A BETTER TREE) must be in AcqCarb
+    // std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << AcqTree -> GetEntries() << endl;
     std::cout << "Carbon bin content for helicity 1: " << C3500_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Carbon bin content for helicity 0: " << C3500_0 -> GetBinContent(theta_bin) << endl;
-    CarbEvnt += AcqTree -> GetEntries();
+    CarbEvnt1 += Carb_1 -> GetEntries();
+    CarbEvnt0 += Carb_0 -> GetEntries();
+    CarbEvnt += CarbEvnt1;
+    CarbEvnt += CarbEvnt0;
 }
 
 // *******************************************************************************************************
@@ -208,24 +212,28 @@ void ppi0 :: Asymmetry(Int_t index)
     TFile Pi0But(Pi0_Butanol);
     TFile AcqBut(acqu_Butanol);
 
-    AcqBut.GetObject("trigger", Acqu_but); // trigger (OR A BETTER TREE) must be in AcqBut
-    ButaEvnt = Acqu_but -> GetEntries();
+    // AcqBut.GetObject("trigger", Acqu_but); // trigger (OR A BETTER TREE) must be in AcqBut
+    // ButaEvnt = Acqu_but -> GetEntries();
 
-    if(ButaEvnt < 4.0e+6) {
-        std::cout << "Butanol event count is too low for file " << n_but_run << endl;
-        return;
-    }
+    // if(ButaEvnt < 4.0e+6) {
+    //     std::cout << "Butanol event count is too low for file " << n_but_run << endl;
+    //     return;
+    // }
 
     Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
     Pi0But.GetObject("Theta_0", BThet_0);
+    ButaEvnt1 += BThet_1 -> GetEntries();
+    ButaEvnt0 += BThet_0 -> GetEntries();
+    ButaEvnt += ButaEvnt1;
+    ButaEvnt += ButaEvnt0;
     // Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
     // Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
     TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
     std::cout << "Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
     std::cout << "Scale was: " << Scale() << endl;
-    BThet_1 -> Add(C3500_1, (0)*Scale());
-    BThet_0 -> Add(C3500_0, (0)*Scale());
+    BThet_1 -> Add(C3500_1, (-1)*Scale());
+    BThet_0 -> Add(C3500_0, (-1)*Scale());
     BThet_1 -> Write();
     BThet_0 -> Write();
     std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
@@ -242,14 +250,14 @@ void ppi0 :: Asymmetry(Int_t index)
     yield_0_e = BThet_0 -> GetBinError(theta_bin);
     yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-    if (yield_0 < 0) {
+    /* if (yield_0 < 0) {
         // std::cout << "Yield for helicity 0 was negative for file " << n_but_run << endl;
         yield_0 = yield_0*(-1);
     }
     if (yield_1 < 0) {
         // std::cout << "Yield for helicity 1 was negative for file " << n_but_run << endl;
         yield_1 = yield_1*(-1);
-    }
+    } */
 
     asym = (yield_1 - yield_0) / (yield_0 + yield_1);
     err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));

@@ -30,6 +30,10 @@ private:
 
     Double_t ButaEvnt; // number of butanol events
     Double_t CarbEvnt; // number of carbon events
+    Double_t CarbEvnt1;
+    Double_t CarbEvnt0;
+    Double_t ButaEvnt1;
+    Double_t ButaEvnt0;
 
     TString FirstCarbonLocation; // location of the first root file used for carbon
     TString Pi0_Carbon; // formerly Pi0file, where post-GoAT carbon data is found
