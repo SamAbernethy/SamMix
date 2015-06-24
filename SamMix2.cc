@@ -171,10 +171,11 @@ void ppi0 :: CarbonLoop(Int_t j)
     // std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << AcqTree -> GetEntries() << endl;
     std::cout << "Carbon bin content for helicity 1: " << C3500_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Carbon bin content for helicity 0: " << C3500_0 -> GetBinContent(theta_bin) << endl;
-    CarbEvnt1 = Carb_1 -> GetEntries();
-    CarbEvnt0 = Carb_0 -> GetEntries();
-    CarbEvnt += CarbEvnt1;
-    CarbEvnt += CarbEvnt0;
+    // CarbEvnt1 = Carb_1 -> GetEntries();
+    // CarbEvnt0 = Carb_0 -> GetEntries();
+    // CarbEvnt += CarbEvnt1;
+    // CarbEvnt += CarbEvnt0;
+    CarbEvnt = C3500_1 -> GetEntries() + C3500_0 -> GetEntries();
 }
 
 // *******************************************************************************************************
@@ -217,9 +218,7 @@ void ppi0 :: Asymmetry(Int_t index)
 
     Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
     Pi0But.GetObject("Theta_0", BThet_0);
-    ButaEvnt1 = BThet_1 -> GetEntries();
-    ButaEvnt0 = BThet_0 -> GetEntries();
-    ButaEvnt = ButaEvnt1 + ButaEvnt0;
+    ButaEvnt = BThet_1 -> GetEntries() + BThet_0 -> GetEntries();
 
     if (ButaEvnt < 200) {
        std::cout << "Butanol event count is too low for file " << n_but_run << endl;
@@ -231,8 +230,8 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
     std::cout << "Scale was: " << Scale() << endl;
-    BThet_1 -> Add(C3500_1, (-0.3)*Scale());
-    BThet_0 -> Add(C3500_0, (-0.3)*Scale());
+    BThet_1 -> Add(C3500_1, (-1)*Scale());
+    BThet_0 -> Add(C3500_0, (-1)*Scale());
     BThet_1 -> Write();
     BThet_0 -> Write();
     std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
