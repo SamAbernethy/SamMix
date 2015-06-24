@@ -225,6 +225,11 @@ void ppi0 :: Asymmetry(Int_t index)
     ButaEvnt1 = BThet_1 -> GetEntries();
     ButaEvnt0 = BThet_0 -> GetEntries();
     ButaEvnt = ButaEvnt1 + ButaEvnt0;
+
+    if (ButaEvnt < 2000) {
+        std::cout << "Butanol event count is too low for file " << n_but_run << endl;
+        return;
+    }
     // Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
     // Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
     TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
@@ -261,11 +266,10 @@ void ppi0 :: Asymmetry(Int_t index)
     asym = (yield_1 - yield_0) / (yield_0 + yield_1);
     err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
 
-    /* Optional output for each run:
     std::cout << "The run number was: " << n_but_run << endl;
     std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
     std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
-    std::cout << "Therefore, the scale used was: " << Scale() << endl; */
+    std::cout << "Therefore, the scale used was: " << Scale() << endl;
 
     std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
     std::cout << "********************************************" << endl;
