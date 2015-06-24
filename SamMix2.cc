@@ -171,8 +171,8 @@ void ppi0 :: CarbonLoop(Int_t j)
     // std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << AcqTree -> GetEntries() << endl;
     std::cout << "Carbon bin content for helicity 1: " << C3500_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Carbon bin content for helicity 0: " << C3500_0 -> GetBinContent(theta_bin) << endl;
-    CarbEvnt1 += Carb_1 -> GetEntries();
-    CarbEvnt0 += Carb_0 -> GetEntries();
+    CarbEvnt1 = Carb_1 -> GetEntries();
+    CarbEvnt0 = Carb_0 -> GetEntries();
     CarbEvnt += CarbEvnt1;
     CarbEvnt += CarbEvnt0;
 }
@@ -214,11 +214,6 @@ void ppi0 :: Asymmetry(Int_t index)
 
     // AcqBut.GetObject("trigger", Acqu_but); // trigger (OR A BETTER TREE) must be in AcqBut
     // ButaEvnt = Acqu_but -> GetEntries();
-
-    // if(ButaEvnt < 4.0e+6) {
-    //     std::cout << "Butanol event count is too low for file " << n_but_run << endl;
-    //     return;
-    // }
 
     Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
     Pi0But.GetObject("Theta_0", BThet_0);
