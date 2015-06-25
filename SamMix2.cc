@@ -308,7 +308,7 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
     std::cout << "Number of runs to bin together is: " << rebinnumber << endl;
     Int_t newdatapoint = ceil(num/rebinnumber);
     const int newdatapoints = newdatapoint;
-    std::cout << "Therefore, number of rebinned points is: " << newdatapoints << endl;
+    std::cout << "Therefore, number of rebinned points is: " << (newdatapoints - 1) << endl;
     Double_t averagerunnumber[newdatapoints] = {0}, asymmetry[newdatapoints] = {0}, propagatederror[newdatapoints] = {0};
     Double_t sumofruns[newdatapoints] = {0}, sumofyield1[newdatapoints] = {0}, sumofyield0[newdatapoints] = {0};
     Double_t sumofyield1errorsquares[newdatapoints] = {0}, sumofyield0errorsquares[newdatapoints] = {0};
