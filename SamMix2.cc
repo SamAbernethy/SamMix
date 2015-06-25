@@ -7,7 +7,7 @@
 #include "TCanvas.h"
 #include <math.h>
 
-// polarization flips after 3994
+// polarization flips at 3994/4000
 ofstream fout("data.txt"); // output for asymmetry data
 ofstream fout2("PostRebinnedData.txt"); // output for rebinned data
 ofstream fout3("YieldData.txt"); // output for yield data
@@ -22,16 +22,6 @@ Int_t mix2()
     Int_t rebinnumber; // number of bins clumped together
 
     ppi0 PolPar; // initialize PolPar, of class ppi0
-    std::cout << "Initializing Carbon data... " << endl;
-    std::cout << "Number of Files for Carbon data: ";
-    std::cin >> n_carb_files;
-    if ((!n_carb_files) || (n_carb_files == 0)) {
-        std::cout << "Number of files incorrectly specified. Try again." << endl;
-        return 1;
-    } else {
-        std::cout << "Number of files successfully specified." << endl;
-    }
-
     std::cout << "Which theta bin to use: ";
     std::cin >> theta_bin;
     if ((!theta_bin) || (theta_bin == 0) || (theta_bin == 1)) {
@@ -40,6 +30,16 @@ Int_t mix2()
     } else {
         std::cout << "Theta bin successfully specified." << endl;
         PolPar.SetTheta_bin(theta_bin); // simply sets theta_bin in PolPar equal to this specified theta_bin
+    }
+
+    std::cout << "Initializing Carbon data... " << endl;
+    std::cout << "Number of Files for Carbon data: ";
+    std::cin >> n_carb_files;
+    if ((!n_carb_files) || (n_carb_files == 0)) {
+        std::cout << "Number of files incorrectly specified. Try again." << endl;
+        return 1;
+    } else {
+        std::cout << "Number of files successfully specified." << endl;
     }
 
     // INITIALIZING CARBON
