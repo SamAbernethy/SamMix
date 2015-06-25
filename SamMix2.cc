@@ -215,15 +215,15 @@ void ppi0 :: Asymmetry(Int_t index)
 
     AcqBut.GetObject("trigger", Acqu_but); // trigger (OR A BETTER TREE) must be in AcqBut
     ButaEvnt = Acqu_but -> GetEntries();
+    if (ButaEvnt < 4.0e+6) {
+       std::cout << "Butanol event count is too low for file " << n_but_run << endl;
+       return;
+    }
 
     Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
     Pi0But.GetObject("Theta_0", BThet_0);
     // ButaEvnt = BThet_1 -> GetEntries() + BThet_0 -> GetEntries();
 
-    if (ButaEvnt < 4.0e+6) {
-       std::cout << "Butanol event count is too low for file " << n_but_run << endl;
-       return;
-    }
     // Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
     // Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
     TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
@@ -266,8 +266,8 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "Therefore, the scale used was: " << Scale() << endl;
     std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
     std::cout << "********************************************" << endl;
-    fout << n_but_run << " " << asym << " " << err << endl;
-    fout3 << n_but_run << " " << yield_1 << " " << yield_0 << " " << yield_1_e << " " << yield_0_e << endl;
+    fout << n_but_run << " " << asym << " " << err << endl; // for graphing individual runs
+    fout3 << n_but_run << " " << yield_1 << " " << yield_0 << " " << yield_1_e << " " << yield_0_e << endl; // for rebinning purposes
     hist.Close();
 }
 
@@ -294,9 +294,8 @@ void ppi0 :: GraphIndividual()
 // ********************************************************************
 
 // REBINNING
-void ppi0 :: RebinData()
+void ppi0 :: RebinData() // very long variable names, but this can be changed later
 {
-    // USE THE NEW YIELD.TXT
     ifstream input;
     input.open("YieldData.txt");
     if (!input) {
