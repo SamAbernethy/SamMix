@@ -171,11 +171,6 @@ void ppi0 :: CarbonLoop(Int_t j)
     std::cout << "Carbon bin content for helicity 1: " << C3500_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Carbon bin content for helicity 0: " << C3500_0 -> GetBinContent(theta_bin) << endl;
     CarbEvnt += AcqTree -> GetEntries();
-    // CarbEvnt1 = Carb_1 -> GetEntries();
-    // CarbEvnt0 = Carb_0 -> GetEntries();
-    // CarbEvnt += CarbEvnt1;
-    // CarbEvnt += CarbEvnt0;
-    // CarbEvnt = C3500_1 -> GetEntries() + C3500_0 -> GetEntries();
 }
 
 // *******************************************************************************************************
@@ -222,7 +217,6 @@ void ppi0 :: Asymmetry(Int_t index)
 
     Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
     Pi0But.GetObject("Theta_0", BThet_0);
-    // ButaEvnt = BThet_1 -> GetEntries() + BThet_0 -> GetEntries();
 
     // Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
     // Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
