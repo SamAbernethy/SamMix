@@ -18,7 +18,7 @@ private:
     TH1* B_MissMass_1; // within Pi0But, which is found in Pi0_Butanol
     TH1* B_MissMass_0; // within Pi0But, which is found in Pi0_Butanol
 
-    TTree* AcqTree; // within acqu_Carbon, used to find CarbEvnt
+    TTree* Acqu_carb; // within acqu_Carbon, used to find CarbEvnt
     TTree* Acqu_but; // within acqu_Butanol, used to find ButEvnt
 
     Int_t theta_bin; // theta bin chosen

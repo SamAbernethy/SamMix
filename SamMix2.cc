@@ -114,8 +114,8 @@ void ppi0 :: InitialCarbon()
 
     FirstFile.GetObject("Theta_1", C3500_1); // get Theta_1 from TH1 C3500_1
     FirstFile.GetObject("Theta_0", C3500_0); // get Theta_0 from TH1 C3500_0
-    C3500_1->SetDirectory(0); // detaches this so that you can open and close root files without destroying it
-    C3500_0->SetDirectory(0);
+    C3500_1 -> SetDirectory(0); // detaches this so that you can open and close root files without destroying it
+    C3500_0 -> SetDirectory(0);
 
     // MM_pi0_n_2g_h1 and MM_pi0_n_2g_h0 need to exist in FirstFile
     /*  FirstFile.GetObject("MM_pi0_n_2g_h1", C_MissMass_1);
@@ -160,17 +160,17 @@ void ppi0 :: CarbonLoop(Int_t j)
 
     Pi0Carb.GetObject("Theta_1", Carb_1); // get Theta_1 from Pi0Carb
     Pi0Carb.GetObject("Theta_0", Carb_0);
-    Carb_1->SetDirectory(0); // detach histogram
-    Carb_0->SetDirectory(0);
+    Carb_1 -> SetDirectory(0); // detach histogram
+    Carb_0 -> SetDirectory(0);
 
-    C3500_1->Add(Carb_1,1); // add Carb_1 to the Carbon stack
-    C3500_0->Add(Carb_0,1);
+    C3500_1 -> Add(Carb_1,1); // add Carb_1 to the Carbon stack
+    C3500_0 -> Add(Carb_0,1);
 
-    AcqCarb.GetObject("trigger", AcqTree); // trigger (OR A BETTER TREE) must be in AcqCarb
-    std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << AcqTree -> GetEntries() << endl;
+    AcqCarb.GetObject("trigger", Acqu_carb); // trigger (OR A BETTER TREE) must be in AcqCarb
+    std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << Acqu_carb -> GetEntries() << endl;
     std::cout << "Carbon bin content for helicity 1: " << C3500_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Carbon bin content for helicity 0: " << C3500_0 -> GetBinContent(theta_bin) << endl;
-    CarbEvnt += AcqTree -> GetEntries();
+    CarbEvnt += Acqu_carb -> GetEntries();
 }
 
 // *******************************************************************************************************
@@ -272,14 +272,15 @@ void ppi0 :: Asymmetry(Int_t index)
 void ppi0 :: GraphIndividual()
 {
     TCanvas *c1 = new TCanvas();
-    c1->SetGrid();
+    c1.cd();
+    c1.SetGrid();
     TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
     data.SetTitle("Individual Run Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
     data.SetMarkerStyle(kCircle);
     data.SetFillColor(0);
     data.SetLineColor(56);
     data.DrawClone();
-    c1->Print("MyGraph.png", "png");
+    c1 -> Print("MyGraph.png", "png");
     TFile f("data.root", "RECREATE");
     f.Write();
 }
@@ -330,14 +331,15 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
 void ppi0 :: GraphRebinned()
 {
     TCanvas *c2 = new TCanvas;
-    c2->SetGrid();
+    c2.cd();
+    c2.SetGrid();
     TGraphErrors rebinned("PostRebinnedData.txt", "%lg %lg %lg");
     rebinned.SetTitle("Rebinned Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
     rebinned.SetMarkerStyle(kCircle);
     rebinned.SetFillColor(0);
     rebinned.SetLineColor(56);
     rebinned.DrawClone();
-    c2->Print("MyRebinnedGraph.png", "png");
+    c2 -> Print("MyRebinnedGraph.png", "png");
     TFile f2("rebinneddata.root", "RECREATE");
     f2.Write();
 }
