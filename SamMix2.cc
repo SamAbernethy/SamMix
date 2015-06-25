@@ -96,8 +96,8 @@ Int_t mix2()
 ppi0 :: ppi0() {}
 ppi0 :: ~ppi0() {}
 
-// *******************************************************************************************************
-// *******************************************************************************************************
+// ************************************************************************************************
+// ************************************************************************************************
 
 void ppi0 :: InitialCarbon()
 {
@@ -272,8 +272,8 @@ void ppi0 :: Asymmetry(Int_t index)
 void ppi0 :: GraphIndividual()
 {
     TCanvas *c1 = new TCanvas();
-    c1.cd();
-    c1.SetGrid();
+    c1 -> cd();
+    c1 -> SetGrid();
     TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
     data.SetTitle("Individual Run Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
     data.SetMarkerStyle(kCircle);
@@ -331,8 +331,8 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
 void ppi0 :: GraphRebinned()
 {
     TCanvas *c2 = new TCanvas;
-    c2.cd();
-    c2.SetGrid();
+    c2 -> cd();
+    c2 -> SetGrid();
     TGraphErrors rebinned("PostRebinnedData.txt", "%lg %lg %lg");
     rebinned.SetTitle("Rebinned Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
     rebinned.SetMarkerStyle(kCircle);
