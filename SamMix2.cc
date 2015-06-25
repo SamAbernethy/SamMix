@@ -93,7 +93,7 @@ Int_t mix2()
     }
 }
 
-ppi0 :: ppi0() {} // what does this really do?
+ppi0 :: ppi0() {}
 ppi0 :: ~ppi0() {}
 
 // *******************************************************************************************************
@@ -102,7 +102,7 @@ ppi0 :: ~ppi0() {}
 void ppi0 :: InitialCarbon()
 {
     TString carbnumber = Form("%d", carbonstart);
-    TString FirstSource = "/local/raid0/work/aberneth/a2GoAT/postreconApril/";
+    TString FirstSource = "/local/raid0/work/aberneth/a2GoAT/postreconApril20/";
     FirstCarbonLocation = FirstSource + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
     ifstream Afile(FirstCarbonLocation);
     if (!Afile) {
@@ -132,11 +132,11 @@ void ppi0 :: CarbonLoop(Int_t j)
 {
     // Carbon data from acqu and Pi0 must exist in the following locations:
     TString AcqCarb_source = "/local/raid0/work/aberneth/a2GoAT/Apr2014/";
-    TString Pi0Carb_source = "/local/raid0/work/aberneth/a2GoAT/postreconApril/";
+    TString Pi0Carb_source = "/local/raid0/work/aberneth/a2GoAT/postreconApril20/";
 
     Int_t n_carb_run = carbonstart + j;
     TString carb_ext = Form("%d", n_carb_run);
-    if ((n_carb_run == 3492) || (n_carb_run == 3494)) { return; } // these don't work and I can't remove from Phil's data
+    // if ((n_carb_run == 3492) || (n_carb_run == 3494)) { return; } // these don't work and I can't remove from Phil's data
 
     // acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0-samApril_CBTaggTAPS_"
     acqu_Carbon = AcqCarb_source + "Acqu_CBTaggTAPS_" + carb_ext + ".root";
@@ -158,7 +158,6 @@ void ppi0 :: CarbonLoop(Int_t j)
     TFile Pi0Carb (Pi0_Carbon);
     TFile AcqCarb (acqu_Carbon);
 
-    // Theta_1 and Theta_0 must exist in Pi0Carb
     Pi0Carb.GetObject("Theta_1", Carb_1); // get Theta_1 from Pi0Carb
     Pi0Carb.GetObject("Theta_0", Carb_0);
     Carb_1->SetDirectory(0); // detach histogram
@@ -187,11 +186,11 @@ void ppi0 :: Asymmetry(Int_t index)
 {
     Int_t n_but_run = butanolstart + index;
     TString but_ext = Form("%d", n_but_run);
-    if (n_but_run == 3699) { return; } // this doesn't work and I can't remove from Phil's data
+    // if (n_but_run == 3699) { return; } // this doesn't work and I can't remove from Phil's data
 
     // Butanol data must exist for acqu and Pi0 as specified:
     TString AcqBut_source = "/local/raid0/work/aberneth/a2GoAT/May2014/";
-    TString Pi0But_source = "/local/raid0/work/aberneth/a2GoAT/postreconMay/";
+    TString Pi0But_source = "/local/raid0/work/aberneth/a2GoAT/postreconMay20/";
     TString histogram_source = "/local/raid0/work/aberneth/a2GoAT/histograms/";
 
     // Pi0 data must have "pi0-samMay_CBTaggTAPS", while acqu data must have "Acqu_CBTaggTAPS_"
@@ -265,7 +264,6 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
     std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
     std::cout << "Therefore, the scale used was: " << Scale() << endl;
-
     std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
     std::cout << "********************************************" << endl;
     fout << n_but_run << " " << asym << " " << err << endl;
@@ -307,11 +305,7 @@ void ppi0 :: RebinData()
     }
     else {
         Int_t num = 1;
-        Double_t runnumber[500];
-        Double_t helicity1[500];
-        Double_t helicity0[500];
-        Double_t helicity1error[500];
-        Double_t helicity0error[500];
+        Double_t runnumber[500], helicity1[500], helicity0[500], helicity1error[500], helicity0error[500];
         while (!input.eof()) {
             input >> runnumber[num] >> helicity1[num] >> helicity0[num] >> helicity1error[num] >> helicity0error[num];
             num++;
@@ -322,14 +316,9 @@ void ppi0 :: RebinData()
     Int_t newdatapoint = ceil(num/rebinnumber);
     const int newdatapoints = newdatapoint;
     std::cout << "Therefore, number of rebinned points is: " << newdatapoints << endl;
-    Double_t averagerunnumber[newdatapoints] = {0};
-    Double_t asymmetry[newdatapoints] = {0};
-    Double_t propagatederror[newdatapoints] = {0};
-    Double_t sumofruns[newdatapoints] = {0};
-    Double_t sumofyield1[newdatapoints] = {0};
-    Double_t sumofyield0[newdatapoints] = {0};
-    Double_t sumofyield1errorsquares[newdatapoints] = {0};
-    Double_t sumofyield0errorsquares[newdatapoints] = {0};
+    Double_t averagerunnumber[newdatapoints] = {0}, asymmetry[newdatapoints] = {0}, propagatederror[newdatapoints] = {0};
+    Double_t sumofruns[newdatapoints] = {0}, sumofyield1[newdatapoints] = {0}, sumofyield0[newdatapoints] = {0};
+    Double_t sumofyield1errorsquares[newdatapoints] = {0}, sumofyield0errorsquares[newdatapoints] = {0};
     for ( Int_t k = 1; k < newdatapoints; k++ ) {
         for ( Int_t u = 1; u <= rebinnumber; u++ ) {
             sumofruns[k] += runnumber[u + (k-1)*rebinnumber];
@@ -343,7 +332,6 @@ void ppi0 :: RebinData()
         propagatederror[k] = (2./(pow(sumofyield0[k] + sumofyield1[k], 2.)))*sqrt(pow(sumofyield0[k], 2.)*pow(sumofyield1errorsquares[k], 1.) + pow(sumofyield1[k], 2.)*pow(sumofyield0errorsquares[k], 1.)) ;
         fout2 << averagerunnumber[k] << " " << asymmetry[k] << " " << propagatederror[k] << endl;
     }
-    std::cout << "Success! You win." << endl;
 }
 
 void ppi0 :: GraphRebinned()
