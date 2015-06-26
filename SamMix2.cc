@@ -82,13 +82,15 @@ Int_t mix2()
             fout.close();
             fout3.close();
             PolPar.GraphIndividual();
-            std::cout << "How many runs should be binned together?" << endl;
-            std::cin >> rebinnumber;
-            PolPar.SetRebinning(rebinnumber);
-            PolPar.RebinData();
-            fout2.close();
-            PolPar.GraphRebinned();
-            std::cout << "Success! You win." << endl;
+            for ( Int_t e = 1; e < 6; e++ ) {
+                std::cout << "How many runs should be binned together?" << endl;
+                std::cin >> rebinnumber;
+                PolPar.SetRebinning(rebinnumber);
+                PolPar.RebinData();
+                fout2.close();
+                PolPar.GraphRebinned();
+                std::cout << "Success! You win." << endl;
+            }
         }
     }
 }
@@ -343,3 +345,19 @@ void ppi0 :: GraphRebinned()
     TFile f2("rebinneddata.root", "RECREATE");
     f2.Write();
 }
+
+// ********************************************************************************************
+// ********************************************************************************************
+/*
+// VOID TO REBIN WITH MULTIPLE BINS TOGETHER
+Int_t RebinningVoid()
+{
+    for (Int_t rebinnumber = 2; rebinnumber < 6; rebinnumber++ ) {
+
+
+
+
+
+    }
+}
+*/
