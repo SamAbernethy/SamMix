@@ -237,8 +237,8 @@ void ppi0 :: Asymmetry(Int_t index)
     B_MissMass_1 -> Write();
     B_MissMass_0 -> Write(); */
 
-    yield_0 = BThet_0 -> GetBinContent(theta_bin);
-    yield_1 = BThet_1 -> GetBinContent(theta_bin);
+    yield_0 = BThet_0 -> GetBinContent(theta_bin) + BThet_0 -> GetBinContent(theta_bin + 1) + BThet_0 -> GetBinContent(theta_bin + 2) + BThet_0 -> GetBinContent(theta_bin + 3);
+    yield_1 = BThet_1 -> GetBinContent(theta_bin) + BThet_1 -> GetBinContent(theta_bin + 1) + BThet_1 -> GetBinContent(theta_bin + 2) + BThet_1 -> GetBinContent(theta_bin + 3);
     yield_0_e = BThet_0 -> GetBinError(theta_bin);
     yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
