@@ -82,15 +82,13 @@ Int_t mix2()
             fout.close();
             fout3.close();
             PolPar.GraphIndividual();
-            for ( Int_t e = 1; e < 6; e++ ) {
-                std::cout << "How many runs should be binned together?" << endl;
-                std::cin >> rebinnumber;
-                PolPar.SetRebinning(rebinnumber);
-                PolPar.RebinData();
-                fout2.close();
-                PolPar.GraphRebinned();
-                std::cout << "Success! You win." << endl;
-            }
+            std::cout << "How many runs should be binned together?" << endl;
+            std::cin >> rebinnumber;
+            PolPar.SetRebinning(rebinnumber);
+            PolPar.RebinData();
+            fout2.close();
+            PolPar.GraphRebinned();
+            std::cout << "Success! You win." << endl;
         }
     }
 }
