@@ -136,7 +136,7 @@ void ppi0 :: CarbonLoop(Int_t j)
 
     Int_t n_carb_run = carbonstart + j;
     TString carb_ext = Form("%d", n_carb_run);
-    // if ((n_carb_run == 3492) || (n_carb_run == 3494)) { return; } // these don't work and I can't remove from Phil's data
+    if ((n_carb_run == 3492) || (n_carb_run == 3494)) { return; } // these don't work and I can't remove from Phil's data
 
     // acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0-samApril_CBTaggTAPS_"
     acqu_Carbon = AcqCarb_source + "Acqu_CBTaggTAPS_" + carb_ext + ".root";
@@ -181,7 +181,7 @@ void ppi0 :: Asymmetry(Int_t index)
 {
     Int_t n_but_run = butanolstart + index;
     TString but_ext = Form("%d", n_but_run);
-    // if (n_but_run == 3699) { return; } // this doesn't work and I can't remove from Phil's data
+    if (n_but_run == 3699) { return; } // this doesn't work and I can't remove from Phil's data
 
     // Butanol data must exist for acqu and Pi0 as specified:
     TString AcqBut_source = "/local/raid0/work/aberneth/a2GoAT/May2014/";
@@ -310,9 +310,14 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
     Int_t newdatapoint = ceil( (double) num/rebinnumber);
     const int newdatapoints = newdatapoint;
     std::cout << "Therefore, number of rebinned points is: " << (newdatapoints - 1) << endl;
-    Double_t averagerunnumber[newdatapoints] = {0}, asymmetry[newdatapoints] = {0}, propagatederror[newdatapoints] = {0};
-    Double_t sumofruns[newdatapoints] = {0}, sumofyield1[newdatapoints] = {0}, sumofyield0[newdatapoints] = {0};
-    Double_t sumofyield1errorsquares[newdatapoints] = {0}, sumofyield0errorsquares[newdatapoints] = {0};
+    Double_t averagerunnumber[newdatapoints] = {0};
+    Double_t asymmetry[newdatapoints] = {0};
+    Double_t propagatederror[newdatapoints] = {0};
+    Double_t sumofruns[newdatapoints] = {0};
+    Double_t sumofyield1[newdatapoints] = {0};
+    Double_t sumofyield0[newdatapoints] = {0};
+    Double_t sumofyield1errorsquares[newdatapoints] = {0};
+    Double_t sumofyield0errorsquares[newdatapoints] = {0};
     for ( Int_t k = 1; k < newdatapoints; k++ ) {
         for ( Int_t u = 1; u <= rebinnumber; u++ ) {
             sumofruns[k] += runnumber[u + (k-1)*rebinnumber];
