@@ -242,6 +242,9 @@ void ppi0 :: Asymmetry(Int_t index)
     yield_0_e = BThet_0 -> GetBinError(theta_bin);
     yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
+    if (yield_0 + yield_1 < 40) {
+        return;
+    }
     /* if (yield_0 < 0) {
         // std::cout << "Yield for helicity 0 was negative for file " << n_but_run << endl;
         yield_0 = yield_0*(-1);
