@@ -278,7 +278,7 @@ void ppi0 :: GraphIndividual()
     c1 -> cd();
     c1 -> SetGrid();
     TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
-    data.SetTitle("Individual Run Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
+    data.SetTitle("Individual Run Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma_{2z} P_T P_{#gamma}");
     data.SetMarkerStyle(kCircle);
     data.SetFillColor(0);
     data.SetLineColor(56);
@@ -342,7 +342,7 @@ void ppi0 :: GraphRebinned()
     c2 -> cd();
     c2 -> SetGrid();
     TGraphErrors rebinned("PostRebinnedData.txt", "%lg %lg %lg");
-    rebinned.SetTitle("Rebinned Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma P_{#gamma}");
+    rebinned.SetTitle("Rebinned Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma_{2z} P_T P_{#gamma}");
     rebinned.SetMarkerStyle(kCircle);
     rebinned.SetFillColor(0);
     rebinned.SetLineColor(56);
