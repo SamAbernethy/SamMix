@@ -224,8 +224,8 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
     std::cout << "Scale was: " << Scale() << endl;
-    BThet_1 -> Add(C3500_1, (-1)*Scale());
-    BThet_0 -> Add(C3500_0, (-1)*Scale());
+    BThet_1 -> Add(C3500_1, (-0.1)*Scale());
+    BThet_0 -> Add(C3500_0, (-0.1)*Scale());
     BThet_1 -> Write();
     BThet_0 -> Write();
     std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
