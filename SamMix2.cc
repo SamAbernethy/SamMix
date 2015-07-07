@@ -242,7 +242,7 @@ void ppi0 :: Asymmetry(Int_t index)
     yield_0_e = BThet_0 -> GetBinError(theta_bin);
     yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-    if (yield_0 + yield_1 < 40) {
+    if (yield_0 + yield_1 < 10) {
         return;
     }
     /* if (yield_0 < 0) {
@@ -278,7 +278,7 @@ void ppi0 :: GraphIndividual()
     c1 -> cd();
     c1 -> SetGrid();
     TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
-    data.SetTitle("Individual Run Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma_{2z} P_T P_{#gamma}");
+    data.SetTitle("Individual Run Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma_{2z} P_{T} P_{#gamma}");
     data.SetMarkerStyle(kCircle);
     data.SetFillColor(0);
     data.SetLineColor(56);
@@ -342,7 +342,7 @@ void ppi0 :: GraphRebinned()
     c2 -> cd();
     c2 -> SetGrid();
     TGraphErrors rebinned("PostRebinnedData.txt", "%lg %lg %lg");
-    rebinned.SetTitle("Rebinned Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma_{2z} P_T P_{#gamma}");
+    rebinned.SetTitle("Rebinned Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma_{2z} P_{T} P_{#gamma}");
     rebinned.SetMarkerStyle(kCircle);
     rebinned.SetFillColor(0);
     rebinned.SetLineColor(56);
