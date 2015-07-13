@@ -117,11 +117,10 @@ void ppi0 :: InitialCarbon()
     C3500_1 -> SetDirectory(0); // detaches this so that you can open and close root files without destroying it
     C3500_0 -> SetDirectory(0);
 
-    // MM_pi0_n_2g_h1 and MM_pi0_n_2g_h0 need to exist in FirstFile
-    /*  FirstFile.GetObject("MM_pi0_n_2g_h1", C_MissMass_1);
+    FirstFile.GetObject("MM_pi0_n_2g_h1", C_MissMass_1);
     FirstFile.GetObject("MM_pi0_n_2g_h0", C_MissMass_0);
     C_MissMass_1->SetDirectory(0);
-    C_MissMass_0->SetDirectory(0); */
+    C_MissMass_0->SetDirectory(0);
 }
 
 // ******************************************************************************************************
@@ -158,13 +157,20 @@ void ppi0 :: CarbonLoop(Int_t j)
     TFile Pi0Carb (Pi0_Carbon);
     TFile AcqCarb (acqu_Carbon);
 
-    Pi0Carb.GetObject("Theta_1", Carb_1); // get Theta_1 from Pi0Carb
+    Pi0Carb.GetObject("Theta_1", Carb_1); // get Theta_1 from Pi0Carb, etc
     Pi0Carb.GetObject("Theta_0", Carb_0);
-    Carb_1 -> SetDirectory(0); // detach histogram
-    Carb_0 -> SetDirectory(0);
+    Pi0Carb.GetObject("MM_pi0_n_2g_h1", MM_1);
+    Pi0Carb.GetObject("MM_pi0_n_2g_h0", MM_0);
 
-    C3500_1 -> Add(Carb_1,1); // add Carb_1 to the Carbon stack
-    C3500_0 -> Add(Carb_0,1);
+    Carb_1 -> SetDirectory(0); // detach histograms
+    Carb_0 -> SetDirectory(0);
+    MM_1 -> SetDirectory(0);
+    MM_0 -> SetDirectory(0);
+
+    C_MissMass_1 -> Add(MM_1, 1);
+    C_MissMass_0 -> Add(MM_0, 1);
+    C3500_1 -> Add(Carb_1, 1); // add Carb_1 to the Carbon stack
+    C3500_0 -> Add(Carb_0, 1);
 
     AcqCarb.GetObject("tagger", Acqu_carb);
     std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << Acqu_carb -> GetEntries() << endl;
@@ -210,16 +216,13 @@ void ppi0 :: Asymmetry(Int_t index)
 
     AcqBut.GetObject("tagger", Acqu_but);
     ButaEvnt = Acqu_but -> GetEntries();
-    if (ButaEvnt < 4.0e+6) {
-       std::cout << "Butanol event count is too low for file " << n_but_run << endl;
-       return;
-    }
+    if (ButaEvnt < 4.0e+6) { return; }
 
     Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
     Pi0But.GetObject("Theta_0", BThet_0);
 
-    // Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
-    // Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
+    Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
+    Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
     TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
     std::cout << "Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
@@ -231,11 +234,10 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "yield_0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
 
-    // MM_pi0_n_2g_h1 must exist in Pi0But
-    /*  B_MissMass_1 -> Add(C_MissMass_1, (-1)*Scale());
+    B_MissMass_1 -> Add(C_MissMass_1, (-1)*Scale());
     B_MissMass_0 -> Add(C_MissMass_0, (-1)*Scale());
     B_MissMass_1 -> Write();
-    B_MissMass_0 -> Write(); */
+    B_MissMass_0 -> Write();
 
     yield_0 = BThet_0 -> GetBinContent(theta_bin);
     yield_1 = BThet_1 -> GetBinContent(theta_bin);

@@ -11,6 +11,8 @@ private:
     TH1* C3500_1; // within Car_3500
     TH1* Carb_0; // within Pi0Carb, which is found in Pi0_Carbon
     TH1* Carb_1; // within Pi0Carb, which is found in Pi0_Carbon
+    TH1* MM_0; // within Pi0Carb, contains the missing mass for that carbon file
+    TH1* MM_1; // within Pi0Carb, contains the missing mass for that carbon file
     TH1* BThet_0; // within Pi0But, which is found in Pi0_Butanol
     TH1* BThet_1; // within Pi0But, which is found in Pi0_Butanol
     TH1* C_MissMass_1; // within Car_3500, the first root file
