@@ -1,7 +1,6 @@
 #ifndef __SAMMIX2_h__
 #define __SAMMIX2_h__
-
-#include "TFile.h" // this will need to be run somewhere with TFile.h
+#include "TFile.h"
 
 class ppi0
 {
