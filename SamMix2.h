@@ -31,6 +31,7 @@ private:
 
     Double_t ButaEvnt; // number of butanol events
     Double_t CarbEvnt; // number of carbon events
+    Double_t CarbonScalingFactor; // factor by which carbon background is subtracted
 
     TString FirstCarbonLocation; // location of the first root file used for carbon
     TString Pi0_Carbon; // formerly Pi0file, where post-GoAT carbon data is found
@@ -60,6 +61,7 @@ public:
     void RebinData();
     void GraphRebinned();
     void SetRebinning(Int_t i) { rebinnumber = i; }
+    void SetCarbonScale(Double_t i) { CarbonScalingFactor = i; }
 };
 
 #endif // SAMMIX2_H

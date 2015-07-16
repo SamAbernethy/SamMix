@@ -20,6 +20,7 @@ Int_t mix2()
     Int_t carbonstart; // 3407 normally
     Int_t butanolstart; // 3680 normally
     Int_t rebinnumber; // number of bins clumped together
+    Double_t CarbonScalingFactor;
 
     ppi0 PolPar; // initialize PolPar, of class ppi0
     std::cout << "Which theta bin to use: ";
@@ -75,6 +76,9 @@ Int_t mix2()
             return 1;
         } else {
             PolPar.SetButanolStart(butanolstart);
+            std::cout << "Set Carbon Background Scaling Factor: (-1 is full subtraction, 0 is none): " << endl;
+            std::cin >> CarbonScalingFactor;
+            PolPar.SetCarbonScale(CarbonScalingFactor);
             std::cout << "Starting Butanol file input loop... " << endl;
             for (Int_t i = 0; i < n_but_files; i++) {
                 PolPar.Asymmetry(i);
@@ -225,15 +229,15 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
     std::cout << "Scale was: " << Scale() << endl;
-    BThet_1 -> Add(CThet_1, (0)*Scale());
-    BThet_0 -> Add(CThet_0, (0)*Scale());
+    BThet_1 -> Add(CThet_1, (CarbonScalingFactor)*Scale());
+    BThet_0 -> Add(CThet_0, (CarbonScalingFactor)*Scale());
     BThet_1 -> Write();
     BThet_0 -> Write();
     std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "yield_0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
 
-    B_MissMass_1 -> Add(C_MissMass_1, (-1)*Scale());
-    B_MissMass_0 -> Add(C_MissMass_0, (-1)*Scale());
+    B_MissMass_1 -> Add(C_MissMass_1, (CarbonScalingFactor)*Scale());
+    B_MissMass_0 -> Add(C_MissMass_0, (CarbonScalingFactor)*Scale());
     B_MissMass_1 -> Write();
     B_MissMass_0 -> Write();
 
