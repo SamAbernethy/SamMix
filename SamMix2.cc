@@ -112,10 +112,10 @@ void ppi0 :: InitialCarbon()
     TFile FirstFile (FirstCarbonLocation); // call on the first root file as FirstFile
     std::cout << "First file found!" << endl;
 
-    FirstFile.GetObject("Theta_1", C3500_1); // get Theta_1 from TH1 C3500_1
-    FirstFile.GetObject("Theta_0", C3500_0); // get Theta_0 from TH1 C3500_0
-    C3500_1 -> SetDirectory(0); // detaches this so that you can open and close root files without destroying it
-    C3500_0 -> SetDirectory(0);
+    FirstFile.GetObject("Theta_1", CThet_1); // get Theta_1 from TH1 CThet_1
+    FirstFile.GetObject("Theta_0", CThet_0); // get Theta_0 from TH1 CThet_0
+    CThet_1 -> SetDirectory(0); // detaches this so that you can open and close root files without destroying it
+    CThet_0 -> SetDirectory(0);
 
     FirstFile.GetObject("MM_pi0_n_2g_h1", C_MissMass_1);
     FirstFile.GetObject("MM_pi0_n_2g_h0", C_MissMass_0);
@@ -135,7 +135,6 @@ void ppi0 :: CarbonLoop(Int_t j)
 
     Int_t n_carb_run = carbonstart + j;
     TString carb_ext = Form("%d", n_carb_run);
-    if ((n_carb_run == 3492) || (n_carb_run == 3494)) { return; } // these don't work and I can't remove from Phil's data
 
     // acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0-samApril_CBTaggTAPS_"
     acqu_Carbon = AcqCarb_source + "Acqu_CBTaggTAPS_" + carb_ext + ".root";
@@ -169,13 +168,13 @@ void ppi0 :: CarbonLoop(Int_t j)
 
     C_MissMass_1 -> Add(MM_1, 1);
     C_MissMass_0 -> Add(MM_0, 1);
-    C3500_1 -> Add(Carb_1, 1); // add Carb_1 to the Carbon stack
-    C3500_0 -> Add(Carb_0, 1);
+    CThet_1 -> Add(Carb_1, 1); // add Carb_1 to the Carbon stack
+    CThet_0 -> Add(Carb_0, 1);
 
     AcqCarb.GetObject("tagger", Acqu_carb);
     std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << Acqu_carb -> GetEntries() << endl;
-    std::cout << "Carbon bin content for helicity 1: " << C3500_1 -> GetBinContent(theta_bin) << endl;
-    std::cout << "Carbon bin content for helicity 0: " << C3500_0 -> GetBinContent(theta_bin) << endl;
+    std::cout << "Carbon bin content for helicity 1: " << CThet_1 -> GetBinContent(theta_bin) << endl;
+    std::cout << "Carbon bin content for helicity 0: " << CThet_0 -> GetBinContent(theta_bin) << endl;
     CarbEvnt += Acqu_carb -> GetEntries();
 }
 
@@ -187,7 +186,6 @@ void ppi0 :: Asymmetry(Int_t index)
 {
     Int_t n_but_run = butanolstart + index;
     TString but_ext = Form("%d", n_but_run);
-    if (n_but_run == 3699) { return; } // this doesn't work and I can't remove from Phil's data
 
     // Butanol data must exist for acqu and Pi0 as specified:
     TString AcqBut_source = "/local/raid0/work/aberneth/a2GoAT/May2014/";
@@ -227,8 +225,8 @@ void ppi0 :: Asymmetry(Int_t index)
     std::cout << "Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
     std::cout << "Scale was: " << Scale() << endl;
-    BThet_1 -> Add(C3500_1, (0)*Scale());
-    BThet_0 -> Add(C3500_0, (0)*Scale());
+    BThet_1 -> Add(CThet_1, (0)*Scale());
+    BThet_0 -> Add(CThet_0, (0)*Scale());
     BThet_1 -> Write();
     BThet_0 -> Write();
     std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
@@ -247,14 +245,6 @@ void ppi0 :: Asymmetry(Int_t index)
     if (yield_0 + yield_1 < 10) {
         return;
     }
-    /* if (yield_0 < 0) {
-        // std::cout << "Yield for helicity 0 was negative for file " << n_but_run << endl;
-        yield_0 = yield_0*(-1);
-    }
-    if (yield_1 < 0) {
-        // std::cout << "Yield for helicity 1 was negative for file " << n_but_run << endl;
-        yield_1 = yield_1*(-1);
-    } */
 
     asym = (yield_1 - yield_0) / (yield_0 + yield_1);
     err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
