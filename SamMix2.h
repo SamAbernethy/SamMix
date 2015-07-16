@@ -49,9 +49,6 @@ private:
 public:
     ppi0(); // class constructor
     ~ppi0(); // class destructor
-    void SetCarbonStart(Int_t i) { carbonstart = i; } // change this when I know more about pointers/private/public/etc
-    void SetButanolStart(Int_t i) { butanolstart = i; }
-    void SetTheta_bin(Int_t i) { theta_bin = i; } // simple void to assign theta_bin to theta_bin, archaic from Dylan
     void CarbonLoop(Int_t j); // void to loop through carbon data
     void Asymmetry(Int_t index); // void to calculate asymmetry from butanol data
     void GraphIndividual(); // graph it and write into root file
@@ -62,6 +59,10 @@ public:
     void GraphRebinned();
     void SetRebinning(Int_t i) { rebinnumber = i; }
     void SetCarbonScale(Double_t i) { CarbonScalingFactor = i; }
+    void SetCarbonStart(Int_t i) { carbonstart = i; } // change this when I know more about pointers/private/public/etc
+    void SetButanolStart(Int_t i) { butanolstart = i; }
+    void SetTheta_bin(Int_t i) { theta_bin = i; } // simple void to assign theta_bin to theta_bin, archaic from Dylan
+
 };
 
 #endif // SAMMIX2_H

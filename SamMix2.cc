@@ -76,7 +76,8 @@ Int_t mix2()
             return 1;
         } else {
             PolPar.SetButanolStart(butanolstart);
-            std::cout << "Set Carbon Background Scaling Factor: (-1 is full subtraction, 0 is none): " << endl;
+            std::cout << "Set Carbon Background Scaling Factor: " << endl;
+            std::cout << "(Note that -1 is full subtraction, 0 is none.) " << endl;
             std::cin >> CarbonScalingFactor;
             PolPar.SetCarbonScale(CarbonScalingFactor);
             std::cout << "Starting Butanol file input loop... " << endl;
@@ -160,6 +161,9 @@ void ppi0 :: CarbonLoop(Int_t j)
     TFile Pi0Carb (Pi0_Carbon);
     TFile AcqCarb (acqu_Carbon);
 
+    AcqCarb.GetObject("tagger", Acqu_carb);
+    if (Acqu_carb -> GetEntries() < 3.0e+6) { return; }
+
     Pi0Carb.GetObject("Theta_1", Carb_1); // get Theta_1 from Pi0Carb, etc
     Pi0Carb.GetObject("Theta_0", Carb_0);
     Pi0Carb.GetObject("MM_pi0_n_2g_h1", MM_1);
@@ -175,7 +179,6 @@ void ppi0 :: CarbonLoop(Int_t j)
     CThet_1 -> Add(Carb_1, 1); // add Carb_1 to the Carbon stack
     CThet_0 -> Add(Carb_0, 1);
 
-    AcqCarb.GetObject("tagger", Acqu_carb);
     std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << Acqu_carb -> GetEntries() << endl;
     std::cout << "Carbon bin content for helicity 1: " << CThet_1 -> GetBinContent(theta_bin) << endl;
     std::cout << "Carbon bin content for helicity 0: " << CThet_0 -> GetBinContent(theta_bin) << endl;
