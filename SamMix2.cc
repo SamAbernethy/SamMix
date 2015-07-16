@@ -102,7 +102,7 @@ ppi0 :: ~ppi0() {}
 void ppi0 :: InitialCarbon()
 {
     TString carbnumber = Form("%d", carbonstart);
-    TString FirstSource = "/local/raid0/work/aberneth/a2GoAT/postreconAprilFINAL/";
+    TString FirstSource = "/local/raid0/work/aberneth/a2GoAT/postreconApril/";
     FirstCarbonLocation = FirstSource + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
     ifstream Afile(FirstCarbonLocation);
     if (!Afile) {
@@ -131,7 +131,7 @@ void ppi0 :: CarbonLoop(Int_t j)
 {
     // Carbon data from acqu and Pi0 must exist in the following locations:
     TString AcqCarb_source = "/local/raid0/work/aberneth/a2GoAT/Apr2014/";
-    TString Pi0Carb_source = "/local/raid0/work/aberneth/a2GoAT/postreconAprilFINAL/";
+    TString Pi0Carb_source = "/local/raid0/work/aberneth/a2GoAT/postreconApril/";
 
     Int_t n_carb_run = carbonstart + j;
     TString carb_ext = Form("%d", n_carb_run);
@@ -191,7 +191,7 @@ void ppi0 :: Asymmetry(Int_t index)
 
     // Butanol data must exist for acqu and Pi0 as specified:
     TString AcqBut_source = "/local/raid0/work/aberneth/a2GoAT/May2014/";
-    TString Pi0But_source = "/local/raid0/work/aberneth/a2GoAT/postreconMayFINAL/";
+    TString Pi0But_source = "/local/raid0/work/aberneth/a2GoAT/postreconMay/";
     TString histogram_source = "/local/raid0/work/aberneth/a2GoAT/histograms/";
 
     // Pi0 data must have "pi0-samMay_CBTaggTAPS", while acqu data must have "Acqu_CBTaggTAPS_"
