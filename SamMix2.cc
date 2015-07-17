@@ -281,7 +281,7 @@ void ppi0 :: GraphIndividual()
     data.SetMarkerStyle(kCircle);
     data.SetFillColor(0);
     data.SetLineColor(56);
-    data.DrawClone();
+    data.DrawClone("AP*");
     c1 -> Print("MyGraph.png", "png");
     TFile f("data.root", "RECREATE");
     f.Write();
@@ -345,7 +345,7 @@ void ppi0 :: GraphRebinned()
     rebinned.SetMarkerStyle(kCircle);
     rebinned.SetFillColor(0);
     rebinned.SetLineColor(56);
-    rebinned.DrawClone();
+    rebinned.DrawClone("AP*");
     c2 -> Print("MyRebinnedGraph.png", "png");
     TFile f2("rebinneddata.root", "RECREATE");
     f2.Write();
