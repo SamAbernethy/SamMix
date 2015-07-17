@@ -124,8 +124,8 @@ void ppi0 :: InitialCarbon()
 
     FirstFile.GetObject("MM_pi0_n_2g_h1", C_MissMass_1);
     FirstFile.GetObject("MM_pi0_n_2g_h0", C_MissMass_0);
-    C_MissMass_1->SetDirectory(0);
-    C_MissMass_0->SetDirectory(0);
+    C_MissMass_1 -> SetDirectory(0);
+    C_MissMass_0 -> SetDirectory(0);
 }
 
 // ******************************************************************************************************
@@ -256,7 +256,6 @@ void ppi0 :: Asymmetry(Int_t index)
     asym = (yield_1 - yield_0) / (yield_0 + yield_1);
     err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
 
-    std::cout << "The run number was: " << n_but_run << endl;
     std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
     std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
     std::cout << "Therefore, the scale used was: " << Scale() << endl;
@@ -281,7 +280,7 @@ void ppi0 :: GraphIndividual()
     data.SetMarkerStyle(kCircle);
     data.SetFillColor(0);
     data.SetLineColor(56);
-    data.DrawClone("AP*");
+    data.DrawClone("AP");
     c1 -> Print("MyGraph.png", "png");
     TFile f("data.root", "RECREATE");
     f.Write();
@@ -345,7 +344,7 @@ void ppi0 :: GraphRebinned()
     rebinned.SetMarkerStyle(kCircle);
     rebinned.SetFillColor(0);
     rebinned.SetLineColor(56);
-    rebinned.DrawClone("AP*");
+    rebinned.DrawClone("AP");
     c2 -> Print("MyRebinnedGraph.png", "png");
     TFile f2("rebinneddata.root", "RECREATE");
     f2.Write();
