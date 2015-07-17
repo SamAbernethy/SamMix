@@ -162,7 +162,7 @@ void ppi0 :: CarbonLoop(Int_t j)
     TFile AcqCarb (acqu_Carbon);
 
     AcqCarb.GetObject("tagger", Acqu_carb);
-    if (Acqu_carb -> GetEntries() < 3.0e+6) { return; }
+    if (Acqu_carb -> GetEntries() < 4.0e+6) { return; }
 
     Pi0Carb.GetObject("Theta_1", Carb_1); // get Theta_1 from Pi0Carb, etc
     Pi0Carb.GetObject("Theta_0", Carb_0);
