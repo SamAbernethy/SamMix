@@ -130,7 +130,7 @@ void ppi0 :: InitialCarbon()
     TString FirstAcquLocation = "/local/raid0/work/aberneth/a2GoAT/Apr2014/Acqu_CBTaggTAPS_" + carbnumber + ".root";
     TFile FirstAcqu(FirstAcquLocation);
     FirstAcqu.GetObject("tagger", First_carb);
-    CarbEvnt = FirstAcqu -> GetEntries();
+    CarbEvnt = First_carb -> GetEntries();
 }
 
 // ******************************************************************************************************
