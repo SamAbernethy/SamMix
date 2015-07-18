@@ -240,20 +240,23 @@ void ppi0 :: Asymmetry(Int_t index)
         yield_0_e = BThet_0 -> GetBinError(theta_bin);
         yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-        BThet_1 -> Add(CThet_1, (CarbonScalingFactor)*Scale());
+        yield_0 = (BThet_0 -> GetBinContent(theta_bin)) - (CThet_0 -> GetBinContent(theta_bin));
+        yield_1 = (BThet_1 -> GetBinContent(theta_bin)) - (CThet_1 -> GetBinContent(theta_bin));
+
+        /* BThet_1 -> Add(CThet_1, (CarbonScalingFactor)*Scale());
         BThet_0 -> Add(CThet_0, (CarbonScalingFactor)*Scale());
         BThet_1 -> Write();
-        BThet_0 -> Write();
-        std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
-        std::cout << "yield_0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
+        BThet_0 -> Write(); */
+        std::cout << "yield_1: " << yield_1 << endl;
+        std::cout << "yield_0: " << yield_0 << endl;
 
         B_MissMass_1 -> Add(C_MissMass_1, (CarbonScalingFactor)*Scale());
         B_MissMass_0 -> Add(C_MissMass_0, (CarbonScalingFactor)*Scale());
         B_MissMass_1 -> Write();
         B_MissMass_0 -> Write();
 
-        yield_0 = BThet_0 -> GetBinContent(theta_bin);
-        yield_1 = BThet_1 -> GetBinContent(theta_bin);
+        // yield_0 = BThet_0 -> GetBinContent(theta_bin);
+        // yield_1 = BThet_1 -> GetBinContent(theta_bin);
 
         if ((yield_0 < 100) || (yield_1 < 100)) {
             return;

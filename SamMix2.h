@@ -41,6 +41,8 @@ private:
     TString Pi0_Butanol; // formerly but_run, where post-GoAT butanol data is found
     TString acqu_Butanol; // formerly acq_run, where pre-GoAT butanol data is found
 
+    Double_t carbyield_0;
+    Double_t carbyield_1;
     Double_t yield_0; // yield within a given theta bin for helicity 0
     Double_t yield_1; // yield within a given theta bin for helicity 1
     Double_t yield_0_e; // error on yield_0
