@@ -35,6 +35,7 @@ private:
     Double_t CarbonScalingFactor; // factor by which carbon background is subtracted
 
     TString FirstCarbonLocation; // location of the first root file used for carbon
+    TString FirstAcquLocation;
     TString Pi0_Carbon; // formerly Pi0file, where post-GoAT carbon data is found
     TString acqu_Carbon; // formerly acqu_run, where pre-GoAT carbon data is found
     TString Pi0_Butanol; // formerly but_run, where post-GoAT butanol data is found
