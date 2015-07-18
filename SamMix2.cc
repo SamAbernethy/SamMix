@@ -126,6 +126,9 @@ void ppi0 :: InitialCarbon()
     FirstFile.GetObject("MM_pi0_n_2g_h0", C_MissMass_0);
     C_MissMass_1 -> SetDirectory(0);
     C_MissMass_0 -> SetDirectory(0);
+
+    FirstFile.GetObject("tagger", First_carb);
+    CarbEvnt = First_carb -> GetEntries();
 }
 
 // ******************************************************************************************************
@@ -162,27 +165,27 @@ void ppi0 :: CarbonLoop(Int_t j)
     TFile AcqCarb (acqu_Carbon);
 
     AcqCarb.GetObject("tagger", Acqu_carb);
-    if (Acqu_carb -> GetEntries() < 3.0e+6) { return; }
+    if (Acqu_carb -> GetEntries() > 3.0e+6) {
+        Pi0Carb.GetObject("Theta_1", Carb_1); // get Theta_1 from Pi0Carb, etc
+        Pi0Carb.GetObject("Theta_0", Carb_0);
+        Pi0Carb.GetObject("MM_pi0_n_2g_h1", MM_1);
+        Pi0Carb.GetObject("MM_pi0_n_2g_h0", MM_0);
 
-    Pi0Carb.GetObject("Theta_1", Carb_1); // get Theta_1 from Pi0Carb, etc
-    Pi0Carb.GetObject("Theta_0", Carb_0);
-    Pi0Carb.GetObject("MM_pi0_n_2g_h1", MM_1);
-    Pi0Carb.GetObject("MM_pi0_n_2g_h0", MM_0);
+        Carb_1 -> SetDirectory(0); // detach histograms
+        Carb_0 -> SetDirectory(0);
+        MM_1 -> SetDirectory(0);
+        MM_0 -> SetDirectory(0);
 
-    Carb_1 -> SetDirectory(0); // detach histograms
-    Carb_0 -> SetDirectory(0);
-    MM_1 -> SetDirectory(0);
-    MM_0 -> SetDirectory(0);
+        C_MissMass_1 -> Add(MM_1, 1);
+        C_MissMass_0 -> Add(MM_0, 1);
+        CThet_1 -> Add(Carb_1, 1); // add Carb_1 to the Carbon stack
+        CThet_0 -> Add(Carb_0, 1);
 
-    C_MissMass_1 -> Add(MM_1, 1);
-    C_MissMass_0 -> Add(MM_0, 1);
-    CThet_1 -> Add(Carb_1, 1); // add Carb_1 to the Carbon stack
-    CThet_0 -> Add(Carb_0, 1);
-
-    std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << Acqu_carb -> GetEntries() << endl;
-    std::cout << "Carbon bin content for helicity 1: " << CThet_1 -> GetBinContent(theta_bin) << endl;
-    std::cout << "Carbon bin content for helicity 0: " << CThet_0 -> GetBinContent(theta_bin) << endl;
-    CarbEvnt += Acqu_carb -> GetEntries();
+        std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << Acqu_carb -> GetEntries() << endl;
+        std::cout << "Carbon bin content for helicity 1: " << CThet_1 -> GetBinContent(theta_bin) << endl;
+        std::cout << "Carbon bin content for helicity 0: " << CThet_0 -> GetBinContent(theta_bin) << endl;
+        CarbEvnt += Acqu_carb -> GetEntries();
+    }
 }
 
 // *******************************************************************************************************
@@ -221,49 +224,49 @@ void ppi0 :: Asymmetry(Int_t index)
 
     AcqBut.GetObject("tagger", Acqu_but);
     ButaEvnt = Acqu_but -> GetEntries();
-    if (ButaEvnt < 4.0e+6) { return; }
+    if (ButaEvnt > 4.0e+6) {
+        Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
+        Pi0But.GetObject("Theta_0", BThet_0);
 
-    Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
-    Pi0But.GetObject("Theta_0", BThet_0);
+        Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
+        Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
+        TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
+        std::cout << "Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
+        std::cout << "Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
+        std::cout << "Scale was: " << Scale() << endl;
+        BThet_1 -> Add(CThet_1, (CarbonScalingFactor)*Scale());
+        BThet_0 -> Add(CThet_0, (CarbonScalingFactor)*Scale());
+        BThet_1 -> Write();
+        BThet_0 -> Write();
+        std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
+        std::cout << "yield_0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
 
-    Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
-    Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
-    TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
-    std::cout << "Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
-    std::cout << "Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
-    std::cout << "Scale was: " << Scale() << endl;
-    BThet_1 -> Add(CThet_1, (CarbonScalingFactor)*Scale());
-    BThet_0 -> Add(CThet_0, (CarbonScalingFactor)*Scale());
-    BThet_1 -> Write();
-    BThet_0 -> Write();
-    std::cout << "yield_1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
-    std::cout << "yield_0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
+        B_MissMass_1 -> Add(C_MissMass_1, (CarbonScalingFactor)*Scale());
+        B_MissMass_0 -> Add(C_MissMass_0, (CarbonScalingFactor)*Scale());
+        B_MissMass_1 -> Write();
+        B_MissMass_0 -> Write();
 
-    B_MissMass_1 -> Add(C_MissMass_1, (CarbonScalingFactor)*Scale());
-    B_MissMass_0 -> Add(C_MissMass_0, (CarbonScalingFactor)*Scale());
-    B_MissMass_1 -> Write();
-    B_MissMass_0 -> Write();
+        yield_0 = BThet_0 -> GetBinContent(theta_bin);
+        yield_1 = BThet_1 -> GetBinContent(theta_bin);
+        yield_0_e = BThet_0 -> GetBinError(theta_bin);
+        yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-    yield_0 = BThet_0 -> GetBinContent(theta_bin);
-    yield_1 = BThet_1 -> GetBinContent(theta_bin);
-    yield_0_e = BThet_0 -> GetBinError(theta_bin);
-    yield_1_e = BThet_1 -> GetBinError(theta_bin);
+        if ((yield_0 < 100) || (yield_1 < 100)) {
+            return;
+        }
 
-    if ((yield_0 < 100) || (yield_1 < 100)) {
-        return;
+        asym = (yield_1 - yield_0) / (yield_0 + yield_1);
+        err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
+
+        std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
+        std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
+        std::cout << "Therefore, the scale used was: " << Scale() << endl;
+        std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
+        std::cout << "********************************************" << endl;
+        fout << n_but_run << " " << asym << " " << err << endl; // for graphing individual runs
+        fout3 << n_but_run << " " << yield_1 << " " << yield_0 << " " << yield_1_e << " " << yield_0_e << endl; // for rebinning purposes
+        hist.Close();
     }
-
-    asym = (yield_1 - yield_0) / (yield_0 + yield_1);
-    err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
-
-    std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
-    std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
-    std::cout << "Therefore, the scale used was: " << Scale() << endl;
-    std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
-    std::cout << "********************************************" << endl;
-    fout << n_but_run << " " << asym << " " << err << endl; // for graphing individual runs
-    fout3 << n_but_run << " " << yield_1 << " " << yield_0 << " " << yield_1_e << " " << yield_0_e << endl; // for rebinning purposes
-    hist.Close();
 }
 
 // *************************************************************************************
