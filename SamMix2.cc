@@ -236,6 +236,10 @@ void ppi0 :: Asymmetry(Int_t index)
         std::cout << "Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
         std::cout << "Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
         std::cout << "Scale was: " << Scale() << endl;
+
+        yield_0_e = BThet_0 -> GetBinError(theta_bin);
+        yield_1_e = BThet_1 -> GetBinError(theta_bin);
+
         BThet_1 -> Add(CThet_1, (CarbonScalingFactor)*Scale());
         BThet_0 -> Add(CThet_0, (CarbonScalingFactor)*Scale());
         BThet_1 -> Write();
@@ -250,8 +254,6 @@ void ppi0 :: Asymmetry(Int_t index)
 
         yield_0 = BThet_0 -> GetBinContent(theta_bin);
         yield_1 = BThet_1 -> GetBinContent(theta_bin);
-        yield_0_e = BThet_0 -> GetBinError(theta_bin);
-        yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
         if ((yield_0 < 100) || (yield_1 < 100)) {
             return;
@@ -334,7 +336,7 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
         }
         averagerunnumber[k] = sumofruns[k] / rebinnumber;
         asymmetry[k] = (sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
-        propagatederror[k] = 2*(2./(pow(sumofyield0[k] + sumofyield1[k], 2.)))*sqrt(pow(sumofyield0[k], 2.)*pow(sumofyield1errorsquares[k], 1.) + pow(sumofyield1[k], 2.)*pow(sumofyield0errorsquares[k], 1.)) ;
+        propagatederror[k] = (2./(pow(sumofyield0[k] + sumofyield1[k], 2.)))*sqrt(pow(sumofyield0[k], 2.)*pow(sumofyield1errorsquares[k], 1.) + pow(sumofyield1[k], 2.)*pow(sumofyield0errorsquares[k], 1.)) ;
         fout2 << averagerunnumber[k] << " " << asymmetry[k] << " " << propagatederror[k] << endl;
     }
 }
