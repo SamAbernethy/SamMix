@@ -258,7 +258,7 @@ void ppi0 :: Asymmetry(Int_t index)
         // yield_0 = BThet_0 -> GetBinContent(theta_bin);
         // yield_1 = BThet_1 -> GetBinContent(theta_bin);
 
-        if ((yield_0 < 100) || (yield_1 < 100)) {
+        if ((yield_0 < 1000) || (yield_1 < 1000)) {
             return;
         }
 
