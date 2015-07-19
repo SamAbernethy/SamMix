@@ -346,7 +346,7 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
         }
         averagerunnumber[k] = sumofruns[k] / rebinnumber;
         asymmetry[k] = (sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
-        propogatederror[k] = sqrt(((asymmetry[k]/Pg)*(asymmetry[k]/Pg)*Pg_error*Pg_error) + ((2*sumofyield1[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k]))) * ((2*sumofyield1[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*sumofyield0errorsquares[k] + ((2*sumofyield0[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*((2*sumofyield0[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*sumofyield1errorsquares[k]);
+        propagatederror[k] = sqrt(((asymmetry[k]/Pg)*(asymmetry[k]/Pg)*Pg_error*Pg_error) + ((2*sumofyield1[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k]))) * ((2*sumofyield1[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*sumofyield0errorsquares[k] + ((2*sumofyield0[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*((2*sumofyield0[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*sumofyield1errorsquares[k]);
         // propagatederror[k] = (2./(pow(sumofyield0[k] + sumofyield1[k], 2.)))*sqrt(pow(sumofyield0[k], 2.)*pow(sumofyield1errorsquares[k], 1.) + pow(sumofyield1[k], 2.)*pow(sumofyield0errorsquares[k], 1.)) ;
         fout2 << averagerunnumber[k] << " " << asymmetry[k] << " " << propagatederror[k] << endl;
     }
