@@ -20,7 +20,7 @@ Int_t mix2()
     Int_t carbonstart; // 3407 normally
     Int_t butanolstart; // 3680 normally
     Int_t rebinnumber; // number of bins clumped together
-    Double_t CarbonScalingFactor;
+    Double_t CarbonScalingFactor; // -1 for full subtraction, 0 for none
 
     ppi0 PolPar; // initialize PolPar, of class ppi0
     std::cout << "Which theta bin to use: ";
@@ -258,6 +258,7 @@ void ppi0 :: Asymmetry(Int_t index)
         // yield_0 = BThet_0 -> GetBinContent(theta_bin);
         // yield_1 = BThet_1 -> GetBinContent(theta_bin);
 
+        // when I do 3 carbon files it was between 0.3 and 0.4 for theta bin 4, but 200 carbon files it's between 0.2 and 0.3... why?
         if ((yield_0 < 1000) || (yield_1 < 1000)) {
             return;
         }
@@ -344,7 +345,7 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
             sumofyield0errorsquares[k] += helicity0error[u + (k-1)*rebinnumber] * helicity0error[u + (k-1)*rebinnumber];
         }
         averagerunnumber[k] = sumofruns[k] / rebinnumber;
-        asymmetry[k] = (sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
+        asymmetry[k] = (1 / Pg)*(sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
         propagatederror[k] = sqrt(((asymmetry[k]/Pg)*(asymmetry[k]/Pg)*Pg_error*Pg_error) + ((2*sumofyield1[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k]))) * ((2*sumofyield1[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*sumofyield0errorsquares[k] + ((2*sumofyield0[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*((2*sumofyield0[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*sumofyield1errorsquares[k]);
         // propagatederror[k] = (2./(pow(sumofyield0[k] + sumofyield1[k], 2.)))*sqrt(pow(sumofyield0[k], 2.)*pow(sumofyield1errorsquares[k], 1.) + pow(sumofyield1[k], 2.)*pow(sumofyield0errorsquares[k], 1.)) ;
         fout2 << averagerunnumber[k] << " " << asymmetry[k] << " " << propagatederror[k] << endl;
