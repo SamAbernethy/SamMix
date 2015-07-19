@@ -262,8 +262,12 @@ void ppi0 :: Asymmetry(Int_t index)
             return;
         }
 
-        asym = (yield_1 - yield_0) / (yield_0 + yield_1);
-        err = (2./(pow(yield_0 + yield_1, 2.)))*sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
+        Double_t Pg = 0.692;
+        Double_t Pg_error = 0.025;
+        asym = (1 / Pg)*((yield_1 - yield_0) / (yield_0 + yield_1));
+        err = sqrt(((asym/Pg)*(asym/Pg)*Pg_error*Pg_error) + ((2*yield_1)/(Pg*(yield_1+yield_0)*(yield_1+yield_0))) * ((2*yield_1)/(Pg*(yield_1+yield_0)*(yield_1+yield_0)))*yield_0_e*yield_0_e + ((2*yield_0)/(Pg*(yield_1+yield_0)*(yield_1+yield_0)))*((2*yield_0)/(Pg*(yield_1+yield_0)*(yield_1+yield_0)))*yield_1_e*yield_1_e);
+
+        // err = (2./(pow(yield_0 + yield_1, 2.))) * sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
 
         std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
         std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
@@ -273,6 +277,7 @@ void ppi0 :: Asymmetry(Int_t index)
         fout << n_but_run << " " << asym << " " << err << endl; // for graphing individual runs
         fout3 << n_but_run << " " << yield_1 << " " << yield_0 << " " << yield_1_e << " " << yield_0_e << endl; // for rebinning purposes
         hist.Close();
+        // 0.692 +- 0.025 for Pe
     }
 }
 
@@ -286,7 +291,7 @@ void ppi0 :: GraphIndividual()
     c1 -> cd();
     c1 -> SetGrid();
     TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
-    data.SetTitle("Individual Run Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma_{2z} P_{T} P_{#gamma}");
+    data.SetTitle("Individual Run Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma_{2z} P_{T}");
     data.SetMarkerStyle(kCircle);
     data.SetFillColor(0);
     data.SetLineColor(56);
@@ -316,6 +321,8 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
             num++;
         }
     }
+    Double_t Pg = 0.692;
+    Double_t Pg_error = 0.025;
     std::cout << "Number of data points is: " << num << endl;
     std::cout << "Number of runs to bin together is: " << rebinnumber << endl;
     Int_t newdatapoint = ceil( (double) num/rebinnumber);
@@ -339,7 +346,8 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
         }
         averagerunnumber[k] = sumofruns[k] / rebinnumber;
         asymmetry[k] = (sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
-        propagatederror[k] = (2./(pow(sumofyield0[k] + sumofyield1[k], 2.)))*sqrt(pow(sumofyield0[k], 2.)*pow(sumofyield1errorsquares[k], 1.) + pow(sumofyield1[k], 2.)*pow(sumofyield0errorsquares[k], 1.)) ;
+        propogatederror[k] = sqrt(((asymmetry[k]/Pg)*(asymmetry[k]/Pg)*Pg_error*Pg_error) + ((2*sumofyield1[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k]))) * ((2*sumofyield1[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*sumofyield0errorsquares[k] + ((2*sumofyield0[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*((2*sumofyield0[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*sumofyield1errorsquares[k]);
+        // propagatederror[k] = (2./(pow(sumofyield0[k] + sumofyield1[k], 2.)))*sqrt(pow(sumofyield0[k], 2.)*pow(sumofyield1errorsquares[k], 1.) + pow(sumofyield1[k], 2.)*pow(sumofyield0errorsquares[k], 1.)) ;
         fout2 << averagerunnumber[k] << " " << asymmetry[k] << " " << propagatederror[k] << endl;
     }
 }
@@ -350,7 +358,7 @@ void ppi0 :: GraphRebinned()
     c2 -> cd();
     c2 -> SetGrid();
     TGraphErrors rebinned("PostRebinnedData.txt", "%lg %lg %lg");
-    rebinned.SetTitle("Rebinned Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma_{2z} P_{T} P_{#gamma}");
+    rebinned.SetTitle("Rebinned Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma_{2z} P_{T}");
     rebinned.SetMarkerStyle(kCircle);
     rebinned.SetFillColor(0);
     rebinned.SetLineColor(56);
