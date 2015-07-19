@@ -277,7 +277,6 @@ void ppi0 :: Asymmetry(Int_t index)
         fout << n_but_run << " " << asym << " " << err << endl; // for graphing individual runs
         fout3 << n_but_run << " " << yield_1 << " " << yield_0 << " " << yield_1_e << " " << yield_0_e << endl; // for rebinning purposes
         hist.Close();
-        // 0.692 +- 0.025 for Pe
     }
 }
 
@@ -295,7 +294,7 @@ void ppi0 :: GraphIndividual()
     data.SetMarkerStyle(kCircle);
     data.SetFillColor(0);
     data.SetLineColor(56);
-    data.DrawClone("AP");
+    data.DrawClone("AP*");
     c1 -> Print("MyGraph.png", "png");
     TFile f("data.root", "RECREATE");
     f.Write();
@@ -362,7 +361,7 @@ void ppi0 :: GraphRebinned()
     rebinned.SetMarkerStyle(kCircle);
     rebinned.SetFillColor(0);
     rebinned.SetLineColor(56);
-    rebinned.DrawClone("AP");
+    rebinned.DrawClone("AP*");
     c2 -> Print("MyRebinnedGraph.png", "png");
     TFile f2("rebinneddata.root", "RECREATE");
     f2.Write();
