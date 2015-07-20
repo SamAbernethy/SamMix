@@ -17,7 +17,9 @@ ofstream fout5("ScaledData2.txt");
 Int_t TestRun()
 {
     ppi0 Test;
-    Test.GraphARun();
+    for (Int_t runnumber = 3680; runnumber < 4001; runnumber++) {
+        Test.GraphARun(runnumber);
+    }
     std::cout << "You win!" << endl;
 }
 
@@ -233,79 +235,6 @@ void ppi0 :: Asymmetry(Int_t index)
     TFile Pi0But(Pi0_Butanol);
     TFile AcqBut(acqu_Butanol);
 
-    ifstream input;
-    input.open("Pi0P_DMT_E_300.txt");
-    if (!input) { return; }
-    Int_t num = 1;
-    Double_t angle[40], sigma[40], sigmascaled[40], sigmascaled2[40];
-    while (!input.eof()) {
-        input >> angle[num] >> sigma[num];
-        num++;
-    }
-
-    Double_t scale = 0.1;
-    // std::cout << "What Minimum Scaling Factor?" << endl;
-    // std::cin >> scale;
-
-    for (Int_t q = 1; q < 38; q++) {
-        sigmascaled[q] = sigma[q] * scale;
-        fout4 << angle[q] << " " << sigmascaled[q] << endl;
-    }
-
-    Double_t scale2 = 0.15;
-    // std::cout << "What Maximum Scaling Factor?" << endl;
-    // std::cin >> scale2;
-
-    for (Int_t r = 1; r < 38; r++) {
-        sigmascaled2[r] = sigma[r] * scale2;
-        fout5 << angle[r] << " " << sigmascaled2[r] << endl;
-    }
-
-    // RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_3755.root";
-    // TFile RunFile(RunLocation);
-
-    Pi0But.GetObject("Theta_1", BThet_1);
-    Pi0But.GetObject("Theta_0", BThet_0);
-    const Int_t n = 10;
-    Double_t runyield_1[n] = {0};
-    Double_t runyield_0[n] = {0};
-    Double_t runyield_1error[n] = {0};
-    Double_t runyield_0error[n] = {0};
-    Double_t runasymmetry[n] = {0};
-    Double_t runerror[n] = {0};
-    Double_t thetarange[n] = {0};
-    Double_t theta_error[n] = {0};
-
-    for (Int_t bin = 1; bin < n; bin++) {
-        runyield_1[bin] = BThet_1 -> GetBinContent(bin);
-        runyield_0[bin] = BThet_0 -> GetBinContent(bin);
-        runyield_1error[bin] = BThet_1 -> GetBinError(bin);
-        runyield_0error[bin] = BThet_0 -> GetBinError(bin);
-        runasymmetry[bin] = (runyield_0[bin] - runyield_1[bin]) / (runyield_1[bin] + runyield_0[bin]);
-        runerror[bin] =  (2./(pow(runyield_0[bin] + runyield_1[bin], 2.))) * sqrt(pow(runyield_0[bin], 2.)*pow(runyield_1error[bin], 2.) + pow(runyield_1[bin], 2.)*pow(runyield_0error[bin], 2.));
-        thetarange[bin] = 20*bin - 10;
-        theta_error[bin] = 10;
-    }
-
-    TCanvas *c3 = new TCanvas();
-    c3 -> cd();
-    c3 -> SetGrid();
-    TGraphErrors *data = new TGraphErrors("ScaledData.txt","%lg %lg %lg");
-    TGraphErrors *data2 = new TGraphErrors("ScaledData2.txt","%lg %lg %lg");
-    TGraphErrors *data3 = new TGraphErrors(n, thetarange, runasymmetry, theta_error, runerror);
-    data -> Fit("pol9");
-    data -> GetFunction("pol9") -> SetLineColor(4);
-    data2 -> Fit("pol9");
-    data2 -> GetFunction("pol9") -> SetLineColor(3);
-    TMultiGraph *mg = new TMultiGraph();
-    mg -> Add(data);
-    mg -> Add(data2);
-    mg -> Add(data3);
-    mg -> SetTitle("Cross Section Asymmetry ; #theta [degrees]; #Sigma_{2z} P_{T} P_{#gamma}");
-    mg -> Draw("AP");
-    c3 -> Update();
-    c3 -> Print("new.png", "png");
-
     Int_t KeepOrRemove;
     std::cout << "Did it look good enough? 1 for keep, 0 for remove." << endl;
     std::cin >> KeepOrRemove;
@@ -453,7 +382,7 @@ void ppi0 :: GraphRebinned()
     f2.Write();
 }
 
-void ppi0 :: GraphARun()
+void ppi0 :: GraphARun(Int_t i)
 {
     ifstream input;
     input.open("Pi0P_DMT_E_300.txt");
@@ -483,11 +412,14 @@ void ppi0 :: GraphARun()
         fout5 << angle[r] << " " << sigmascaled2[r] << endl;
     }
 
-    // RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_3755.root";
-    // TFile RunFile(RunLocation);
+    TString runnumberstring = Form("%d", i);
+    RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_" + runnumberstring + ".root";
+    ifstream Gfile(RunLocation);
+    if (!Gfile) { return; }
+    TFile RunFile(RunLocation);
 
-    Pi0But.GetObject("Theta_1", BThet_1);
-    Pi0But.GetObject("Theta_0", BThet_0);
+    RunFile.GetObject("Theta_1", BThet_1);
+    RunFile.GetObject("Theta_0", BThet_0);
     const Int_t n = 10;
     Double_t runyield_1[n] = {0};
     Double_t runyield_0[n] = {0};

@@ -62,7 +62,7 @@ public:
     Double_t Scale() { return ButaEvnt/CarbEvnt; } // Why this scaling from Dylan?
     void RebinData();
     void GraphRebinned();
-    void GraphARun();
+    void GraphARun(Int_t i);
     void SetRebinning(Int_t i) { rebinnumber = i; }
     void SetCarbonScale(Double_t i) { CarbonScalingFactor = i; }
     void SetCarbonStart(Int_t i) { carbonstart = i; } // change this when I know more about pointers/private/public/etc
