@@ -430,7 +430,7 @@ void ppi0 :: GraphARun()
     c3 -> SetGrid();
     TGraphErrors *data = new TGraphErrors("ScaledData.txt","%lg %lg %lg");
     TGraphErrors *data2 = new TGraphErrors("ScaledData2.txt","%lg %lg %lg");
-    TGraphErrors *data3 = new TGraphErrors(n, theta, runasymmetry, theta_error, runerror);
+    TGraphErrors *data3 = new TGraphErrors(n, thetarange, runasymmetry, theta_error, runerror);
     data -> Fit("pol9");
     data -> GetFunction("pol9") -> SetLineColor(4);
     data2 -> Fit("pol9");
