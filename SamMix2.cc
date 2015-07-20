@@ -253,7 +253,7 @@ void ppi0 :: Asymmetry(Int_t index)
         yield_0_e = BThet_0 -> GetBinError(theta_bin);
         yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-        GraphARun(i);
+        GraphARun();
         if (KeepOrRemove == 0) { return; }
 
         yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(theta_bin));
@@ -413,9 +413,8 @@ void ppi0 :: TheoreticalAsymmetry()
     }
 }
 
-void ppi0 :: GraphARun(Int_t i)
+void ppi0 :: GraphARun()
 {
-
     const Int_t n = 10;
     Double_t runyield_1[n] = {0};
     Double_t runyield_0[n] = {0};
