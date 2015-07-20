@@ -413,7 +413,8 @@ void ppi0 :: GraphARun(Int_t i)
     }
 
     TString runnumberstring = Form("%d", i);
-    RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_" + runnumberstring + ".root";
+    // RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_" + runnumberstring + ".root";
+    RunLocation = "/home/sam/work/histograms/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_" + runnumberstring + ".root";
     ifstream Gfile(RunLocation);
     if (!Gfile) { return; }
     TFile RunFile(RunLocation);
@@ -459,8 +460,14 @@ void ppi0 :: GraphARun(Int_t i)
     mg -> Draw("AP");
     c3 -> Update();
     c3 -> Print("new.png", "png");
+    Int_t KeepOrRemove;
+    std::cout << "Is this good enough? If not, put 0." << endl;
+    std::cin >> KeepOrRemove;
+    if (KeepOrRemove == 0) {
+        std::cout << runnumberstring;
+    }
 
-    std::cout << "Since Photon Polarization is 0.692, this gives: " << endl;
-    std::cout << "Minimum Target Polarization: " << scale / 0.692 << endl;
-    std::cout << "Maximum Target Polarization: " << scale2 / 0.692 << endl;
+    // std::cout << "Since Photon Polarization is 0.692, this gives: " << endl;
+    // std::cout << "Minimum Target Polarization: " << scale / 0.692 << endl;
+    // std::cout << "Maximum Target Polarization: " << scale2 / 0.692 << endl;
 }
