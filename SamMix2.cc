@@ -62,6 +62,8 @@ Int_t SamMix()
         PolPar.CarbonLoop(j);
     }
     std::cout << "Total Number of Carbon Background Entries Found: " << PolPar.GetCarbEntries() << endl;
+    std::cout << "Carbon bin content for helicity 1: " << CThet_1 -> GetBinContent(theta_bin) << endl;
+    std::cout << "Carbon bin content for helicity 0: " << CThet_0 -> GetBinContent(theta_bin) << endl;
 
     // BUTANOL
     std::cout << "Number of files for Butanol data: ";
@@ -140,21 +142,15 @@ void ppi0 :: InitialCarbon()
 void ppi0 :: CarbonLoop(Int_t j)
 {
     // Carbon data from acqu and Pi0 must exist in the following locations:
-    TString Pi0Carb_source = "/local/raid0/work/aberneth/a2GoAT/CarbonPi0-sam/";
+    TString Pi0Carb_source = "/home/sam/work/histograms/CarbonPi0-sam/";
 
     Int_t n_carb_run = carbonstart + j;
     TString carb_ext = Form("%d", n_carb_run);
 
-    // acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0-samApril_CBTaggTAPS_"
     Pi0_Carbon = Pi0Carb_source + "pi0-samApril_CBTaggTAPS_" + carb_ext + ".root";
 
-    std::cout << "Checking for Carbon file " << n_carb_run << "..." << endl;
     ifstream Cfile(Pi0_Carbon);
-    if (!Cfile) {
-        std::cout << "Pi0 Carbon files not found for file " << n_carb_run << endl;
-        return;
-    }
-    std::cout << "Found!" << endl;
+    if (!Cfile) { return; }
 
     TFile Pi0Carb (Pi0_Carbon);
     Pi0Carb.GetObject("Theta_1", Carb_1); // get Theta_1 from Pi0Carb, etc
@@ -172,8 +168,7 @@ void ppi0 :: CarbonLoop(Int_t j)
     CThet_1 -> Add(Carb_1, 1); // add Carb_1 to the Carbon stack
     CThet_0 -> Add(Carb_0, 1);
 
-    std::cout << "Carbon bin content for helicity 1: " << CThet_1 -> GetBinContent(theta_bin) << endl;
-    std::cout << "Carbon bin content for helicity 0: " << CThet_0 -> GetBinContent(theta_bin) << endl;
+
 }
 
 // *******************************************************************************************************
@@ -192,13 +187,8 @@ void ppi0 :: Asymmetry(Int_t index)
     // Pi0 data must have "pi0-samMay_CBTaggTAPS", while acqu data must have "Acqu_CBTaggTAPS_"
     Pi0_Butanol = Pi0But_source + "pi0-samMay_CBTaggTAPS_" + but_ext + ".root";
 
-    std::cout << "Checking for Butanol file " << n_but_run << "..." << endl;
     ifstream Dfile(Pi0_Butanol);
-    if (!Dfile) {
-        std::cout << "Pi0 Butanol files not found for file " << n_but_run << endl;
-        return;
-    }
-    std::cout << "Found!" << endl;
+    if (!Dfile) { return; }
 
     TFile Pi0But(Pi0_Butanol);
 
@@ -216,7 +206,7 @@ void ppi0 :: Asymmetry(Int_t index)
 
     for (Int_t j = 1; j < 335; j++) {
         if (ButanolRuns[j] == n_but_run) {
-            ButaEvnt = ButanolSize[j];
+            ButaEvnt = ButanolSizes[j];
         }
     }
 
@@ -227,33 +217,25 @@ void ppi0 :: Asymmetry(Int_t index)
         Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
         Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
         TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
-        std::cout << "Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
-        std::cout << "Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
-        std::cout << "Scale was: " << Scale() << endl;
+        std::cout << n_but_run << "- Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
+        std::cout << n_but_run << "- Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
 
         yield_0_e = BThet_0 -> GetBinError(theta_bin);
         yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-        GraphARun();
-        if (KeepOrRemove == 0) { return; }
+        // GraphARun();
+        // if (KeepOrRemove == 0) { return; }
 
         yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(theta_bin));
         yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(theta_bin));
 
-        /* BThet_1 -> Add(CThet_1, (CarbonScalingFactor)*Scale());
-        BThet_0 -> Add(CThet_0, (CarbonScalingFactor)*Scale());
-        BThet_1 -> Write();
-        BThet_0 -> Write(); */
-        std::cout << "yield_1: " << yield_1 << endl;
-        std::cout << "yield_0: " << yield_0 << endl;
+        std::cout << n_but_run << "- Post CB Subtraction bin content for helicity 1: " << yield_1 << endl;
+        std::cout << n_but_run << "- Post CB Subtraction bin content for helicity 0: " << yield_0 << endl;
 
         B_MissMass_1 -> Add(C_MissMass_1, (CarbonScalingFactor)*Scale());
         B_MissMass_0 -> Add(C_MissMass_0, (CarbonScalingFactor)*Scale());
         B_MissMass_1 -> Write();
         B_MissMass_0 -> Write();
-
-        // yield_0 = BThet_0 -> GetBinContent(theta_bin);
-        // yield_1 = BThet_1 -> GetBinContent(theta_bin);
 
         // same size acqu files but dramtically different sized yields as time goes on... different scaling approach?
         if ((yield_0 < 1000) || (yield_1 < 1000)) {
@@ -265,12 +247,6 @@ void ppi0 :: Asymmetry(Int_t index)
         asym = (1 / Pg)*((yield_1 - yield_0) / (yield_0 + yield_1));
         err = sqrt(((asym/Pg)*(asym/Pg)*Pg_error*Pg_error) + ((2*yield_1)/(Pg*(yield_1+yield_0)*(yield_1+yield_0))) * ((2*yield_1)/(Pg*(yield_1+yield_0)*(yield_1+yield_0)))*yield_0_e*yield_0_e + ((2*yield_0)/(Pg*(yield_1+yield_0)*(yield_1+yield_0)))*((2*yield_0)/(Pg*(yield_1+yield_0)*(yield_1+yield_0)))*yield_1_e*yield_1_e);
 
-        // err = (2./(pow(yield_0 + yield_1, 2.))) * sqrt(pow(yield_0, 2.)*pow(yield_1_e, 2.) + pow(yield_1, 2.)*pow(yield_0_e, 2.));
-
-        std::cout << "The number of Carbon entries was: " << CarbEvnt << endl;
-        std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
-        std::cout << "Therefore, the scale used was: " << Scale() << endl;
-        std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
         fout << n_but_run << " " << asym << " " << err << endl; // for graphing individual runs
         fout3 << n_but_run << " " << yield_1 << " " << yield_0 << " " << yield_1_e << " " << yield_0_e << endl; // for rebinning purposes
         hist.Close();
