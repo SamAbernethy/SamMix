@@ -49,6 +49,7 @@ private:
     Double_t err; // error on asymmetry
 
     TString RunLocation;
+    Int_t KeepOrRemove;
 
 
 public:

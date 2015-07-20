@@ -17,7 +17,7 @@ ofstream fout5("ScaledData2.txt");
 Int_t TestRun()
 {
     ppi0 Test;
-    for (Int_t runnumber = 3680; runnumber < 4001; runnumber++) {
+    for (Int_t runnumber = 3680; runnumber < 3750; runnumber++) {
         Test.GraphARun(runnumber);
     }
     std::cout << "You win!" << endl;
@@ -93,6 +93,7 @@ Int_t SamMix()
             PolPar.SetCarbonScale(CarbonScalingFactor);
             std::cout << "Starting Butanol file input loop... " << endl;
             for (Int_t i = 0; i < n_but_files; i++) {
+                PolPar.GraphARun(i);
                 PolPar.Asymmetry(i);
             }
             fout.close();
@@ -207,6 +208,7 @@ void ppi0 :: CarbonLoop(Int_t j)
 // ASYMMETRY WITH BUTANOL DATA
 void ppi0 :: Asymmetry(Int_t index)
 {
+    if (KeepOrRemove == 0) { return; }
     Int_t n_but_run = butanolstart + index;
     TString but_ext = Form("%d", n_but_run);
 
@@ -412,9 +414,10 @@ void ppi0 :: GraphARun(Int_t i)
         fout5 << angle[r] << " " << sigmascaled2[r] << endl;
     }
 
-    TString runnumberstring = Form("%d", i);
-    // RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_" + runnumberstring + ".root";
-    RunLocation = "/home/sam/work/histograms/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_" + runnumberstring + ".root";
+    Int_t n_but_run = butanolstart + i;
+    TString runnumberstring = Form("%d", n_but_run);
+    RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_" + runnumberstring + ".root";
+    // RunLocation = "/home/sam/work/histograms/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_" + runnumberstring + ".root";
     ifstream Gfile(RunLocation);
     if (!Gfile) { return; }
     TFile RunFile(RunLocation);
@@ -460,6 +463,9 @@ void ppi0 :: GraphARun(Int_t i)
     mg -> Draw("AP");
     c3 -> Update();
     c3 -> Print("new.png", "png");
+
+    std::cout << "Is it good enough? 1 for keep, 0 for remove." << endl;
+    std::cin >> KeepOrRemove;
 
     // std::cout << "Since Photon Polarization is 0.692, this gives: " << endl;
     // std::cout << "Minimum Target Polarization: " << scale / 0.692 << endl;
