@@ -232,6 +232,11 @@ void ppi0 :: Asymmetry(Int_t index)
 
     TFile Pi0But(Pi0_Butanol);
     TFile AcqBut(acqu_Butanol);
+    GraphARun();
+    Int_t KeepOrRemove;
+    std::cout << "Did it look good enough? 1 for keep, 0 for remove." << endl;
+    std::cin >> KeepOrRemove;
+    if (KeepOrRemove == 0) { return; }
 
     AcqBut.GetObject("tagger", Acqu_but);
     ButaEvnt = Acqu_but -> GetEntries();
@@ -387,29 +392,29 @@ void ppi0 :: GraphARun()
         num++;
     }
 
-    Double_t scale;
-    std::cout << "What Minimum Scaling Factor?" << endl;
-    std::cin >> scale;
+    Double_t scale = 0.1;
+    // std::cout << "What Minimum Scaling Factor?" << endl;
+    // std::cin >> scale;
 
     for (Int_t q = 1; q < 38; q++) {
         sigmascaled[q] = sigma[q] * scale;
         fout4 << angle[q] << " " << sigmascaled[q] << endl;
     }
 
-    Double_t scale2;
-    std::cout << "What Maximum Scaling Factor?" << endl;
-    std::cin >> scale2;
+    Double_t scale2 = 0.15;
+    // std::cout << "What Maximum Scaling Factor?" << endl;
+    // std::cin >> scale2;
 
     for (Int_t r = 1; r < 38; r++) {
         sigmascaled2[r] = sigma[r] * scale2;
         fout5 << angle[r] << " " << sigmascaled2[r] << endl;
     }
 
-    RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_3755.root";
-    TFile RunFile(RunLocation);
+    // RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_3755.root";
+    // TFile RunFile(RunLocation);
 
-    RunFile.GetObject("Theta_1", BThet_1);
-    RunFile.GetObject("Theta_0", BThet_0);
+    Pi0But.GetObject("Theta_1", BThet_1);
+    Pi0But.GetObject("Theta_0", BThet_0);
     const Int_t n = 10;
     Double_t runyield_1[n] = {0};
     Double_t runyield_0[n] = {0};
