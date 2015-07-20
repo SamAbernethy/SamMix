@@ -239,7 +239,7 @@ void ppi0 :: Asymmetry(Int_t index)
 
     AcqBut.GetObject("tagger", Acqu_but);
     ButaEvnt = Acqu_but -> GetEntries();
-    if (ButaEvnt > 4.0e+6) {
+    if (ButaEvnt > 0) {
         Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
         Pi0But.GetObject("Theta_0", BThet_0);
 
