@@ -8,6 +8,7 @@
 
 ofstream fout("ScaledData.txt"); // output of scaled txt file
 ofstream fout2("ScaledData2.txt");
+ofstream fout3("ExperimentalData.txt");
 
 void graph()
 {
@@ -38,6 +39,31 @@ void graph()
         sigmascaled2[r] = sigma[r] * scale2;
         fout2 << angle[r] << " " << sigmascaled2[r] << endl;
     }
+
+    // ****
+    TString Location = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_3407.root";
+    TFile File(Location);
+    Double_t ButaEvnt = Acqu_but -> GetEntries();
+    TH1* BThet_1;
+    TH1* BThet_0;
+
+    if (ButaEvnt > 4.0e+6) {
+        File.GetObject("Theta_1", BThet_1);
+        File.GetObject("Theta_0", BThet_0);
+
+        for (Int_t theta_bin = 1; theta_bin < 10; theta_bin++) {
+
+
+
+
+        }
+    }
+
+
+
+
+    // ****
+
 
 	TCanvas *c1 = new TCanvas();
     c1 -> cd();

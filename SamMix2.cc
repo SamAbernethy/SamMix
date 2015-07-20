@@ -11,6 +11,9 @@
 ofstream fout("data.txt"); // output for asymmetry data
 ofstream fout2("PostRebinnedData.txt"); // output for rebinned data
 ofstream fout3("YieldData.txt"); // output for yield data
+ofstream fout4("ScaledData.txt");
+ofstream fout5("ScaledData2.txt");
+ofstream fout6("ExperimentalData.txt");
 
 Int_t mix2()
 {
@@ -93,6 +96,7 @@ Int_t mix2()
             PolPar.RebinData();
             fout2.close();
             PolPar.GraphRebinned();
+            PolPar.GraphARun();
             std::cout << "Success! You win." << endl;
         }
     }
@@ -366,3 +370,83 @@ void ppi0 :: GraphRebinned()
     f2.Write();
 }
 
+void ppi0 :: GraphARun()
+{
+    ifstream input;
+    input.open("Pi0P_DMT_E_300.txt");
+    if (!input) { return; }
+    Int_t num = 1;
+    Double_t angle[40], sigma[40], sigmascaled[40], sigmascaled2[40];
+    while (!input.eof()) {
+        input >> angle[num] >> sigma[num];
+        num++;
+    }
+
+    Double_t scale;
+    std::cout << "What Minimum Scaling Factor?" << endl;
+    std::cin >> scale;
+
+    for (Int_t q = 1; q < 38; q++) {
+        sigmascaled[q] = sigma[q] * scale;
+        fout4 << angle[q] << " " << sigmascaled[q] << endl;
+    }
+
+    Double_t scale2;
+    std::cout << "What Maximum Scaling Factor?" << endl;
+    std::cin >> scale2;
+
+    for (Int_t r = 1; r < 38; r++) {
+        sigmascaled2[r] = sigma[r] * scale2;
+        fout5 << angle[r] << " " << sigmascaled2[r] << endl;
+    }
+
+
+    // ********
+
+    RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_3407.root";
+    TFile RunFile(RunLocation);
+
+    RunFile.GetObject("Theta_1", BThet_1);
+    RunFile.GetObject("Theta_0", BThet_0);
+    const Int_t n = 9;
+    Double_t runyield_1[n] = {0};
+    Double_t runyield_0[n] = {0};
+    Double_t runasymmetry[n] = {0};
+    Double_t runerror[n] = {0};
+    Double_t theta[n] = {0};
+    Double_t theta_error[n] = {0};
+
+    for (Int_t bin = 1; bin <= n ; bin++) {
+        runyield_1[bin] = BThet_1 -> GetBinContent(bin);
+        runyield_0[bin] = BThet_0 -> GetBinContent(bin);
+
+        runasymmetry[bin] = (runyield_1[bin]-runyield_0[bin]) / (runyield_1[bin] + runyield_0[bin]);
+        theta[n] = 20*bin - 10;
+        theta_error[bin] = 5;
+    }
+
+    // ********
+
+    TCanvas *c3 = new TCanvas();
+    c3 -> cd();
+    c3 -> SetGrid();
+    TGraphErrors *data = new TGraphErrors("ScaledData.txt","%lg %lg %lg");
+    TGraphErrors *data2 = new TGraphErrors("ScaledData2.txt","%lg %lg %lg");
+    TGraphErrors *data3 = new TGraphErrors(n, theta, runasymmetry, theta_error, runerror);
+    data -> Fit("pol9");
+    data -> GetFunction("pol9") -> SetLineColor(4);
+    data2 -> Fit("pol9");
+    data2 -> GetFunction("pol9") -> SetLineColor(3);
+    TMultiGraph *mg = new TMultiGraph();
+    mg -> Add(data);
+    mg -> Add(data2);
+    mg -> Add(data3);
+    mg -> SetTitle("Cross Section Asymmetry ; #theta [degrees]; #Sigma_{2z} P_{T} P_{#gamma}");
+    mg -> Draw("AP");
+    c3 -> Update();
+    c3 -> Print("new.png", "png");
+
+    std::cout << "Since Photon Polarization is 0.692, this gives: " << endl;
+    std::cout << "Minimum Target Polarization: " << scale / 0.692 << endl;
+    std::cout << "Maximum Target Polarization: " << scale2 / 0.692 << endl;
+}

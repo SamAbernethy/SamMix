@@ -41,14 +41,15 @@ private:
     TString Pi0_Butanol; // formerly but_run, where post-GoAT butanol data is found
     TString acqu_Butanol; // formerly acq_run, where pre-GoAT butanol data is found
 
-    Double_t carbyield_0;
-    Double_t carbyield_1;
     Double_t yield_0; // yield within a given theta bin for helicity 0
     Double_t yield_1; // yield within a given theta bin for helicity 1
     Double_t yield_0_e; // error on yield_0
     Double_t yield_1_e; // error on yield_1
     Double_t asym; // asymmetry from yields
     Double_t err; // error on asymmetry
+
+    TString RunLocation;
+
 
 public:
     ppi0(); // class constructor
@@ -61,6 +62,8 @@ public:
     Double_t Scale() { return ButaEvnt/CarbEvnt; } // Why this scaling from Dylan?
     void RebinData();
     void GraphRebinned();
+    void ExamineARun();
+    void GraphARun();
     void SetRebinning(Int_t i) { rebinnumber = i; }
     void SetCarbonScale(Double_t i) { CarbonScalingFactor = i; }
     void SetCarbonStart(Int_t i) { carbonstart = i; } // change this when I know more about pointers/private/public/etc
