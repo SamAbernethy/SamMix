@@ -13,6 +13,7 @@ ofstream fout2("PostRebinnedData.txt"); // output for rebinned data
 ofstream fout3("YieldData.txt"); // output for yield data
 ofstream fout4("ScaledData.txt");
 ofstream fout5("ScaledData2.txt");
+ofstream fout6("SizeOfAcquBut.txt");
 
 Int_t TestRun()
 {
@@ -252,8 +253,8 @@ void ppi0 :: Asymmetry(Int_t index)
         yield_0_e = BThet_0 -> GetBinError(theta_bin);
         yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-        GraphARun();
-        if (KeepOrRemove == 0) { return; }
+        // GraphARun();
+        // if (KeepOrRemove == 0) { return; }
 
         yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(theta_bin));
         yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(theta_bin));
@@ -291,6 +292,7 @@ void ppi0 :: Asymmetry(Int_t index)
         std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
         fout << n_but_run << " " << asym << " " << err << endl; // for graphing individual runs
         fout3 << n_but_run << " " << yield_1 << " " << yield_0 << " " << yield_1_e << " " << yield_0_e << endl; // for rebinning purposes
+        fout6 << n_but_run << " " << ButaEvnt << endl;
         hist.Close();
     }
 }
