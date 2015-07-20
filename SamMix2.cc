@@ -122,9 +122,6 @@ void ppi0 :: InitialCarbon()
     CThet_1 -> SetDirectory(0); // detaches this so that you can open and close root files without destroying it
     CThet_0 -> SetDirectory(0);
 
-    carbyield_0 = CThet_0 -> GetBinContent(theta_bin);
-    carbyield_1 = CThet_1 -> GetBinContent(theta_bin);
-
     FirstFile.GetObject("MM_pi0_n_2g_h1", C_MissMass_1);
     FirstFile.GetObject("MM_pi0_n_2g_h0", C_MissMass_0);
     C_MissMass_1 -> SetDirectory(0);
@@ -186,9 +183,6 @@ void ppi0 :: CarbonLoop(Int_t j)
         CThet_1 -> Add(Carb_1, 1); // add Carb_1 to the Carbon stack
         CThet_0 -> Add(Carb_0, 1);
 
-        carbyield_0 += Carb_0 -> GetBinContent(theta_bin);
-        carbyield_1 += Carb_1 -> GetBinContent(theta_bin);
-
         std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << Acqu_carb -> GetEntries() << endl;
         std::cout << "Carbon bin content for helicity 1: " << CThet_1 -> GetBinContent(theta_bin) << endl;
         std::cout << "Carbon bin content for helicity 0: " << CThet_0 -> GetBinContent(theta_bin) << endl;
@@ -246,8 +240,8 @@ void ppi0 :: Asymmetry(Int_t index)
         yield_0_e = BThet_0 -> GetBinError(theta_bin);
         yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-        yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*carbyield_0;
-        yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*carbyield_1;
+        yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(theta_bin));
+        yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(theta_bin));
 
         /* BThet_1 -> Add(CThet_1, (CarbonScalingFactor)*Scale());
         BThet_0 -> Add(CThet_0, (CarbonScalingFactor)*Scale());
