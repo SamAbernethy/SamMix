@@ -208,7 +208,6 @@ void ppi0 :: CarbonLoop(Int_t j)
 // ASYMMETRY WITH BUTANOL DATA
 void ppi0 :: Asymmetry(Int_t index)
 {
-    if (KeepOrRemove == 0) { return; }
     Int_t n_but_run = butanolstart + index;
     TString but_ext = Form("%d", n_but_run);
 
