@@ -122,6 +122,9 @@ void ppi0 :: InitialCarbon()
     CThet_1 -> SetDirectory(0); // detaches this so that you can open and close root files without destroying it
     CThet_0 -> SetDirectory(0);
 
+    carbyield_0 = CThet_0 -> GetBinContent(theta_bin);
+    carbyield_1 = CThet_1 -> GetBinContent(theta_bin);
+
     FirstFile.GetObject("MM_pi0_n_2g_h1", C_MissMass_1);
     FirstFile.GetObject("MM_pi0_n_2g_h0", C_MissMass_0);
     C_MissMass_1 -> SetDirectory(0);
@@ -183,6 +186,9 @@ void ppi0 :: CarbonLoop(Int_t j)
         CThet_1 -> Add(Carb_1, 1); // add Carb_1 to the Carbon stack
         CThet_0 -> Add(Carb_0, 1);
 
+        carbyield_0 += Carb_0 -> GetBinContent(theta_bin);
+        carbyield_1 += Carb_1 -> GetBinContent(theta_bin);
+
         std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << Acqu_carb -> GetEntries() << endl;
         std::cout << "Carbon bin content for helicity 1: " << CThet_1 -> GetBinContent(theta_bin) << endl;
         std::cout << "Carbon bin content for helicity 0: " << CThet_0 -> GetBinContent(theta_bin) << endl;
@@ -240,8 +246,8 @@ void ppi0 :: Asymmetry(Int_t index)
         yield_0_e = BThet_0 -> GetBinError(theta_bin);
         yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-        yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(theta_bin));
-        yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(theta_bin));
+        yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*carbyield_0;
+        yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*carbyield_1;
 
         /* BThet_1 -> Add(CThet_1, (CarbonScalingFactor)*Scale());
         BThet_0 -> Add(CThet_0, (CarbonScalingFactor)*Scale());
@@ -258,7 +264,7 @@ void ppi0 :: Asymmetry(Int_t index)
         // yield_0 = BThet_0 -> GetBinContent(theta_bin);
         // yield_1 = BThet_1 -> GetBinContent(theta_bin);
 
-        // when I do 3 carbon files it was between 0.3 and 0.4 for theta bin 4, but 200 carbon files it's between 0.2 and 0.3... why?
+        // same size acqu files but dramtically different sized yields as time goes on... different scaling approach?
         if ((yield_0 < 1000) || (yield_1 < 1000)) {
             return;
         }
@@ -274,7 +280,6 @@ void ppi0 :: Asymmetry(Int_t index)
         std::cout << "The number of Butanol entries was: " << ButaEvnt << endl;
         std::cout << "Therefore, the scale used was: " << Scale() << endl;
         std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
-        std::cout << "********************************************" << endl;
         fout << n_but_run << " " << asym << " " << err << endl; // for graphing individual runs
         fout3 << n_but_run << " " << yield_1 << " " << yield_0 << " " << yield_1_e << " " << yield_0_e << endl; // for rebinning purposes
         hist.Close();
@@ -347,7 +352,6 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
         averagerunnumber[k] = sumofruns[k] / rebinnumber;
         asymmetry[k] = (1 / Pg)*(sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
         propagatederror[k] = sqrt(((asymmetry[k]/Pg)*(asymmetry[k]/Pg)*Pg_error*Pg_error) + ((2*sumofyield1[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k]))) * ((2*sumofyield1[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*sumofyield0errorsquares[k] + ((2*sumofyield0[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*((2*sumofyield0[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*sumofyield1errorsquares[k]);
-        // propagatederror[k] = (2./(pow(sumofyield0[k] + sumofyield1[k], 2.)))*sqrt(pow(sumofyield0[k], 2.)*pow(sumofyield1errorsquares[k], 1.) + pow(sumofyield1[k], 2.)*pow(sumofyield0errorsquares[k], 1.)) ;
         fout2 << averagerunnumber[k] << " " << asymmetry[k] << " " << propagatederror[k] << endl;
     }
 }
