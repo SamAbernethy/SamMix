@@ -92,8 +92,8 @@ Int_t SamMix()
             std::cin >> CarbonScalingFactor;
             PolPar.SetCarbonScale(CarbonScalingFactor);
             std::cout << "Starting Butanol file input loop... " << endl;
+            PolPar.TheoreticalAsymmetry();
             for (Int_t i = 0; i < n_but_files; i++) {
-                PolPar.GraphARun(i);
                 PolPar.Asymmetry(i);
             }
             fout.close();
@@ -237,11 +237,6 @@ void ppi0 :: Asymmetry(Int_t index)
     TFile Pi0But(Pi0_Butanol);
     TFile AcqBut(acqu_Butanol);
 
-    Int_t KeepOrRemove;
-    std::cout << "Did it look good enough? 1 for keep, 0 for remove." << endl;
-    std::cin >> KeepOrRemove;
-    if (KeepOrRemove == 0) { return; }
-
     AcqBut.GetObject("tagger", Acqu_but);
     ButaEvnt = Acqu_but -> GetEntries();
     if (ButaEvnt > 4.0e+6) {
@@ -257,6 +252,9 @@ void ppi0 :: Asymmetry(Int_t index)
 
         yield_0_e = BThet_0 -> GetBinError(theta_bin);
         yield_1_e = BThet_1 -> GetBinError(theta_bin);
+
+        GraphARun(i);
+        if (KeepOrRemove == 0) { return; }
 
         yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(theta_bin));
         yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(theta_bin));
@@ -384,7 +382,7 @@ void ppi0 :: GraphRebinned()
     f2.Write();
 }
 
-void ppi0 :: GraphARun(Int_t i)
+void ppi0 :: TheoreticalAsymmetry()
 {
     ifstream input;
     input.open("Pi0P_DMT_E_300.txt");
@@ -396,34 +394,28 @@ void ppi0 :: GraphARun(Int_t i)
         num++;
     }
 
-    Double_t scale = 0.1;
-    // std::cout << "What Minimum Scaling Factor?" << endl;
-    // std::cin >> scale;
+    Double_t scale;
+    std::cout << "What Minimum Scaling Factor?" << endl;
+    std::cin >> scale;
 
     for (Int_t q = 1; q < 38; q++) {
         sigmascaled[q] = sigma[q] * scale;
         fout4 << angle[q] << " " << sigmascaled[q] << endl;
     }
 
-    Double_t scale2 = 0.15;
-    // std::cout << "What Maximum Scaling Factor?" << endl;
-    // std::cin >> scale2;
+    Double_t scale2;
+    std::cout << "What Maximum Scaling Factor?" << endl;
+    std::cin >> scale2;
 
     for (Int_t r = 1; r < 38; r++) {
         sigmascaled2[r] = sigma[r] * scale2;
         fout5 << angle[r] << " " << sigmascaled2[r] << endl;
     }
+}
 
-    Int_t n_but_run = butanolstart + i;
-    TString runnumberstring = Form("%d", n_but_run);
-    RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_" + runnumberstring + ".root";
-    // RunLocation = "/home/sam/work/histograms/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_" + runnumberstring + ".root";
-    ifstream Gfile(RunLocation);
-    if (!Gfile) { return; }
-    TFile RunFile(RunLocation);
+void ppi0 :: GraphARun(Int_t i)
+{
 
-    RunFile.GetObject("Theta_1", BThet_1);
-    RunFile.GetObject("Theta_0", BThet_0);
     const Int_t n = 10;
     Double_t runyield_1[n] = {0};
     Double_t runyield_0[n] = {0};
@@ -435,8 +427,8 @@ void ppi0 :: GraphARun(Int_t i)
     Double_t theta_error[n] = {0};
 
     for (Int_t bin = 1; bin < n; bin++) {
-        runyield_1[bin] = BThet_1 -> GetBinContent(bin);
-        runyield_0[bin] = BThet_0 -> GetBinContent(bin);
+        runyield_1[bin] = BThet_1 -> GetBinContent(bin) + (CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(bin));
+        runyield_0[bin] = BThet_0 -> GetBinContent(bin) + (CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(bin));
         runyield_1error[bin] = BThet_1 -> GetBinError(bin);
         runyield_0error[bin] = BThet_0 -> GetBinError(bin);
         runasymmetry[bin] = (runyield_0[bin] - runyield_1[bin]) / (runyield_1[bin] + runyield_0[bin]);

@@ -69,6 +69,7 @@ public:
     void SetCarbonStart(Int_t i) { carbonstart = i; } // change this when I know more about pointers/private/public/etc
     void SetButanolStart(Int_t i) { butanolstart = i; }
     void SetTheta_bin(Int_t i) { theta_bin = i; } // simple void to assign theta_bin to theta_bin, archaic from Dylan
+    void TheoreticalAsymmetry();
 
 };
 
