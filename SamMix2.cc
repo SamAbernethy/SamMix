@@ -18,7 +18,7 @@ Int_t SamMix()
 {
     Int_t theta_bin; // which theta bin
     Int_t n_but_files; // number of files for Butanol
-    Int_t n_carb_files; // number of files for Carbon
+    Int_t n_carb_files = 240; // number of files for Carbon, chosen as 240 since they're on my computer now
     Int_t carbonstart; // 3407 normally
     Int_t butanolstart; // 3680 normally
     Int_t rebinnumber; // number of bins clumped together
@@ -27,7 +27,7 @@ Int_t SamMix()
     ppi0 PolPar; // initialize PolPar, of class ppi0
     std::cout << "Which theta bin to use: ";
     std::cin >> theta_bin;
-    if ((!theta_bin) || (theta_bin == 0) || (theta_bin == 1)) {
+    if ((!theta_bin) || (theta_bin == 0) || (theta_bin > 9)) {
         std::cout << "Theta bin incorrectly specified. Try again." << endl;
         return 1;
     } else {
@@ -36,14 +36,6 @@ Int_t SamMix()
     }
 
     std::cout << "Initializing Carbon data... " << endl;
-    std::cout << "Number of Files for Carbon data: ";
-    std::cin >> n_carb_files;
-    if ((!n_carb_files) || (n_carb_files == 0)) {
-        std::cout << "Number of files incorrectly specified. Try again." << endl;
-        return 1;
-    } else {
-        std::cout << "Number of files successfully specified." << endl;
-    }
 
     // INITIALIZING CARBON
     std::cout << "Carbon run number to start with: ";
@@ -62,8 +54,8 @@ Int_t SamMix()
         PolPar.CarbonLoop(j);
     }
     std::cout << "Total Number of Carbon Background Entries Found: " << PolPar.GetCarbEntries() << endl;
-    std::cout << "Carbon bin content for helicity 1: " << CThet_1 -> GetBinContent(theta_bin) << endl;
-    std::cout << "Carbon bin content for helicity 0: " << CThet_0 -> GetBinContent(theta_bin) << endl;
+    std::cout << "Carbon bin content for helicity 1: " << PolPar.CThet_1 -> GetBinContent(theta_bin) << endl;
+    std::cout << "Carbon bin content for helicity 0: " << PolPar.CThet_0 -> GetBinContent(theta_bin) << endl;
 
     // BUTANOL
     std::cout << "Number of files for Butanol data: ";
@@ -85,7 +77,7 @@ Int_t SamMix()
             std::cin >> CarbonScalingFactor;
             PolPar.SetCarbonScale(CarbonScalingFactor);
             std::cout << "Starting Butanol file input loop... " << endl;
-            PolPar.TheoreticalAsymmetry();
+            // PolPar.TheoreticalAsymmetry();
             for (Int_t i = 0; i < n_but_files; i++) {
                 PolPar.Asymmetry(i);
             }
@@ -167,8 +159,6 @@ void ppi0 :: CarbonLoop(Int_t j)
     C_MissMass_0 -> Add(MM_0, 1);
     CThet_1 -> Add(Carb_1, 1); // add Carb_1 to the Carbon stack
     CThet_0 -> Add(Carb_0, 1);
-
-
 }
 
 // *******************************************************************************************************
@@ -217,8 +207,6 @@ void ppi0 :: Asymmetry(Int_t index)
         Pi0But.GetObject("MM_pi0_n_2g_h1", B_MissMass_1);
         Pi0But.GetObject("MM_pi0_n_2g_h0", B_MissMass_0);
         TFile hist(histogram_source + "histo" + but_ext + ".root", "RECREATE");
-        std::cout << n_but_run << "- Original butanol bin content for helicity 1: " << BThet_1 -> GetBinContent(theta_bin) << endl;
-        std::cout << n_but_run << "- Original butanol bin content for helicity 0: " << BThet_0 -> GetBinContent(theta_bin) << endl;
 
         yield_0_e = BThet_0 -> GetBinError(theta_bin);
         yield_1_e = BThet_1 -> GetBinError(theta_bin);
@@ -229,8 +217,8 @@ void ppi0 :: Asymmetry(Int_t index)
         yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(theta_bin));
         yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(theta_bin));
 
-        std::cout << n_but_run << "- Post CB Subtraction bin content for helicity 1: " << yield_1 << endl;
-        std::cout << n_but_run << "- Post CB Subtraction bin content for helicity 0: " << yield_0 << endl;
+        std::cout << n_but_run << "- Original butanol bin content (1/0): " << BThet_1 -> GetBinContent(theta_bin) << "/" << BThet_0 -> GetBinContent(theta_bin) << endl;
+        std::cout << n_but_run << "- Post CB Subtraction bin content (1/0): " << yield_1 << "/" << yield_0 << endl;
 
         B_MissMass_1 -> Add(C_MissMass_1, (CarbonScalingFactor)*Scale());
         B_MissMass_0 -> Add(C_MissMass_0, (CarbonScalingFactor)*Scale());
