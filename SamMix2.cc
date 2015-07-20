@@ -405,9 +405,6 @@ void ppi0 :: GraphARun()
         fout5 << angle[r] << " " << sigmascaled2[r] << endl;
     }
 
-
-    // ********
-
     RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_3890.root";
     TFile RunFile(RunLocation);
 
@@ -431,10 +428,8 @@ void ppi0 :: GraphARun()
         runasymmetry[bin] = (runyield_0[bin] - runyield_1[bin]) / (runyield_1[bin] + runyield_0[bin]);
         runerror[bin] =  (2./(pow(runyield_0[bin] + runyield_1[bin], 2.))) * sqrt(pow(runyield_0[bin], 2.)*pow(runyield_1error[bin], 2.) + pow(runyield_1[bin], 2.)*pow(runyield_0error[bin], 2.));
         thetarange[bin] = 20*bin - 10;
-        theta_error[bin] = 5;
+        theta_error[bin] = 10;
     }
-
-    // ********
 
     TCanvas *c3 = new TCanvas();
     c3 -> cd();
