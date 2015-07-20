@@ -13,16 +13,6 @@ ofstream fout2("PostRebinnedData.txt"); // output for rebinned data
 ofstream fout3("YieldData.txt"); // output for yield data
 ofstream fout4("ScaledData.txt");
 ofstream fout5("ScaledData2.txt");
-ofstream fout6("SizeOfAcquBut.txt");
-
-Int_t TestRun()
-{
-    ppi0 Test;
-    for (Int_t runnumber = 3680; runnumber < 3750; runnumber++) {
-        Test.GraphARun(runnumber);
-    }
-    std::cout << "You win!" << endl;
-}
 
 Int_t SamMix()
 {
@@ -120,7 +110,7 @@ ppi0 :: ~ppi0() {}
 void ppi0 :: InitialCarbon()
 {
     TString carbnumber = Form("%d", carbonstart);
-    TString FirstSource = "/local/raid0/work/aberneth/a2GoAT/CarbonPi0-sam/";
+    TString FirstSource = "/home/sam/work/histograms/CarbonPi0-sam/";
     FirstCarbonLocation = FirstSource + "pi0-samApril_CBTaggTAPS_" + carbnumber + ".root";
     ifstream Afile(FirstCarbonLocation);
     if (!Afile) {
@@ -140,10 +130,7 @@ void ppi0 :: InitialCarbon()
     C_MissMass_1 -> SetDirectory(0);
     C_MissMass_0 -> SetDirectory(0);
 
-    FirstAcquLocation = "/local/raid0/work/aberneth/a2GoAT/Apr2014/Acqu_CBTaggTAPS_" + carbnumber + ".root";
-    TFile FirstAcqu(FirstAcquLocation);
-    FirstAcqu.GetObject("tagger", First_carb);
-    CarbEvnt = First_carb -> GetEntries();
+    CarbEvnt = 7.81607e+8;
 }
 
 // ******************************************************************************************************
@@ -153,22 +140,15 @@ void ppi0 :: InitialCarbon()
 void ppi0 :: CarbonLoop(Int_t j)
 {
     // Carbon data from acqu and Pi0 must exist in the following locations:
-    TString AcqCarb_source = "/local/raid0/work/aberneth/a2GoAT/Apr2014/";
     TString Pi0Carb_source = "/local/raid0/work/aberneth/a2GoAT/CarbonPi0-sam/";
 
     Int_t n_carb_run = carbonstart + j;
     TString carb_ext = Form("%d", n_carb_run);
 
     // acqu data must be called "Acqu_CBTaggTAPS_", while Pi0 data must be "pi0-samApril_CBTaggTAPS_"
-    acqu_Carbon = AcqCarb_source + "Acqu_CBTaggTAPS_" + carb_ext + ".root";
     Pi0_Carbon = Pi0Carb_source + "pi0-samApril_CBTaggTAPS_" + carb_ext + ".root";
 
     std::cout << "Checking for Carbon file " << n_carb_run << "..." << endl;
-    ifstream Bfile(acqu_Carbon);
-    if (!Bfile) {
-        std::cout << "Acqu Carbon files not found for file " << n_carb_run << endl;
-        return;
-    }
     ifstream Cfile(Pi0_Carbon);
     if (!Cfile) {
         std::cout << "Pi0 Carbon files not found for file " << n_carb_run << endl;
@@ -177,30 +157,23 @@ void ppi0 :: CarbonLoop(Int_t j)
     std::cout << "Found!" << endl;
 
     TFile Pi0Carb (Pi0_Carbon);
-    TFile AcqCarb (acqu_Carbon);
+    Pi0Carb.GetObject("Theta_1", Carb_1); // get Theta_1 from Pi0Carb, etc
+    Pi0Carb.GetObject("Theta_0", Carb_0);
+    Pi0Carb.GetObject("MM_pi0_n_2g_h1", MM_1);
+    Pi0Carb.GetObject("MM_pi0_n_2g_h0", MM_0);
 
-    AcqCarb.GetObject("tagger", Acqu_carb);
-    if (Acqu_carb -> GetEntries() > 3.0e+6) {
-        Pi0Carb.GetObject("Theta_1", Carb_1); // get Theta_1 from Pi0Carb, etc
-        Pi0Carb.GetObject("Theta_0", Carb_0);
-        Pi0Carb.GetObject("MM_pi0_n_2g_h1", MM_1);
-        Pi0Carb.GetObject("MM_pi0_n_2g_h0", MM_0);
+    Carb_1 -> SetDirectory(0); // detach histograms
+    Carb_0 -> SetDirectory(0);
+    MM_1 -> SetDirectory(0);
+    MM_0 -> SetDirectory(0);
 
-        Carb_1 -> SetDirectory(0); // detach histograms
-        Carb_0 -> SetDirectory(0);
-        MM_1 -> SetDirectory(0);
-        MM_0 -> SetDirectory(0);
+    C_MissMass_1 -> Add(MM_1, 1);
+    C_MissMass_0 -> Add(MM_0, 1);
+    CThet_1 -> Add(Carb_1, 1); // add Carb_1 to the Carbon stack
+    CThet_0 -> Add(Carb_0, 1);
 
-        C_MissMass_1 -> Add(MM_1, 1);
-        C_MissMass_0 -> Add(MM_0, 1);
-        CThet_1 -> Add(Carb_1, 1); // add Carb_1 to the Carbon stack
-        CThet_0 -> Add(Carb_0, 1);
-
-        std::cout << "For run number " << n_carb_run << ", the number of Acqu Entries is: " << Acqu_carb -> GetEntries() << endl;
-        std::cout << "Carbon bin content for helicity 1: " << CThet_1 -> GetBinContent(theta_bin) << endl;
-        std::cout << "Carbon bin content for helicity 0: " << CThet_0 -> GetBinContent(theta_bin) << endl;
-        CarbEvnt += Acqu_carb -> GetEntries();
-    }
+    std::cout << "Carbon bin content for helicity 1: " << CThet_1 -> GetBinContent(theta_bin) << endl;
+    std::cout << "Carbon bin content for helicity 0: " << CThet_0 -> GetBinContent(theta_bin) << endl;
 }
 
 // *******************************************************************************************************
@@ -213,13 +186,11 @@ void ppi0 :: Asymmetry(Int_t index)
     TString but_ext = Form("%d", n_but_run);
 
     // Butanol data must exist for acqu and Pi0 as specified:
-    TString AcqBut_source = "/local/raid0/work/aberneth/a2GoAT/May2014/";
-    TString Pi0But_source = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/";
-    TString histogram_source = "/local/raid0/work/aberneth/a2GoAT/histograms/";
+    TString Pi0But_source = "/home/sam/work/histograms/ButanolPi0-sam/";
+    TString histogram_source = "/home/sam/work/histograms/subhistos/";
 
     // Pi0 data must have "pi0-samMay_CBTaggTAPS", while acqu data must have "Acqu_CBTaggTAPS_"
     Pi0_Butanol = Pi0But_source + "pi0-samMay_CBTaggTAPS_" + but_ext + ".root";
-    acqu_Butanol = AcqBut_source + "Acqu_CBTaggTAPS_" + but_ext + ".root";
 
     std::cout << "Checking for Butanol file " << n_but_run << "..." << endl;
     ifstream Dfile(Pi0_Butanol);
@@ -227,19 +198,29 @@ void ppi0 :: Asymmetry(Int_t index)
         std::cout << "Pi0 Butanol files not found for file " << n_but_run << endl;
         return;
     }
-    ifstream Efile(acqu_Butanol);
-    if (!Efile) {
-        std::cout << "Acqu Butanol files not found for file " << n_but_run << endl;
-        return;
-    }
     std::cout << "Found!" << endl;
 
     TFile Pi0But(Pi0_Butanol);
-    TFile AcqBut(acqu_Butanol);
 
-    AcqBut.GetObject("tagger", Acqu_but);
-    ButaEvnt = Acqu_but -> GetEntries();
-    if (ButaEvnt > 0) {
+    ifstream butasize;
+    butasize.open("SizeOfAcquBut.txt");
+    if (!butasize) { return; }
+    const Int_t m = 350;
+    Double_t ButanolRuns[m] = {0};
+    Double_t ButanolSizes[m] = {0};
+    Int_t num = 1;
+    if (!butasize.eof()) {
+        butasize >> ButanolRuns[num] >> ButanolSizes[num];
+        num++;
+    }
+
+    for (Int_t j = 1; j < 335; j++) {
+        if (ButanolRuns[j] == n_but_run) {
+            ButaEvnt = ButanolSize[j];
+        }
+    }
+
+    if (ButaEvnt > 3.0e+6) {
         Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
         Pi0But.GetObject("Theta_0", BThet_0);
 
@@ -253,8 +234,8 @@ void ppi0 :: Asymmetry(Int_t index)
         yield_0_e = BThet_0 -> GetBinError(theta_bin);
         yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-        // GraphARun();
-        // if (KeepOrRemove == 0) { return; }
+        GraphARun();
+        if (KeepOrRemove == 0) { return; }
 
         yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(theta_bin));
         yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(theta_bin));
@@ -292,7 +273,6 @@ void ppi0 :: Asymmetry(Int_t index)
         std::cout << "The data written is: " << n_but_run << " " << asym << " " << err << endl;
         fout << n_but_run << " " << asym << " " << err << endl; // for graphing individual runs
         fout3 << n_but_run << " " << yield_1 << " " << yield_0 << " " << yield_1_e << " " << yield_0_e << endl; // for rebinning purposes
-        fout6 << n_but_run << " " << ButaEvnt << endl;
         hist.Close();
     }
 }
