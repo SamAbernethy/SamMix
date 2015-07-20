@@ -405,7 +405,7 @@ void ppi0 :: GraphARun()
         fout5 << angle[r] << " " << sigmascaled2[r] << endl;
     }
 
-    RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_3890.root";
+    RunLocation = "/local/raid0/work/aberneth/a2GoAT/ButanolPi0-sam/pi0-samMay_CBTaggTAPS_3755.root";
     TFile RunFile(RunLocation);
 
     RunFile.GetObject("Theta_1", BThet_1);
