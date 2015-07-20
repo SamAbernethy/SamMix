@@ -13,7 +13,6 @@ ofstream fout2("PostRebinnedData.txt"); // output for rebinned data
 ofstream fout3("YieldData.txt"); // output for yield data
 ofstream fout4("ScaledData.txt");
 ofstream fout5("ScaledData2.txt");
-ofstream fout6("ExperimentalData.txt");
 
 Int_t mix2()
 {
@@ -408,20 +407,19 @@ void ppi0 :: GraphARun()
 
     RunFile.GetObject("Theta_1", BThet_1);
     RunFile.GetObject("Theta_0", BThet_0);
-    const Int_t n = 9;
+    const Int_t n = 10;
     Double_t runyield_1[n] = {0};
     Double_t runyield_0[n] = {0};
     Double_t runasymmetry[n] = {0};
     Double_t runerror[n] = {0};
-    Double_t theta[n] = {0};
+    Double_t thetarange[n] = {0};
     Double_t theta_error[n] = {0};
 
-    for (Int_t bin = 1; bin <= n ; bin++) {
+    for (Int_t bin = 1; bin < n ; bin++) {
         runyield_1[bin] = BThet_1 -> GetBinContent(bin);
         runyield_0[bin] = BThet_0 -> GetBinContent(bin);
-
-        runasymmetry[bin] = (runyield_1[bin]-runyield_0[bin]) / (runyield_1[bin] + runyield_0[bin]);
-        theta[n] = 20*bin - 10;
+        runasymmetry[bin] = (runyield_1[bin] - runyield_0[bin]) / (runyield_1[bin] + runyield_0[bin]);
+        thetarange[n] = 20*bin - 10;
         theta_error[bin] = 5;
     }
 
