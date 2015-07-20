@@ -428,7 +428,7 @@ void ppi0 :: GraphARun()
         runyield_0[bin] = BThet_0 -> GetBinContent(bin);
         runyield_1error[bin] = BThet_1 -> GetBinError(bin);
         runyield_0error[bin] = BThet_0 -> GetBinError(bin);
-        runasymmetry[bin] = (runyield_1[bin] - runyield_0[bin]) / (runyield_1[bin] + runyield_0[bin]);
+        runasymmetry[bin] = (runyield_0[bin] - runyield_1[bin]) / (runyield_1[bin] + runyield_0[bin]);
         runerror[bin] =  (2./(pow(runyield_0[bin] + runyield_1[bin], 2.))) * sqrt(pow(runyield_0[bin], 2.)*pow(runyield_1error[bin], 2.) + pow(runyield_1[bin], 2.)*pow(runyield_0error[bin], 2.));
         thetarange[bin] = 20*bin - 10;
         theta_error[bin] = 5;
