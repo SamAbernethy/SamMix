@@ -14,7 +14,14 @@ ofstream fout3("YieldData.txt"); // output for yield data
 ofstream fout4("ScaledData.txt");
 ofstream fout5("ScaledData2.txt");
 
-Int_t mix2()
+Int_t TestRun()
+{
+    ppi0 Test;
+    Test.GraphARun();
+    std::cout << "You win!" << endl;
+}
+
+Int_t SamMix()
 {
     Int_t theta_bin; // which theta bin
     Int_t n_but_files; // number of files for Butanol
@@ -95,7 +102,6 @@ Int_t mix2()
             PolPar.RebinData();
             fout2.close();
             PolPar.GraphRebinned();
-            PolPar.GraphARun();
             std::cout << "Success! You win." << endl;
         }
     }
@@ -410,16 +416,21 @@ void ppi0 :: GraphARun()
     const Int_t n = 10;
     Double_t runyield_1[n] = {0};
     Double_t runyield_0[n] = {0};
+    Double_t runyield_1error[n] = {0};
+    Double_t runyield_0error[n] = {0};
     Double_t runasymmetry[n] = {0};
     Double_t runerror[n] = {0};
     Double_t thetarange[n] = {0};
     Double_t theta_error[n] = {0};
 
-    for (Int_t bin = 1; bin < n ; bin++) {
+    for (Int_t bin = 1; bin < n; bin++) {
         runyield_1[bin] = BThet_1 -> GetBinContent(bin);
         runyield_0[bin] = BThet_0 -> GetBinContent(bin);
+        runyield_1error[bin] = BThet_1 -> GetBinError(bin);
+        runyield_0error[bin] = BThet_0 -> GetBinError(bin);
         runasymmetry[bin] = (runyield_1[bin] - runyield_0[bin]) / (runyield_1[bin] + runyield_0[bin]);
-        thetarange[n] = 20*bin - 10;
+        runerror[bin] =  (2./(pow(runyield_0[bin] + runyield_1[bin], 2.))) * sqrt(pow(runyield_0[bin], 2.)*pow(runyield_1error[bin], 2.) + pow(runyield_1[bin], 2.)*pow(runyield_0error[bin], 2.));
+        thetarange[bin] = 20*bin - 10;
         theta_error[bin] = 5;
     }
 
