@@ -33,6 +33,7 @@ private:
     Double_t ButaEvnt; // number of butanol events
     Double_t CarbEvnt; // number of carbon events
     Double_t CarbonScalingFactor; // factor by which carbon background is subtracted
+    Double_t SecondScalingFactor;
 
     TString FirstCarbonLocation; // location of the first root file used for carbon
     TString FirstAcquLocation;
@@ -70,6 +71,7 @@ public:
     void SetButanolStart(Int_t i) { butanolstart = i; }
     void SetTheta_bin(Int_t i) { theta_bin = i; } // simple void to assign theta_bin to theta_bin, archaic from Dylan
     void TheoreticalAsymmetry();
+    void HelicitiesVsSize();
 
 };
 

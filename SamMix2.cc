@@ -13,13 +13,14 @@ ofstream fout2("PostRebinnedData.txt"); // output for rebinned data
 ofstream fout3("YieldData.txt"); // output for yield data
 ofstream fout4("ScaledData.txt");
 ofstream fout5("ScaledData2.txt");
+ofstream fout6("Helicity1+0.txt");
 
 Int_t SamMix()
 {
     Int_t theta_bin; // which theta bin
     Int_t n_but_files; // number of files for Butanol
-    Int_t n_carb_files = 240; // number of files for Carbon, chosen as 240 since they're on my computer now
-    Int_t carbonstart; // 3407 normally
+    Int_t n_carb_files = 250; // number of files for Carbon, chosen as 250 since they're on my computer now
+    Int_t carbonstart = 3407; // 3407 normally
     Int_t butanolstart; // 3680 normally
     Int_t rebinnumber; // number of bins clumped together
     Double_t CarbonScalingFactor; // -1 for full subtraction, 0 for none
@@ -35,19 +36,10 @@ Int_t SamMix()
         PolPar.SetTheta_bin(theta_bin); // simply sets theta_bin in PolPar equal to this specified theta_bin
     }
 
-    std::cout << "Initializing Carbon data... " << endl;
-
     // INITIALIZING CARBON
-    std::cout << "Carbon run number to start with: ";
-    std::cin >> carbonstart;
-    if (!carbonstart) {
-        std::cout << "Carbon run number not specified. Try again." << endl;
-        return 1;
-    } else {
-        std::cout << "Carbon run number successfully specified." << endl;
-        PolPar.SetCarbonStart(carbonstart);
-        PolPar.InitialCarbon();
-    }
+    std::cout << "Initializing Carbon data... " << endl;
+    PolPar.SetCarbonStart(carbonstart);
+    PolPar.InitialCarbon();
 
     // CARBON LOOP
     for (Int_t j = 1; j <= n_carb_files; j++) {
@@ -77,7 +69,7 @@ Int_t SamMix()
             std::cin >> CarbonScalingFactor;
             PolPar.SetCarbonScale(CarbonScalingFactor);
             std::cout << "Starting Butanol file input loop... " << endl;
-            // PolPar.TheoreticalAsymmetry();
+            PolPar.TheoreticalAsymmetry();
             for (Int_t i = 0; i < n_but_files; i++) {
                 PolPar.Asymmetry(i);
             }
@@ -90,6 +82,7 @@ Int_t SamMix()
             PolPar.RebinData();
             fout2.close();
             PolPar.GraphRebinned();
+            // PolPar.HelicitiesVsSize();
             std::cout << "Success! You win." << endl;
         }
     }
@@ -185,22 +178,23 @@ void ppi0 :: Asymmetry(Int_t index)
     ifstream butasize;
     butasize.open("SizeOfAcquBut.txt");
     if (!butasize) { return; }
-    const Int_t m = 350;
+    const Int_t m = 500;
     Double_t ButanolRuns[m] = {0};
     Double_t ButanolSizes[m] = {0};
     Int_t num = 1;
-    if (!butasize.eof()) {
+    while (!butasize.eof()) {
         butasize >> ButanolRuns[num] >> ButanolSizes[num];
         num++;
     }
 
     for (Int_t j = 1; j < 335; j++) {
-        if (ButanolRuns[j] == n_but_run) {
+        if (n_but_run == ButanolRuns[j]) {
             ButaEvnt = ButanolSizes[j];
+            std::cout << "Found the size." << endl;
         }
     }
 
-    if (ButaEvnt > 3.0e+6) {
+    if (ButaEvnt > 4.0e+6) {
         Pi0But.GetObject("Theta_1", BThet_1); // get Theta_1 from Pi0But
         Pi0But.GetObject("Theta_0", BThet_0);
 
@@ -211,24 +205,24 @@ void ppi0 :: Asymmetry(Int_t index)
         yield_0_e = BThet_0 -> GetBinError(theta_bin);
         yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
-        // GraphARun();
-        // if (KeepOrRemove == 0) { return; }
+        SecondScalingFactor = ((BThet_0 -> GetBinContent(theta_bin)) + (BThet_1 -> GetBinContent(theta_bin)) ) / (16000); // 16000 is an average chosen from graph
+        if (SecondScalingFactor < 0.5) { return; } // cuts the weird ones with large size but small yields
 
-        yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(theta_bin));
-        yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(theta_bin));
+        GraphARun();
+        if (KeepOrRemove == 0) { return; }
+
+        yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (SecondScalingFactor)*(CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(theta_bin));
+        yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (SecondScalingFactor)*(CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(theta_bin));
 
         std::cout << n_but_run << "- Original butanol bin content (1/0): " << BThet_1 -> GetBinContent(theta_bin) << "/" << BThet_0 -> GetBinContent(theta_bin) << endl;
         std::cout << n_but_run << "- Post CB Subtraction bin content (1/0): " << yield_1 << "/" << yield_0 << endl;
 
-        B_MissMass_1 -> Add(C_MissMass_1, (CarbonScalingFactor)*Scale());
-        B_MissMass_0 -> Add(C_MissMass_0, (CarbonScalingFactor)*Scale());
+        B_MissMass_1 -> Add(C_MissMass_1, (SecondScalingFactor)*(CarbonScalingFactor)*Scale());
+        B_MissMass_0 -> Add(C_MissMass_0, (SecondScalingFactor)*(CarbonScalingFactor)*Scale());
         B_MissMass_1 -> Write();
         B_MissMass_0 -> Write();
 
-        // same size acqu files but dramtically different sized yields as time goes on... different scaling approach?
-        if ((yield_0 < 1000) || (yield_1 < 1000)) {
-            return;
-        }
+        if ((yield_0 < 1000) || (yield_1 < 1000)) { return; }
 
         Double_t Pg = 0.692;
         Double_t Pg_error = 0.025;
@@ -237,6 +231,7 @@ void ppi0 :: Asymmetry(Int_t index)
 
         fout << n_but_run << " " << asym << " " << err << endl; // for graphing individual runs
         fout3 << n_but_run << " " << yield_1 << " " << yield_0 << " " << yield_1_e << " " << yield_0_e << endl; // for rebinning purposes
+        fout6 << ((BThet_1 -> GetBinContent(theta_bin)) + (BThet_0 -> GetBinContent(theta_bin))) << endl;
         hist.Close();
     }
 }
@@ -281,6 +276,7 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
             num++;
         }
     }
+
     Double_t Pg = 0.692;
     Double_t Pg_error = 0.025;
     std::cout << "Number of data points is: " << num << endl;
@@ -371,8 +367,8 @@ void ppi0 :: GraphARun()
     Double_t theta_error[n] = {0};
 
     for (Int_t bin = 1; bin < n; bin++) {
-        runyield_1[bin] = BThet_1 -> GetBinContent(bin) + (CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(bin));
-        runyield_0[bin] = BThet_0 -> GetBinContent(bin) + (CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(bin));
+        runyield_1[bin] = BThet_1 -> GetBinContent(bin) + (SecondScalingFactor)*(CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(bin));
+        runyield_0[bin] = BThet_0 -> GetBinContent(bin) + (SecondScalingFactor)*(CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(bin));
         runyield_1error[bin] = BThet_1 -> GetBinError(bin);
         runyield_0error[bin] = BThet_0 -> GetBinError(bin);
         runasymmetry[bin] = (runyield_0[bin] - runyield_1[bin]) / (runyield_1[bin] + runyield_0[bin]);
@@ -398,12 +394,65 @@ void ppi0 :: GraphARun()
     mg -> SetTitle("Cross Section Asymmetry ; #theta [degrees]; #Sigma_{2z} P_{T} P_{#gamma}");
     mg -> Draw("AP");
     c3 -> Update();
-    c3 -> Print("new.png", "png");
+    c3 -> Print("CrossSectionAsymmetry.png", "png");
 
     std::cout << "Is it good enough? 1 for keep, 0 for remove." << endl;
     std::cin >> KeepOrRemove;
+}
 
-    // std::cout << "Since Photon Polarization is 0.692, this gives: " << endl;
-    // std::cout << "Minimum Target Polarization: " << scale / 0.692 << endl;
-    // std::cout << "Maximum Target Polarization: " << scale2 / 0.692 << endl;
+void ppi0 :: HelicitiesVsSize()
+{
+    ifstream sum;
+    sum.open("Helicity1+0.txt");
+    if (!sum) {
+        std::cout << "Not found" << endl;
+        return;
+    }
+    Int_t num = 1;
+    const Int_t m = 500;
+    Double_t SumOfBoth[m] = {0};
+    while (!sum.eof()) {
+        sum >> SumOfBoth[num];
+        num++;
+    }
+    const Int_t mmm = num;
+
+    ifstream butasize;
+    butasize.open("SizeOfAcquBut.txt");
+    if (!butasize) {
+        std::cout << "Not found" << endl;
+        return;
+    }
+    Double_t ButanolRuns[m] = {0};
+    Double_t ButanolSizes[m] = {0};
+    Int_t num2 = 1;
+    while (!butasize.eof()) {
+        butasize >> ButanolRuns[num2] >> ButanolSizes[num2];
+        num2++;
+    }
+    const Int_t mm = num2;
+
+    TCanvas *c4 = new TCanvas();
+    c4 -> cd();
+    c4 -> SetGrid();
+    TGraph *gr = new TGraph(mmm, ButanolSizes, SumOfBoth);
+    gr -> SetTitle("Size vs Yields ; ButanolSize ; Sum of Yields ");
+    gr -> DrawClone("AP*");
+    c4 -> Update();
+
+    TCanvas *c5 = new TCanvas();
+    c5 -> cd();
+    c5 -> SetGrid();
+    TGraph *gr2 = new TGraph(mmm, ButanolRuns, ButanolSizes);
+    gr2 -> SetTitle("Run Number vs Size ; Run Number ; ButanolSize ");
+    gr2 -> DrawClone("AP*");
+    c5 -> Update();
+
+    TCanvas *c6 = new TCanvas();
+    c6 -> cd();
+    c6 -> SetGrid();
+    TGraph *gr3 = new TGraph(mm, ButanolRuns, SumOfBoth);
+    gr3 -> SetTitle("Run Number vs Yields ; Run Number ; Sum of Yields ");
+    gr3 -> DrawClone("AP*");
+    c6 -> Update();
 }
