@@ -69,7 +69,7 @@ Int_t SamMix()
             std::cin >> CarbonScalingFactor;
             PolPar.SetCarbonScale(CarbonScalingFactor);
             std::cout << "Starting Butanol file input loop... " << endl;
-            PolPar.TheoreticalAsymmetry();
+            //PolPar.TheoreticalAsymmetry();
             for (Int_t i = 0; i < n_but_files; i++) {
                 PolPar.Asymmetry(i);
             }
@@ -206,10 +206,10 @@ void ppi0 :: Asymmetry(Int_t index)
         yield_1_e = BThet_1 -> GetBinError(theta_bin);
 
         SecondScalingFactor = ((BThet_0 -> GetBinContent(theta_bin)) + (BThet_1 -> GetBinContent(theta_bin)) ) / (16000); // 16000 is an average chosen from graph
-        if (SecondScalingFactor < 0.5) { return; } // cuts the weird ones with large size but small yields
+        if (SecondScalingFactor < 0.7) { return; } // cuts the weird ones with large size but small yields
 
-        GraphARun();
-        if (KeepOrRemove == 0) { return; }
+        // GraphARun();
+        // if (KeepOrRemove == 0) { return; }
 
         yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (SecondScalingFactor)*(CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(theta_bin));
         yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (SecondScalingFactor)*(CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(theta_bin));
@@ -242,7 +242,7 @@ void ppi0 :: Asymmetry(Int_t index)
 // GRAPHING
 void ppi0 :: GraphIndividual()
 {
-    TCanvas *c1 = new TCanvas();
+    TCanvas *c1 = new TCanvas("c1", "Individual Canvas", 600, 400);
     c1 -> cd();
     c1 -> SetGrid();
     TGraphErrors data("data.txt", "%lg %lg %lg"); // graph the run number, asymmetry, and error
@@ -262,6 +262,11 @@ void ppi0 :: GraphIndividual()
 // REBINNING
 void ppi0 :: RebinData() // very long variable names, but this can be changed later
 {
+    std::cout << "P{T} (less accurate) or Sigma P_{T} (more accurate)? 1 for just PT" << endl;
+    std::cin >> PTOrSigmaPT;
+    Double_t ratio = 0;
+    if (PTOrSigmaPT == 1) { ratio = 0.58; }
+    if (PTOrSigmaPT == 0) { ratio = 1; }
     ifstream input;
     input.open("YieldData.txt");
     if (!input) {
@@ -301,7 +306,7 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
             sumofyield0errorsquares[k] += helicity0error[u + (k-1)*rebinnumber] * helicity0error[u + (k-1)*rebinnumber];
         }
         averagerunnumber[k] = sumofruns[k] / rebinnumber;
-        asymmetry[k] = (1 / Pg)*(sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
+        asymmetry[k] = (1 / (ratio*Pg))*(sumofyield1[k] - sumofyield0[k]) / (sumofyield0[k] + sumofyield1[k]);
         propagatederror[k] = sqrt(((asymmetry[k]/Pg)*(asymmetry[k]/Pg)*Pg_error*Pg_error) + ((2*sumofyield1[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k]))) * ((2*sumofyield1[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*sumofyield0errorsquares[k] + ((2*sumofyield0[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*((2*sumofyield0[k])/(Pg*(sumofyield1[k]+sumofyield0[k])*(sumofyield1[k]+sumofyield0[k])))*sumofyield1errorsquares[k]);
         fout2 << averagerunnumber[k] << " " << asymmetry[k] << " " << propagatederror[k] << endl;
     }
@@ -309,11 +314,12 @@ void ppi0 :: RebinData() // very long variable names, but this can be changed la
 
 void ppi0 :: GraphRebinned()
 {
-    TCanvas *c2 = new TCanvas;
+    TCanvas *c2 = new TCanvas("c2", "Rebinned Canvas", 600, 400);
     c2 -> cd();
     c2 -> SetGrid();
     TGraphErrors rebinned("PostRebinnedData.txt", "%lg %lg %lg");
-    rebinned.SetTitle("Rebinned Frozen Spin Target Polarization/Asymmetry ; Run Number; #Sigma_{2z} P_{T}");
+    // TAKING OUT SIGMA 2Z FROM LINE BELOW
+    rebinned.SetTitle("Rebinned Frozen Spin Target Polarization/Asymmetry ; Run Number; P_{T}");
     rebinned.SetMarkerStyle(kCircle);
     rebinned.SetFillColor(0);
     rebinned.SetLineColor(56);
@@ -352,6 +358,8 @@ void ppi0 :: TheoreticalAsymmetry()
         sigmascaled2[r] = sigma[r] * scale2;
         fout5 << angle[r] << " " << sigmascaled2[r] << endl;
     }
+    std::cout << "Positive (1) or Negative (-1) Polarization?" << endl;
+    std::cin >> PositiveOrNegative;
 }
 
 void ppi0 :: GraphARun()
@@ -371,7 +379,7 @@ void ppi0 :: GraphARun()
         runyield_0[bin] = BThet_0 -> GetBinContent(bin) + (SecondScalingFactor)*(CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(bin));
         runyield_1error[bin] = BThet_1 -> GetBinError(bin);
         runyield_0error[bin] = BThet_0 -> GetBinError(bin);
-        runasymmetry[bin] = (runyield_0[bin] - runyield_1[bin]) / (runyield_1[bin] + runyield_0[bin]);
+        runasymmetry[bin] = PositiveOrNegative*(runyield_0[bin] - runyield_1[bin]) / (runyield_1[bin] + runyield_0[bin]);
         runerror[bin] =  (2./(pow(runyield_0[bin] + runyield_1[bin], 2.))) * sqrt(pow(runyield_0[bin], 2.)*pow(runyield_1error[bin], 2.) + pow(runyield_1[bin], 2.)*pow(runyield_0error[bin], 2.));
         thetarange[bin] = 20*bin - 10;
         theta_error[bin] = 10;
@@ -380,12 +388,14 @@ void ppi0 :: GraphARun()
     TCanvas *c3 = new TCanvas();
     c3 -> cd();
     c3 -> SetGrid();
-    TGraphErrors *data = new TGraphErrors("ScaledData.txt","%lg %lg %lg");
-    TGraphErrors *data2 = new TGraphErrors("ScaledData2.txt","%lg %lg %lg");
+    TGraph *data = new TGraph("ScaledData.txt","%lg %lg");
+    TGraph *data2 = new TGraph("ScaledData2.txt","%lg %lg");
     TGraphErrors *data3 = new TGraphErrors(n, thetarange, runasymmetry, theta_error, runerror);
     data -> Fit("pol9");
+    data -> SetLineColor(4);
     data -> GetFunction("pol9") -> SetLineColor(4);
     data2 -> Fit("pol9");
+    data2 -> SetLineColor(3);
     data2 -> GetFunction("pol9") -> SetLineColor(3);
     TMultiGraph *mg = new TMultiGraph();
     mg -> Add(data);
@@ -393,11 +403,16 @@ void ppi0 :: GraphARun()
     mg -> Add(data3);
     mg -> SetTitle("Cross Section Asymmetry ; #theta [degrees]; #Sigma_{2z} P_{T} P_{#gamma}");
     mg -> Draw("AP");
-    c3 -> Update();
-    c3 -> Print("CrossSectionAsymmetry.png", "png");
+    leg = new TLegend(0.3, 0.7, 0.7, 0.9);
+    leg -> AddEntry(data, "50% Polarization", "lep");
+    leg -> AddEntry(data2, "65% Polarization", "lep");
+    leg -> AddEntry(data3, "Experimental Data", "lep");
+    leg -> Draw();
+    c3 -> Print("TestRun.png", "png");
 
-    std::cout << "Is it good enough? 1 for keep, 0 for remove." << endl;
-    std::cin >> KeepOrRemove;
+    // std::cout << "Acceptable? 1 for yes, 0 for no." << endl;
+    // std::cin >> KeepOrRemove;
+    // delete c3;
 }
 
 void ppi0 :: HelicitiesVsSize()
@@ -439,7 +454,7 @@ void ppi0 :: HelicitiesVsSize()
     gr -> SetTitle("Size vs Yields ; ButanolSize ; Sum of Yields ");
     gr -> DrawClone("AP*");
     c4 -> Update();
-
+/*
     TCanvas *c5 = new TCanvas();
     c5 -> cd();
     c5 -> SetGrid();
@@ -454,5 +469,5 @@ void ppi0 :: HelicitiesVsSize()
     TGraph *gr3 = new TGraph(mm, ButanolRuns, SumOfBoth);
     gr3 -> SetTitle("Run Number vs Yields ; Run Number ; Sum of Yields ");
     gr3 -> DrawClone("AP*");
-    c6 -> Update();
+    c6 -> Update(); */
 }

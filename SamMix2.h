@@ -51,6 +51,8 @@ private:
 
     TString RunLocation;
     Int_t KeepOrRemove;
+    Int_t PositiveOrNegative;
+    Int_t PTOrSigmaPT;
 
 
 public:
