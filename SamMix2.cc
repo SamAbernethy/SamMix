@@ -69,7 +69,7 @@ Int_t SamMix()
             std::cin >> CarbonScalingFactor;
             PolPar.SetCarbonScale(CarbonScalingFactor);
             std::cout << "Starting Butanol file input loop... " << endl;
-            //PolPar.TheoreticalAsymmetry();
+            PolPar.TheoreticalAsymmetry();
             for (Int_t i = 0; i < n_but_files; i++) {
                 PolPar.Asymmetry(i);
             }
@@ -190,7 +190,7 @@ void ppi0 :: Asymmetry(Int_t index)
     for (Int_t j = 1; j < 335; j++) {
         if (n_but_run == ButanolRuns[j]) {
             ButaEvnt = ButanolSizes[j];
-            std::cout << "Found the size." << endl;
+            // std::cout << "Found the size." << endl;
         }
     }
 
@@ -208,8 +208,8 @@ void ppi0 :: Asymmetry(Int_t index)
         SecondScalingFactor = ((BThet_0 -> GetBinContent(theta_bin)) + (BThet_1 -> GetBinContent(theta_bin)) ) / (16000); // 16000 is an average chosen from graph
         if (SecondScalingFactor < 0.7) { return; } // cuts the weird ones with large size but small yields
 
-        // GraphARun();
-        // if (KeepOrRemove == 0) { return; }
+        GraphARun();
+        if (KeepOrRemove == 0) { return; }
 
         yield_0 = (BThet_0 -> GetBinContent(theta_bin)) + (SecondScalingFactor)*(CarbonScalingFactor)*Scale()*(CThet_0 -> GetBinContent(theta_bin));
         yield_1 = (BThet_1 -> GetBinContent(theta_bin)) + (SecondScalingFactor)*(CarbonScalingFactor)*Scale()*(CThet_1 -> GetBinContent(theta_bin));
@@ -410,8 +410,8 @@ void ppi0 :: GraphARun()
     leg -> Draw();
     c3 -> Print("TestRun.png", "png");
 
-    // std::cout << "Acceptable? 1 for yes, 0 for no." << endl;
-    // std::cin >> KeepOrRemove;
+    std::cout << "Acceptable? 1 for yes, 0 for no." << endl;
+    std::cin >> KeepOrRemove;
     // delete c3;
 }
 
